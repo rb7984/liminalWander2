@@ -1,2 +1,2 @@
 # liminalWander2
-A site to walk trhough liminal spaces
+A site to walk through liminal spaces.
