@@ -1,7 +1,7 @@
 import * as THREE from 'https://esm.sh/three';
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'https://esm.sh/three/examples/jsm/controls/OrbitControls.js';
-
+import { movement } from './scripts/movements.js';
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -42,11 +42,6 @@ loader.load('model.gltf', (gltf) => {
     scene.add(model);
 });
 
-const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
-
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
 camera.position.set(0, 2, 5);
@@ -64,14 +59,16 @@ function checkCollision() {
     return intersects.length > 0 && intersects[0].distance < 1.0;
 }
 
-// Movement
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'w') {
-        if (!checkCollision()) {
-            camera.position.addScaledVector(direction, speed);
-        }
-    }
-});
+// // Movement
+// document.addEventListener('keydown', (event) => {
+//     if (event.key === 'w') {
+//         if (!checkCollision()) {
+//             camera.position.addScaledVector(direction, speed);
+//         }
+//     }
+// });
+
+movement(camera, direction, speed, checkCollision);
 
 // Animation loop
 function animate() {
