@@ -1,6 +1,7 @@
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import * as THREE from 'https://esm.sh/three';
+import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
+import { OrbitControls } from 'https://esm.sh/three/examples/jsm/controls/OrbitControls.js';
+
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -15,6 +16,9 @@ const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(5, 10, 5);
 light.castShadow = true;
 scene.add(light);
+
+camera.position.set(0, 5, 10);
+camera.lookAt(0, 0, 0);
 
 // Ground
 const ground = new THREE.Mesh(
@@ -37,6 +41,11 @@ loader.load('model.gltf', (gltf) => {
     });
     scene.add(model);
 });
+
+const geometry = new THREE.BoxGeometry();
+const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
 
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
