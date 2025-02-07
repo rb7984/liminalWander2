@@ -40,8 +40,8 @@ export class VoxelGrid {
 }
 
 export function fillVoxelSpace(scene, model, voxelGrid, targetCount = 100) {
-    const startX = 45, startY = 45, startZ = 45;
-    const range = 10;
+    const startX = 0, startY = 0, startZ = 0;
+    const range = 50;
     let count = 0;
 
     while (count < targetCount) {

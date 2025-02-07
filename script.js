@@ -30,7 +30,11 @@ scene.add(light);
 const ambientLight = new THREE.AmbientLight(0x404040, 10);
 scene.add(ambientLight);
 
-
+// Orientation cube
+const geometry = new THREE.BoxGeometry( 1, 1, 1 ); 
+const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} ); 
+const cube = new THREE.Mesh( geometry, material ); 
+scene.add( cube );
 
 // Ground
 const ground = new THREE.Mesh(
@@ -61,7 +65,7 @@ const loader = new GLTFLoader();
 loader.load('models/a.gltf', (gltf) => {
     const model = gltf.scene;
     model.scale.set(1, 1, 1);
-    fillVoxelSpace(scene, model, voxelGrid, 10);
+    fillVoxelSpace(scene, model, voxelGrid, 1000);
 });
 
 // Controls
@@ -83,8 +87,8 @@ function checkCollision() {
 
 movement(camera, direction, speed, checkCollision);
 
-camera.position.set(100, 100, 100);
-camera.lookAt(0, 0, 0);
+camera.position.set(10, 10, 10);
+camera.lookAt(0, 10, 0);
 
 // Animation loop
 function animate() {
