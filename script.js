@@ -59,15 +59,6 @@ function checkCollision() {
     return intersects.length > 0 && intersects[0].distance < 1.0;
 }
 
-// // Movement
-// document.addEventListener('keydown', (event) => {
-//     if (event.key === 'w') {
-//         if (!checkCollision()) {
-//             camera.position.addScaledVector(direction, speed);
-//         }
-//     }
-// });
-
 movement(camera, direction, speed, checkCollision);
 
 // Animation loop
