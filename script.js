@@ -2,6 +2,7 @@ import * as THREE from 'https://esm.sh/three';
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'https://esm.sh/three/examples/jsm/controls/OrbitControls.js';
 import { movement } from './scripts/movements.js';
+import { locator } from './scripts/locator.js';
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -29,18 +30,20 @@ ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
 scene.add(ground);
 
-// Load GLTF model
-const loader = new GLTFLoader();
-loader.load('model.gltf', (gltf) => {
-    const model = gltf.scene;
-    model.traverse((child) => {
-        if (child.isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
-        }
-    });
-    scene.add(model);
-});
+// // Load GLTF model
+// const loader = new GLTFLoader();
+// loader.load('model.gltf', (gltf) => {
+//     const model = gltf.scene;
+//     model.traverse((child) => {
+//         if (child.isMesh) {
+//             child.castShadow = true;
+//             child.receiveShadow = true;
+//         }
+//     });
+//     scene.add(model);
+// });
+
+locator(scene);
 
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
