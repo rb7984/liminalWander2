@@ -39,18 +39,25 @@ light.shadow.camera.right = 50;
 light.shadow.camera.top = 50;
 light.shadow.camera.bottom = -50;
 
-scene.add(light);
+// camera Lighting
+const light2 = new THREE.DirectionalLight(0xffffff, 1);
+light2.position.set(500,500,500);
+light2.castShadow = true;
+
+light2.shadow.mapSize.width = 1024; 
+light2.shadow.mapSize.height = 1024; 
+light2.shadow.camera.near = 0.5;
+light2.shadow.camera.far = 500;
+
+light2.shadow.camera.left = -50;
+light2.shadow.camera.right = 50;
+light2.shadow.camera.top = 50;
+light2.shadow.camera.bottom = -50;
+
+scene.add(light2);
 
 const ambientLight = new THREE.AmbientLight(0x404040, 10);
 scene.add(ambientLight);
-
-// Orientation cube
-const geometry = new THREE.BoxGeometry( 1, 1, 1 ); 
-const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} ); 
-const cube = new THREE.Mesh( geometry, material );
-cube.castShadow = true;
-cube.translateY(1);
-scene.add( cube );
 
 // Ground
 const ground = new THREE.Mesh(
@@ -63,7 +70,7 @@ scene.add(ground);
 
 //locator(scene);
 
-export const gridSize = 10;
+export const gridSize = 20;
 export const voxelGrid = new VoxelGrid(gridSize);
 
 ModelsLoader().then(models => {

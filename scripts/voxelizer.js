@@ -40,12 +40,12 @@ export class VoxelGrid {
 }
 
 export function fillVoxelSpace(scene, models, voxelGrid, gridSize) {
+    for (let i = 0; i < gridSize; i ++) {
+        for (let j = 0; j < gridSize; j ++) {
+            for (let k = 0; k < gridSize; k ++) {
 
-    for (let i = 1; i < gridSize; i += 2) {
-        for (let j = 1; j < gridSize; j += 2) {
-            for (let k = 1; k < gridSize; k += 2) {
-
-                let model = models[Math.floor(Math.random() * 4)];
+                //let model = models[Math.floor(Math.random() * 9)];
+                let model = models[7];
 
                 if (voxelGrid.isEmpty(i, j, k)) {
                     let m = model.clone();
@@ -54,6 +54,7 @@ export function fillVoxelSpace(scene, models, voxelGrid, gridSize) {
                         if (child.isMesh) {
                             child.castShadow = true;
                             child.receiveShadow = true;
+                            m.rotation.y = Math.floor(Math.random() * 4) * Math.PI/2
                         }
                     });
 

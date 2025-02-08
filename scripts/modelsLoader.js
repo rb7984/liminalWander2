@@ -5,7 +5,17 @@ export function ModelsLoader() {
         const loader = new GLTFLoader();
         let models = [];
         let loadedCount = 0;
-        const modelPaths = ['./models/a.gltf', './models/b.gltf', './models/c.gltf', './models/d.gltf'];
+        const modelPaths = [
+            './models/a.gltf',
+            './models/b.gltf',
+            './models/c.gltf',
+            './models/d.gltf',
+            './models/e.gltf',
+            './models/f.gltf',
+            './models/g.gltf',
+            './models/h.gltf',
+            './models/i.gltf'
+        ];
 
         modelPaths.forEach((path, index) => {
             loader.load(

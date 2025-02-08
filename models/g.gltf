@@ -15,7 +15,7 @@
       "type": "VEC3",
       "max": [
         -0.5,
-        0.5,
+        0.0,
         0.5
       ],
       "min": [
@@ -58,12 +58,12 @@
       "count": 3,
       "type": "VEC2",
       "max": [
-        0.99853516,
-        -0.33333334
+        0.47067112,
+        -0.0
       ],
       "min": [
-        0.6666667,
-        -0.66520184
+        0.0,
+        -0.23606798
       ]
     },
     {
@@ -73,7 +73,7 @@
       "type": "VEC3",
       "max": [
         0.5,
-        0.5,
+        0.0,
         -0.5
       ],
       "min": [
@@ -116,12 +116,12 @@
       "count": 4,
       "type": "VEC2",
       "max": [
-        0.99853516,
-        -0.0
+        0.9442719,
+        -0.23606798
       ],
       "min": [
-        0.6666667,
-        -0.3318685
+        0.47213596,
+        -0.47067112
       ]
     },
     {
@@ -131,7 +131,7 @@
       "type": "VEC3",
       "max": [
         0.5,
-        0.5,
+        0.0,
         0.5
       ],
       "min": [
@@ -174,12 +174,12 @@
       "count": 3,
       "type": "VEC2",
       "max": [
-        0.3318685,
-        -0.33333334
+        0.9442719,
+        -0.0
       ],
       "min": [
-        0.0,
-        -0.66520184
+        0.47213596,
+        -0.23460314
       ]
     },
     {
@@ -232,12 +232,12 @@
       "count": 4,
       "type": "VEC2",
       "max": [
-        0.3318685,
-        -0.0
+        0.47067112,
+        -0.31475732
       ],
       "min": [
         0.0,
-        -0.3318685
+        -0.78689325
       ]
     },
     {
@@ -247,7 +247,7 @@
       "type": "VEC3",
       "max": [
         0.5,
-        0.5,
+        0.0,
         0.5
       ],
       "min": [
@@ -274,14 +274,14 @@
       "count": 4,
       "type": "VEC3",
       "max": [
-        3.2239302E-12,
-        0.70710677,
-        0.70710677
+        0.0,
+        0.8944272,
+        0.4472136
       ],
       "min": [
         0.0,
-        0.70710677,
-        0.70710677
+        0.8944272,
+        0.4472136
       ]
     },
     {
@@ -290,12 +290,12 @@
       "count": 4,
       "type": "VEC2",
       "max": [
-        0.66520184,
-        -0.0
+        0.99853516,
+        -0.47213596
       ],
       "min": [
-        0.33333334,
-        -0.47140452
+        0.47213596,
+        -0.9428071
       ]
     }
   ],
@@ -304,7 +304,7 @@
   },
   "buffers": [
     {
-      "uri": "data:application/octet-stream;base64,AAAAvwAAAL8AAAA/AAAAvwAAAD8AAAC/AAAAvwAAAL8AAAC/",
+      "uri": "data:application/octet-stream;base64,AAAAvwAAAL8AAAA/AAAAvwAAAAAAAAC/AAAAvwAAAL8AAAC/",
       "byteLength": 36
     },
     {
@@ -316,11 +316,11 @@
       "byteLength": 36
     },
     {
-      "uri": "data:application/octet-stream;base64,q6oqP6uqqr4AoH8/q0oqv6uqKj+rSiq/",
+      "uri": "data:application/octet-stream;base64,AAAAAM67cb7O+/A+AAAAgM778D7Ou3G+",
       "byteLength": 24
     },
     {
-      "uri": "data:application/octet-stream;base64,AAAAvwAAAD8AAAC/AAAAvwAAAL8AAAC/AAAAPwAAAD8AAAC/AAAAPwAAAL8AAAC/",
+      "uri": "data:application/octet-stream;base64,AAAAvwAAAAAAAAC/AAAAvwAAAL8AAAC/AAAAPwAAAAAAAAC/AAAAPwAAAL8AAAC/",
       "byteLength": 48
     },
     {
@@ -332,11 +332,11 @@
       "byteLength": 48
     },
     {
-      "uri": "data:application/octet-stream;base64,AKB/PwAAAICrqio/AAAAgACgfz+r6qm+q6oqP6vqqb4=",
+      "uri": "data:application/octet-stream;base64,zrvxPs67cb7Ou/E+zvvwvs67cT/Ou3G+zrtxP8778L4=",
       "byteLength": 32
     },
     {
-      "uri": "data:application/octet-stream;base64,AAAAPwAAAD8AAAC/AAAAPwAAAL8AAAC/AAAAPwAAAL8AAAA/",
+      "uri": "data:application/octet-stream;base64,AAAAPwAAAAAAAAC/AAAAPwAAAL8AAAC/AAAAPwAAAL8AAAA/",
       "byteLength": 36
     },
     {
@@ -348,7 +348,7 @@
       "byteLength": 36
     },
     {
-      "uri": "data:application/octet-stream;base64,q+qpPquqqr4AAAAAq6qqvgAAAACrSiq/",
+      "uri": "data:application/octet-stream;base64,zrvxPgAAAIDOu/E+zjtwvs67cT/OO3C+",
       "byteLength": 24
     },
     {
@@ -364,11 +364,11 @@
       "byteLength": 48
     },
     {
-      "uri": "data:application/octet-stream;base64,q+qpPgAAAIAAAAAAAAAAgKvqqT6r6qm+AAAAAKvqqb4=",
+      "uri": "data:application/octet-stream;base64,zvvwPt8nob4AAAAA3yehvs778D7WcUm/AAAAANZxSb8=",
       "byteLength": 32
     },
     {
-      "uri": "data:application/octet-stream;base64,AAAAvwAAAD8AAAC/AAAAvwAAAL8AAAA/AAAAPwAAAD8AAAC/AAAAPwAAAL8AAAA/",
+      "uri": "data:application/octet-stream;base64,AAAAvwAAAAAAAAC/AAAAvwAAAL8AAAA/AAAAPwAAAAAAAAC/AAAAPwAAAL8AAAA/",
       "byteLength": 48
     },
     {
@@ -376,11 +376,11 @@
       "byteLength": 24
     },
     {
-      "uri": "data:application/octet-stream;base64,Kt1iLPMENT/zBDU/AAAAAPMENT/zBDU/Kt1iLPMENT/zBDU/AAAAAPMENT/zBDU/",
+      "uri": "data:application/octet-stream;base64,AAAAAC75ZD8u+eQ+AAAAAC75ZD8u+eQ+AAAAAC75ZD8u+eQ+AAAAAC75ZD8u+eQ+",
       "byteLength": 48
     },
     {
-      "uri": "data:application/octet-stream;base64,q6qqPgAAAICrqqo+71vxvqtKKj8AAACAq0oqP+9b8b4=",
+      "uri": "data:application/octet-stream;base64,AKB/P8678b7Ou/E+zrvxvgCgfz/OW3G/zrvxPs5bcb8=",
       "byteLength": 32
     }
   ],
