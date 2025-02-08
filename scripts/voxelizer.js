@@ -21,14 +21,14 @@ export class VoxelGrid {
 
     isWithinBounds(x, y, z) {
         return x >= 0 && x < this.size &&
-               y >= 0 && y < this.size &&
-               z >= 0 && z < this.size;
+            y >= 0 && y < this.size &&
+            z >= 0 && z < this.size;
     }
 
     isEmpty(x, y, z) {
         return this.grid[x] && this.grid[x][y] && this.grid[x][y][z] === null;
     }
-    
+
     addVoxel(x, y, z, model) {
         if (this.isWithinBounds(x, y, z) && this.isEmpty(x, y, z)) {
             const voxel = new Voxel(x, y, z, model);
@@ -39,22 +39,30 @@ export class VoxelGrid {
     }
 }
 
-export function fillVoxelSpace(scene, model, voxelGrid, targetCount = 100) {
-    const startX = 0, startY = 0, startZ = 0;
-    const range = 50;
-    let count = 0;
+export function fillVoxelSpace(scene, models, voxelGrid, gridSize) {
 
-    while (count < targetCount) {
-        let x = startX + Math.floor(Math.random() * range);
-        let y = startY + Math.floor(Math.random() * range);
-        let z = startZ + Math.floor(Math.random() * range);
+    for (let i = 1; i < gridSize; i += 2) {
+        for (let j = 1; j < gridSize; j += 2) {
+            for (let k = 1; k < gridSize; k += 2) {
 
-        if (voxelGrid.isEmpty(x, y, z)) {
-            let voxel = voxelGrid.addVoxel(x, y, z, model.clone());
-            if (voxel) {
-                voxel.model.position.set(x, y, z);
-                scene.add(voxel.model);
-                count++;
+                let model = models[Math.floor(Math.random() * 4)];
+
+                if (voxelGrid.isEmpty(i, j, k)) {
+                    let m = model.clone();
+
+                    m.traverse((child) => {
+                        if (child.isMesh) {
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                        }
+                    });
+
+                    let voxel = voxelGrid.addVoxel(i, j, k, m);
+                    if (voxel) {
+                        voxel.model.position.set(i, j, k);
+                        scene.add(voxel.model);
+                    }
+                }
             }
         }
     }
