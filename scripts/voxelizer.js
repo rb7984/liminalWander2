@@ -1,6 +1,6 @@
 import * as THREE from 'https://esm.sh/three';
 
-class Voxel {
+export class Voxel {
     constructor(x, y, z, model) {
         this.x = x;
         this.y = y;
