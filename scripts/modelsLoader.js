@@ -1,5 +1,5 @@
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
-import { Voxel, VoxelGrid } from './voxelizer';
+// import { Voxel, VoxelGrid } from './voxelizer';
 
 export function ModelsLoader() {
     return new Promise((resolve, reject) => {
@@ -37,7 +37,12 @@ export function ModelsLoader() {
     });
 }
 
-// // Alternative approach 
+function BlockChooser(v, vg)
+{
+
+}
+
+//#region Alternative approach 
 
 // export function ModelsLoader(callback) {
 //     const loader = new GLTFLoader();
@@ -64,7 +69,4 @@ export function ModelsLoader() {
 //     console.log(models[0]); // Now this works correctly
 // });
 
-function BlockChooser(v, vg)
-{
-
-}
+//#endregion

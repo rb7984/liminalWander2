@@ -1,12 +1,12 @@
 import * as THREE from 'https://esm.sh/three';
-import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'https://esm.sh/three/examples/jsm/controls/OrbitControls.js';
 import { movement } from './scripts/movements.js';
-import { locator } from './scripts/locator.js';
 import { VoxelGrid, fillVoxelSpace } from './scripts/voxelizer.js';
 import { ModelsLoader } from './scripts/modelsLoader.js';
+// import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
+// import { locator } from './scripts/locator.js';
 
-// Scene
+//#region Scene
 export const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -24,7 +24,18 @@ plane.rotateX( - Math.PI / 2);
 plane.translateZ(-0.5);
 scene.add(plane);
 
-// Lighting
+// Ground
+const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(20, 20),
+    new THREE.ShadowMaterial({ opacity: 0.5 })
+);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+//#endregion
+
+//#region Lighting
 const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(0,500,0);
 light.castShadow = true;
@@ -59,17 +70,9 @@ scene.add(light2);
 const ambientLight = new THREE.AmbientLight(0x404040, 10);
 scene.add(ambientLight);
 
-// Ground
-const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(20, 20),
-    new THREE.ShadowMaterial({ opacity: 0.5 })
-);
-ground.rotation.x = -Math.PI / 2;
-ground.receiveShadow = true;
-scene.add(ground);
+//#endregion
 
-//locator(scene);
-
+//#region Grid Models Loading
 export const gridSize = 20;
 export const voxelGrid = new VoxelGrid(gridSize);
 
@@ -82,13 +85,9 @@ ModelsLoader().then(models => {
     }
 }).catch(error => console.error("Error loading models:", error));
 
-// const loader = new GLTFLoader();
-// loader.load('models/a.gltf', (gltf) => {
-//     const model = gltf.scene;
-//     model.scale.set(1, 1, 1);
-//     fillVoxelSpace(scene, model, voxelGrid, gridSize);
-// });
+//#endregion
 
+//#region Controls
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.update();
@@ -109,6 +108,8 @@ movement(camera, direction, speed, checkCollision);
 
 camera.position.set(10, 10, 10);
 camera.lookAt(0, 10, 0);
+
+//#endregion
 
 // Animation loop
 function animate() {
