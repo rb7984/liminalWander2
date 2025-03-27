@@ -1,5 +1,5 @@
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
-// import { Voxel, VoxelGrid } from './voxelizer';
+// @ts-check
 
 export function ModelsLoader() {
     return new Promise((resolve, reject) => {
@@ -22,8 +22,15 @@ export function ModelsLoader() {
             loader.load(
                 path,
                 (gltf) => {
-                    models[index] = gltf.scene;
-                    models[index].scale.set(1, 1, 1);
+                    let filename = path.split('/').pop();
+                    let letter = filename.split('.').shift();
+
+                    models[index] = {
+                        model: gltf.scene,
+                        name: letter
+                    }
+
+                    models[index].model.scale.set(1, 1, 1);
                     loadedCount++;
 
                     if (loadedCount === modelPaths.length) {
@@ -35,11 +42,6 @@ export function ModelsLoader() {
             );
         });
     });
-}
-
-function BlockChooser(v, vg)
-{
-
 }
 
 //#region Alternative approach 

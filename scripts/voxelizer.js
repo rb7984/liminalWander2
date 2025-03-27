@@ -1,11 +1,13 @@
 //import * as THREE from 'https://esm.sh/three';
+// @ts-check
 
 export class Voxel {
-    constructor(x, y, z, model) {
+    constructor(x, y, z, model, name) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.model = model;
+        this.name = name;
     }
 }
 
@@ -48,7 +50,7 @@ export function fillVoxelSpace(scene, models, voxelGrid, gridSize) {
                 let model = models[7];
 
                 if (voxelGrid.isEmpty(i, j, k)) {
-                    let m = model.clone();
+                    let m = model.model.clone();
 
                     m.traverse((child) => {
                         if (child.isMesh) {
@@ -67,4 +69,9 @@ export function fillVoxelSpace(scene, models, voxelGrid, gridSize) {
             }
         }
     }
+}
+
+function BlockChooser(modelName, voxel, voxelGrid)
+{
+
 }
