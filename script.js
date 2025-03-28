@@ -2,9 +2,7 @@ import * as THREE from 'https://esm.sh/three';
 import { OrbitControls } from 'https://esm.sh/three/examples/jsm/controls/OrbitControls.js';
 import { movement } from './scripts/movements.js';
 import { VoxelGrid, fillVoxelSpace } from './scripts/voxelizer.js';
-import { ModelsLoader } from './scripts/modelsLoader.js';
-// import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
-// import { locator } from './scripts/locator.js';
+import { ModelsLoader, loadCSV } from './scripts/modelsLoader.js';
 
 //#region Scene
 export const scene = new THREE.Scene();
@@ -72,18 +70,24 @@ scene.add(ambientLight);
 
 //#endregion
 
-//#region Grid Models Loading
+//#region Handles-Grid-Models
+loadCSV().then((modelDict) => {
+    console.log(modelDict["B0"]); // Output: [6, 3, 5, 8]
+});
+
 export const gridSize = 20;
 export const voxelGrid = new VoxelGrid(gridSize);
 
 ModelsLoader().then(models => {
-    console.log('Models Loaded:', models);
+    //console.log('Models Loaded:', models);
     if (models.length > 0) {
         fillVoxelSpace(scene, models, voxelGrid, gridSize);
     } else {
         console.error("No models loaded.");
     }
 }).catch(error => console.error("Error loading models:", error));
+
+console.log(voxelGrid)
 
 //#endregion
 

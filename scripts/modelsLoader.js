@@ -9,13 +9,13 @@ export function ModelsLoader() {
         const modelPaths = [
             './models/a.gltf',
             './models/b.gltf',
-            './models/c.gltf',
-            './models/d.gltf',
-            './models/e.gltf',
-            './models/f.gltf',
-            './models/g.gltf',
-            './models/h.gltf',
-            './models/i.gltf'
+            // './models/c.gltf',
+            // './models/d.gltf',
+            // './models/e.gltf',
+            // './models/f.gltf',
+            // './models/g.gltf',
+            // './models/h.gltf',
+            // './models/i.gltf'
         ];
 
         modelPaths.forEach((path, index) => {
@@ -42,6 +42,26 @@ export function ModelsLoader() {
             );
         });
     });
+}
+
+export async function loadCSV() {
+    try {
+        // model, rotation, East, West, North, South, Up, Down
+        const response = await fetch('./models/handles.csv');
+        const text = await response.text();
+        const rows = text.split("\n").slice(1);
+
+        let modelDict = {};
+        rows.forEach(row => {
+            let [model, ...values] = row.split(",");
+            modelDict[model] = values.map(Number);
+        });
+
+        console.log(modelDict);
+        return modelDict;
+    } catch (error) {
+        console.error("Error loading CSV:", error);
+    }
 }
 
 //#region Alternative approach 
