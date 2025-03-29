@@ -1,8 +1,7 @@
 import * as THREE from 'https://esm.sh/three';
 import { OrbitControls } from 'https://esm.sh/three/examples/jsm/controls/OrbitControls.js';
 import { movement } from './scripts/movements.js';
-import { VoxelGrid, fillVoxelSpace } from './scripts/voxelizer.js';
-import { ModelsLoader, loadCSV } from './scripts/modelsLoader.js';
+import { initialize } from './scripts/loaders.js';
 
 //#region Scene
 export const scene = new THREE.Scene();
@@ -70,33 +69,11 @@ scene.add(ambientLight);
 
 //#endregion
 
-//#region Handles-Grid-Models
-loadCSV().then((modelDict) => {
-    console.log(modelDict["B0"]); // Output: [6, 3, 5, 8]
-});
-
-export const gridSize = 20;
-export const voxelGrid = new VoxelGrid(gridSize);
-
-ModelsLoader().then(models => {
-    //console.log('Models Loaded:', models);
-    if (models.length > 0) {
-        fillVoxelSpace(scene, models, voxelGrid, gridSize);
-    } else {
-        console.error("No models loaded.");
-    }
-}).catch(error => console.error("Error loading models:", error));
-
-console.log(voxelGrid)
-
-//#endregion
-
 //#region Controls
-// Controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.update();
 
-// Raycaster for collision detection
+// Raycaster
 const raycaster = new THREE.Raycaster();
 const direction = new THREE.Vector3();
 const speed = 0.1;
@@ -115,16 +92,28 @@ camera.lookAt(0, 10, 0);
 
 //#endregion
 
-// Animation loop
+//#region Initialise
+
+export const gridSize = 20;
+
+initialize(20, scene);
+
+//#endregion
+
+//#region Animation loop
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
 }
+
 animate();
 
-// Resize handling
+//#endregion
+
+//#region Window Handling
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+//#endregion

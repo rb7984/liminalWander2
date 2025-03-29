@@ -1,4 +1,3 @@
-//import * as THREE from 'https://esm.sh/three';
 // @ts-check
 
 export class Voxel {
@@ -16,13 +15,14 @@ export class Voxel {
 }
 
 export class VoxelGrid {
-    constructor(size = 100) {
+    constructor(size = 100, dictionary) {
         this.size = size;
         this.grid = new Array(size).fill(null).map(() =>
             new Array(size).fill(null).map(() =>
                 new Array(size).fill(null)
             )
         );
+        this.modelDict = dictionary;
     }
 
     isWithinBounds(x, y, z) {

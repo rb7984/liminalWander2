@@ -1,11 +1,31 @@
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
+import { VoxelGrid, fillVoxelSpace } from './voxels.js';
 // @ts-check
 
-export function ModelsLoader() {
+export async function initialize(gridSize, scene) {
+    try {
+        const modelDict = await loadCSV();
+        let voxelGrid = new VoxelGrid(gridSize, modelDict);
+        console.log(voxelGrid)
+
+        const models = await loadModels();
+
+        if (models.length > 0) {
+            fillVoxelSpace(scene, models, voxelGrid, gridSize);
+        } else {
+            console.error("No models loaded.");
+        }
+    } catch (error) {
+        console.error("Error during initialization:", error);
+    }
+}
+
+function loadModels() {
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
         let models = [];
         let loadedCount = 0;
+        
         const modelPaths = [
             './models/a.gltf',
             './models/b.gltf',
@@ -44,7 +64,7 @@ export function ModelsLoader() {
     });
 }
 
-export async function loadCSV() {
+async function loadCSV() {
     try {
         // model, rotation, East, West, North, South, Up, Down
         const response = await fetch('./models/handles.csv');
