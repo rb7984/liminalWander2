@@ -1,16 +1,13 @@
 // @ts-check
 
 export class Voxel {
-    constructor(x, y, z, model, name, rotation) {
+    constructor(x, y, z, name, rotation, handles) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.model = model;
-        this.handles = this.Handles(name, rotation);
-    }
-
-    Handles(name, rotation) {
-        return [null, null, null, null, null, null]
+        this.name = name;
+        this.rotation = rotation;
+        this.handles = handles;
     }
 }
 
@@ -35,13 +32,19 @@ export class VoxelGrid {
         return this.grid[x] && this.grid[x][y] && this.grid[x][y][z] === null;
     }
 
-    addVoxel(x, y, z, model, name, rotation) {
+    addVoxel(x, y, z, name, rotation) {
         if (this.isWithinBounds(x, y, z) && this.isEmpty(x, y, z)) {
-            const voxel = new Voxel(x, y, z, model, name, rotation);
+            const voxel = new Voxel(x, y, z, name, rotation, this.handles(name, rotation));
             this.grid[x][y][z] = voxel;
             return voxel;
         }
         return null;
+    }
+
+    handles(name, rotation) {
+
+        
+        return [null, null, null, null, null, null]
     }
 }
 
@@ -65,10 +68,10 @@ export function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                         }
                     });
 
-                    let voxel = voxelGrid.addVoxel(i, j, k, model, name, params[1]);
+                    let voxel = voxelGrid.addVoxel(i, j, k, name, params[1]);
                     if (voxel) {
-                        voxel.model.position.set(i, j, k);
-                        scene.add(voxel.model);
+                        model.position.set(i, j, k);
+                        scene.add(model);
                     }
                 }
             }
