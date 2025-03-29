@@ -25,7 +25,7 @@ function loadModels() {
         const loader = new GLTFLoader();
         let models = [];
         let loadedCount = 0;
-        
+
         const modelPaths = [
             './models/a.gltf',
             './models/b.gltf',
@@ -72,43 +72,16 @@ async function loadCSV() {
         const rows = text.split("\n").slice(1);
 
         let modelDict = {};
+
         rows.forEach(row => {
-            let [model, ...values] = row.split(",");
-            modelDict[model] = values.map(Number);
+            let [name, rotation, ...values] = row.split(";");
+            modelDict[name.concat(rotation)] = values.map(Number);
         });
 
         console.log(modelDict);
         return modelDict;
+
     } catch (error) {
         console.error("Error loading CSV:", error);
     }
 }
-
-//#region Alternative approach 
-
-// export function ModelsLoader(callback) {
-//     const loader = new GLTFLoader();
-//     const modelPaths = ['./models/a.gltf', './models/b.gltf', './models/c.gltf', './models/d.gltf'];
-//     let models = [];
-
-//     let loadedCount = 0;
-//     modelPaths.forEach((path, index) => {
-//         loader.load(path, (gltf) => {
-//             const model = gltf.scene;
-//             model.scale.set(1, 1, 1);
-//             models[index] = model;
-
-//             loadedCount++;
-//             if (loadedCount === modelPaths.length) {
-//                 callback(models);
-//             }
-//         });
-//     });
-// }
-
-// // Usage:
-// ModelsLoader((models) => {
-//     console.log(models[0]); // Now this works correctly
-// });
-
-//#endregion

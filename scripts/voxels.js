@@ -34,17 +34,19 @@ export class VoxelGrid {
 
     addVoxel(x, y, z, name, rotation) {
         if (this.isWithinBounds(x, y, z) && this.isEmpty(x, y, z)) {
-            const voxel = new Voxel(x, y, z, name, rotation, this.handles(name, rotation));
+            const voxel = new Voxel(
+                x,
+                y,
+                z,
+                name,
+                rotation,
+                this.modelDict[name.concat(rotation)]
+            );
+
             this.grid[x][y][z] = voxel;
             return voxel;
         }
         return null;
-    }
-
-    handles(name, rotation) {
-
-        
-        return [null, null, null, null, null, null]
     }
 }
 

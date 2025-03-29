@@ -87,8 +87,8 @@ function checkCollision() {
 
 movement(camera, direction, speed, checkCollision);
 
-camera.position.set(10, 10, 10);
-camera.lookAt(0, 10, 0);
+camera.position.set(30, 30, 30);
+camera.lookAt(0, 0, 0);
 
 //#endregion
 
