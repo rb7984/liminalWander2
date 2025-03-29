@@ -1,5 +1,5 @@
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
-import { VoxelGrid, fillVoxelSpace } from './voxels.js';
+import { VoxelGrid } from './voxels.js';
 // @ts-check
 
 export async function initialize(gridSize, scene) {
@@ -84,4 +84,44 @@ async function loadCSV() {
     } catch (error) {
         console.error("Error loading CSV:", error);
     }
+}
+
+function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
+    // i=x; j=z; k=y
+    for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < 2; j++) {
+            for (let k = 0; k < gridSize; k++) {
+
+                let constraints = voxelGrid.radar(i,j,k);
+                console.log(constraints);
+
+                let params = Configurator();
+                let object = objects[params[0]];
+
+                if (voxelGrid.isEmpty(i, j, k)) {
+                    let model = object.model.clone();
+                    let name = object.name;
+
+                    model.traverse((child) => {
+                        if (child.isMesh) {
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                            model.rotation.y = params[1] * Math.PI / 2
+                        }
+                    });
+
+                    let voxel = voxelGrid.addVoxel(i, j, k, name, params[1]);
+                    if (voxel) {
+                        model.position.set(i, j, k);
+                        scene.add(model);
+                    }
+                }
+            }
+        }
+    }
+}
+
+function Configurator() {
+    // model index, rotation
+    return [1, 1];
 }

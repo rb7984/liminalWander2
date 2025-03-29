@@ -7,6 +7,7 @@ export class Voxel {
         this.z = z;
         this.name = name;
         this.rotation = rotation;
+        //East, West, North, South, Up, Down
         this.handles = handles;
     }
 }
@@ -48,40 +49,18 @@ export class VoxelGrid {
         }
         return null;
     }
-}
 
-export function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
-    for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize; j++) {
-            for (let k = 0; k < gridSize; k++) {
+    radar(i, j, k) {
+        // Voxel.handles = [East, West, North, South, Up, Down]
+        let west = null;
+        if (i > 0) west = this.grid[i - 1][j][k].handles[0];
 
-                let params = Configurator();
-                let object = objects[params[0]];
+        let down = null;
+        if (j > 0) down = this.grid[i][j - 1][k].handles[4];
 
-                if (voxelGrid.isEmpty(i, j, k)) {
-                    let model = object.model.clone();
-                    let name = object.name;
+        let south = null;
+        if (k > 0) south = this.grid[i][j][k - 1].handles[2];
 
-                    model.traverse((child) => {
-                        if (child.isMesh) {
-                            child.castShadow = true;
-                            child.receiveShadow = true;
-                            model.rotation.y = params[1] * Math.PI / 2
-                        }
-                    });
-
-                    let voxel = voxelGrid.addVoxel(i, j, k, name, params[1]);
-                    if (voxel) {
-                        model.position.set(i, j, k);
-                        scene.add(model);
-                    }
-                }
-            }
-        }
+        return [null, west, null, south, null, down]
     }
-}
-
-function Configurator() {
-    // model index, rotation
-    return [1, 1];
 }
