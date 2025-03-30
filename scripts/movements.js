@@ -9,10 +9,10 @@ export function movement(camera, direction, speed, checkCollision) {
             camera.position.addScaledVector(direction, -speed);
         }
         if (event.key === 'd') {
-            camera.rotation.y -= 0.05;
+            camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -0.05);
         }
         if (event.key === 'a') {
-            camera.rotation.y += 0.05;
+            camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), +0.05);
         }
     });
 }
