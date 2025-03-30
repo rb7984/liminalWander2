@@ -41,7 +41,7 @@ export class VoxelGrid {
                 z,
                 name,
                 rotation,
-                this.modelDict[name.concat(rotation)]
+                this.modelDict[name.concat("-" + rotation)]
             );
 
             this.grid[x][y][z] = voxel;
@@ -62,5 +62,18 @@ export class VoxelGrid {
         if (k > 0) south = this.grid[i][j][k - 1].handles[2];
 
         return [null, west, null, south, null, down]
+    }
+
+    matcher(constraints) {
+        let matches = []
+        for (let key in this.modelDict) {
+            let values = this.modelDict[key];
+            let match = constraints.every((val, index) => val === null || val === values[index]);
+
+            if (match) matches.push(key);
+        }
+
+        if (matches.length == 0) return "0-0";
+        return matches[Math.floor(Math.random() * matches.length)]
     }
 }

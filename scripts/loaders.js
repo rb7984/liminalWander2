@@ -27,15 +27,15 @@ function loadModels() {
         let loadedCount = 0;
 
         const modelPaths = [
-            './models/a.gltf',
-            './models/b.gltf',
-            // './models/c.gltf',
-            // './models/d.gltf',
-            // './models/e.gltf',
-            // './models/f.gltf',
-            // './models/g.gltf',
-            // './models/h.gltf',
-            // './models/i.gltf'
+            './models/0.gltf',
+            './models/1.gltf',
+            // './models/2.gltf',
+            // './models/3.gltf',
+            // './models/4.gltf',
+            // './models/5.gltf',
+            // './models/6.gltf',
+            // './models/7.gltf',
+            // './models/8.gltf'
         ];
 
         modelPaths.forEach((path, index) => {
@@ -75,7 +75,7 @@ async function loadCSV() {
 
         rows.forEach(row => {
             let [name, rotation, ...values] = row.split(";");
-            modelDict[name.concat(rotation)] = values.map(Number);
+            modelDict[name.concat("-" + rotation)] = values.map(Number);
         });
 
         console.log(modelDict);
@@ -88,15 +88,17 @@ async function loadCSV() {
 
 function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
     // i=x; j=z; k=y
-    for (let i = 0; i < 2; i++) {
-        for (let j = 0; j < 2; j++) {
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
             for (let k = 0; k < gridSize; k++) {
 
                 let constraints = voxelGrid.radar(i,j,k);
-                console.log(constraints);
-
-                let params = Configurator();
+                
+                let dictionaryKey = voxelGrid.matcher(constraints);
+                console.log(dictionaryKey);
+                let params = dictionaryKey.split("-").map(Number);;
                 let object = objects[params[0]];
+                let rotationIndex = params[1];
 
                 if (voxelGrid.isEmpty(i, j, k)) {
                     let model = object.model.clone();
@@ -106,11 +108,11 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                         if (child.isMesh) {
                             child.castShadow = true;
                             child.receiveShadow = true;
-                            model.rotation.y = params[1] * Math.PI / 2
+                            model.rotation.y = rotationIndex * Math.PI / 2
                         }
                     });
 
-                    let voxel = voxelGrid.addVoxel(i, j, k, name, params[1]);
+                    let voxel = voxelGrid.addVoxel(i, j, k, name, rotationIndex);
                     if (voxel) {
                         model.position.set(i, j, k);
                         scene.add(model);
@@ -119,9 +121,4 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
             }
         }
     }
-}
-
-function Configurator() {
-    // model index, rotation
-    return [1, 1];
 }
