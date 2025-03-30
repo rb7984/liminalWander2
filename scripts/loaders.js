@@ -29,13 +29,17 @@ function loadModels() {
         const modelPaths = [
             './models/0.gltf',
             './models/1.gltf',
-            // './models/2.gltf',
-            // './models/3.gltf',
-            // './models/4.gltf',
-            // './models/5.gltf',
-            // './models/6.gltf',
-            // './models/7.gltf',
-            // './models/8.gltf'
+            './models/2.gltf',
+            './models/3.gltf',
+            './models/4.gltf',
+            './models/5.gltf',
+            './models/6.gltf',
+            './models/7.gltf',
+            './models/8.gltf',
+            './models/9.gltf',
+            './models/10.gltf',
+            './models/11.gltf',
+            './models/12.gltf'
         ];
 
         modelPaths.forEach((path, index) => {
@@ -95,8 +99,9 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                 let constraints = voxelGrid.radar(i,j,k);
                 
                 let dictionaryKey = voxelGrid.matcher(constraints);
-                //console.log(dictionaryKey);
+                console.log(dictionaryKey);
                 let params = dictionaryKey.split("-").map(Number);;
+                console.log(params);
                 let object = objects[params[0]];
                 let rotationIndex = params[1];
 
