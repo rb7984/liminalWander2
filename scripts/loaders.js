@@ -6,7 +6,7 @@ export async function initialize(gridSize, scene) {
     try {
         const modelDict = await loadCSV();
         let voxelGrid = new VoxelGrid(gridSize, modelDict);
-        console.log(voxelGrid)
+        //console.log(voxelGrid)
 
         const models = await loadModels();
 
@@ -78,7 +78,7 @@ async function loadCSV() {
             modelDict[name.concat("-" + rotation)] = values.map(Number);
         });
 
-        console.log(modelDict);
+        //console.log(modelDict);
         return modelDict;
 
     } catch (error) {
@@ -95,7 +95,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                 let constraints = voxelGrid.radar(i,j,k);
                 
                 let dictionaryKey = voxelGrid.matcher(constraints);
-                console.log(dictionaryKey);
+                //console.log(dictionaryKey);
                 let params = dictionaryKey.split("-").map(Number);;
                 let object = objects[params[0]];
                 let rotationIndex = params[1];
