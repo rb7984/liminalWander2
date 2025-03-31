@@ -20,17 +20,9 @@ export function primer() {
     plane.translateZ(-0.5);
     scene.add(plane);
 
-    // Ground
-    const ground = new THREE.Mesh(
-        new THREE.PlaneGeometry(20, 20),
-        new THREE.ShadowMaterial({ opacity: 0.5 })
-    );
-    ground.rotation.x = -Math.PI / 2;
-    ground.receiveShadow = true;
-    scene.add(ground);
-
+    //#region Lighting
     const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(0, 500, 0);
+    light.position.set(500, 500, 500);
     light.castShadow = true;
 
     light.shadow.mapSize.width = 1024;
@@ -43,25 +35,21 @@ export function primer() {
     light.shadow.camera.top = 50;
     light.shadow.camera.bottom = -50;
 
-    // camera Lighting
-    const light2 = new THREE.DirectionalLight(0xffffff, 1);
-    light2.position.set(500, 500, 500);
+    scene.add(light);
+
+    const light2 = new THREE.DirectionalLight(0x948cdb, 1);
+    light2.position.set(-100, 100, -100);
     light2.castShadow = true;
 
     light2.shadow.mapSize.width = 1024;
     light2.shadow.mapSize.height = 1024;
-    light2.shadow.camera.near = 0.5;
-    light2.shadow.camera.far = 500;
-
-    light2.shadow.camera.left = -50;
-    light2.shadow.camera.right = 50;
-    light2.shadow.camera.top = 50;
-    light2.shadow.camera.bottom = -50;
 
     scene.add(light2);
 
-    const ambientLight = new THREE.AmbientLight(0x404040, 10);
-    scene.add(ambientLight);
+    //#endregion
+    
+    const hemisphereLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+    scene.add( hemisphereLight );
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.update();
@@ -80,7 +68,7 @@ export function primer() {
 
     movement(camera, direction, speed, checkCollision);
 
-    camera.position.set(-30, 30, -30);
+    camera.position.set(-5, 5, -5);
     camera.lookAt(0, 0, 0);
 
     const axesHelper = new THREE.AxesHelper(10);
