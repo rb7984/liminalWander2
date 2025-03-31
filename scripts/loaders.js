@@ -38,9 +38,7 @@ function loadModels() {
             './models/7.gltf',
             './models/8.gltf',
             './models/9.gltf',
-            './models/10.gltf',
-            './models/11.gltf',
-            './models/12.gltf'
+            './models/10.gltf'
         ];
 
         modelPaths.forEach((path, index) => {
@@ -93,17 +91,19 @@ async function loadCSV() {
 
 function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
     // i=x; j=z; k=y
-    for (let i = 0; i < 1; i++) {
-        for (let j = 0; j < 1; j++) {
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
             for (let k = 0; k < gridSize; k++) {
                 let constraints = voxelGrid.radar(i, j, k);
-
                 let dictionaryKey = voxelGrid.matcher(constraints);
-                console.log(dictionaryKey);
                 let params = dictionaryKey.split("-").map(Number);;
-                console.log(params);
                 let object = objects[params[0]];
                 let rotationIndex = params[1];
+
+                console.log("block: " + i + "; " + j + "; " + k);
+                console.log("constraints: " + constraints);
+                console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
+                console.log("---------------------");
 
                 if (voxelGrid.isEmpty(i, j, k)) {
                     let model = object.model.clone();
@@ -132,7 +132,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                     let pointMesh = new THREE.Mesh(pointGeometry, pointMaterial);
                     pointMesh.position.set(i + 0.5, j - 0.5, k - 0.5);
                     scene.add(pointMesh);
-                    
+
                     let pointMesh1 = new THREE.Mesh(pointGeometry, pointMaterial);
                     pointMesh1.position.set(i - 0.5, j - 0.5, k - 0.5);
                     scene.add(pointMesh1);

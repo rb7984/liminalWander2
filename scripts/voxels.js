@@ -76,4 +76,9 @@ export class VoxelGrid {
         if (matches.length == 0) return "0-0";
         return matches[Math.floor(Math.random() * matches.length)]
     }
+
+    getDictValues(key)
+    {
+        return this.modelDict[key];
+    }
 }

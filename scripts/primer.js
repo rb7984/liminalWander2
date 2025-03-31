@@ -80,10 +80,10 @@ export function primer() {
 
     movement(camera, direction, speed, checkCollision);
 
-    camera.position.set(30, 30, 30);
+    camera.position.set(-30, 30, -30);
     camera.lookAt(0, 0, 0);
 
-    const axesHelper = new THREE.AxesHelper(10); // 10 units long
+    const axesHelper = new THREE.AxesHelper(10);
     scene.add(axesHelper);
 
     return [scene, camera, renderer];
