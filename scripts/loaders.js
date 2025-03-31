@@ -1,3 +1,4 @@
+import * as THREE from 'https://esm.sh/three';
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
 import { VoxelGrid } from './voxels.js';
 // @ts-check
@@ -92,12 +93,11 @@ async function loadCSV() {
 
 function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
     // i=x; j=z; k=y
-    for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize; j++) {
+    for (let i = 0; i < 1; i++) {
+        for (let j = 0; j < 1; j++) {
             for (let k = 0; k < gridSize; k++) {
+                let constraints = voxelGrid.radar(i, j, k);
 
-                let constraints = voxelGrid.radar(i,j,k);
-                
                 let dictionaryKey = voxelGrid.matcher(constraints);
                 console.log(dictionaryKey);
                 let params = dictionaryKey.split("-").map(Number);;
@@ -122,6 +122,44 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                         model.position.set(i, j, k);
                         scene.add(model);
                     }
+                }
+
+                //debug points
+                {
+                    let pointMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                    let pointGeometry = new THREE.SphereGeometry(0.05);
+
+                    let pointMesh = new THREE.Mesh(pointGeometry, pointMaterial);
+                    pointMesh.position.set(i + 0.5, j - 0.5, k - 0.5);
+                    scene.add(pointMesh);
+                    
+                    let pointMesh1 = new THREE.Mesh(pointGeometry, pointMaterial);
+                    pointMesh1.position.set(i - 0.5, j - 0.5, k - 0.5);
+                    scene.add(pointMesh1);
+
+                    let pointMesh2 = new THREE.Mesh(pointGeometry, pointMaterial);
+                    pointMesh2.position.set(i + 0.5, j + 0.5, k - 0.5);
+                    scene.add(pointMesh2);
+
+                    let pointMesh3 = new THREE.Mesh(pointGeometry, pointMaterial);
+                    pointMesh3.position.set(i - 0.5, j + 0.5, k - 0.5);
+                    scene.add(pointMesh3);
+
+                    let pointMesh4 = new THREE.Mesh(pointGeometry, pointMaterial);
+                    pointMesh4.position.set(i + 0.5, j + 0.5, k + 0.5);
+                    scene.add(pointMesh4);
+
+                    let pointMesh5 = new THREE.Mesh(pointGeometry, pointMaterial);
+                    pointMesh5.position.set(i - 0.5, j + 0.5, k + 0.5);
+                    scene.add(pointMesh5);
+
+                    let pointMesh6 = new THREE.Mesh(pointGeometry, pointMaterial);
+                    pointMesh6.position.set(i + 0.5, j - 0.5, k + 0.5);
+                    scene.add(pointMesh6);
+
+                    let pointMesh7 = new THREE.Mesh(pointGeometry, pointMaterial);
+                    pointMesh7.position.set(i - 0.5, j - 0.5, k + 0.5);
+                    scene.add(pointMesh7);
                 }
             }
         }

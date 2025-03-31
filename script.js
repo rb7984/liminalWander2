@@ -1,3 +1,4 @@
+import * as THREE from 'https://esm.sh/three';
 import { initialize } from './scripts/loaders.js';
 import { primer } from './scripts/primer.js';
 

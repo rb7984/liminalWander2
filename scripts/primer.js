@@ -65,23 +65,26 @@ export function primer() {
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.update();
-    
+
     // Raycaster
     const raycaster = new THREE.Raycaster();
     const direction = new THREE.Vector3();
     const speed = 0.1;
-    
+
     function checkCollision() {
         camera.getWorldDirection(direction);
         raycaster.set(camera.position, direction);
         const intersects = raycaster.intersectObjects(scene.children, true);
         return intersects.length > 0 && intersects[0].distance < 1.0;
     }
-    
+
     movement(camera, direction, speed, checkCollision);
-    
+
     camera.position.set(30, 30, 30);
     camera.lookAt(0, 0, 0);
+
+    const axesHelper = new THREE.AxesHelper(10); // 10 units long
+    scene.add(axesHelper);
 
     return [scene, camera, renderer];
 }
