@@ -51,17 +51,17 @@ export class VoxelGrid {
     }
 
     radar(i, j, k) {
-        // Voxel.handles = [East, West, North, South, Up, Down]
+        // Voxel.handles = [East, West, Up, Down, North, South]
         let west = null;
         if (i > 0) west = this.grid[i - 1][j][k].handles[0];
 
         let down = null;
-        if (j > 0) down = this.grid[i][j - 1][k].handles[4];
+        if (j > 0) down = this.grid[i][j - 1][k].handles[2];
 
         let south = null;
-        if (k > 0) south = this.grid[i][j][k - 1].handles[2];
-
-        return [null, west, null, south, null, down]
+        if (k > 0) south = this.grid[i][j][k-1].handles[4];
+        
+        return [null, west, null, down, null, south]
     }
 
     matcher(constraints) {

@@ -1,4 +1,3 @@
-import * as THREE from 'https://esm.sh/three';
 import { initialize } from './scripts/loaders.js';
 import { primer } from './scripts/primer.js';
 
@@ -8,7 +7,7 @@ let scene = sceneCameraRenderer[0];
 let camera = sceneCameraRenderer[1];
 let renderer = sceneCameraRenderer[2];
 
-export const gridSize = 20;
+export const gridSize = 5;
 
 initialize(20, scene);
 
