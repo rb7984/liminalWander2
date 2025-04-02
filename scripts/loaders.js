@@ -91,9 +91,9 @@ async function loadCSV() {
 
 function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
     // i=x; j=z; k=y
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-            for (let k = 0; k < 3; k++) {
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+            for (let k = 0; k < gridSize; k++) {
                 // radar return the constraints contextual to the new voxel.
                 // e.g. returns the west constraint based on the east handle of the i-1 voxel
                 let constraints = voxelGrid.radar(i, j, k);

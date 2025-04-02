@@ -73,6 +73,7 @@ export class VoxelGrid {
             if (match) matches.push(key);
         }
 
+        //TODO return a visibly different block
         if (matches.length == 0) return "0-0";
         return matches[Math.floor(Math.random() * matches.length)]
     }
