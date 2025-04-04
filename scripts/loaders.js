@@ -192,4 +192,3 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
         }
     }
 }
-
