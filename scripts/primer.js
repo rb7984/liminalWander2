@@ -63,13 +63,13 @@ export function primer() {
         camera.getWorldDirection(direction);
         raycaster.set(camera.position, direction);
         const intersects = raycaster.intersectObjects(scene.children, true);
-        return intersects.length > 0 && intersects[0].distance < 0.3;
+        return intersects.length > 0 && intersects[0].distance < 0.01;
     }
 
     movement(camera, direction, speed, checkCollision);
 
-    camera.position.set(-5, 5, -5);
-    camera.lookAt(0, 0, 0);
+    camera.position.set(-5, .5, -5);
+    camera.lookAt(0, .5, 0);
 
     const axesHelper = new THREE.AxesHelper(10);
     scene.add(axesHelper);
