@@ -98,6 +98,10 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                 // e.g. returns the west constraint based on the east handle of the i-1 voxel
                 let constraints = voxelGrid.radar(i, j, k);
                 let dictionaryKey = voxelGrid.matcher(constraints);
+
+                let debugColor = dictionaryKey == null ? new THREE.Color('skyblue') : null;
+                if (dictionaryKey === null) dictionaryKey = "0-0";
+
                 let params = dictionaryKey.split("-").map(Number);;
                 let object = objects[params[0]];
                 let rotationIndex = params[1];
@@ -115,7 +119,8 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                         if (child.isMesh) {
                             child.castShadow = true;
                             child.receiveShadow = true;
-                            model.rotation.y = rotationIndex * Math.PI / 2
+                            model.rotation.y = rotationIndex * Math.PI / 2;
+                            child.material = new THREE.MeshStandardMaterial({ color: debugColor });
                         }
                     });
 
