@@ -63,7 +63,7 @@ export function primer() {
         camera.getWorldDirection(direction);
         raycaster.set(camera.position, direction);
         const intersects = raycaster.intersectObjects(scene.children, true);
-        return intersects.length > 0 && intersects[0].distance < 1.0;
+        return intersects.length > 0 && intersects[0].distance < 0.3;
     }
 
     movement(camera, direction, speed, checkCollision);

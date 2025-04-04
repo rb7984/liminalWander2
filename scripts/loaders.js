@@ -77,7 +77,12 @@ async function loadCSV() {
         let modelDict = {};
 
         rows.forEach(row => {
+            if (!row.trim()) return;
+
             let [name, rotation, ...values] = row.split(";");
+
+            if (!name || !rotation || values.length === 0) return;
+
             modelDict[name.concat("-" + rotation)] = values.map(Number);
         });
 
@@ -90,7 +95,7 @@ async function loadCSV() {
 }
 
 function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
-    let list = [
+    let colorList = [
         new THREE.Color('skyblue'), // 0
         new THREE.Color('tomato'), // 1
         new THREE.Color('gold'), // 2
@@ -110,44 +115,58 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
 
     // i=x; j=z; k=y
     for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize; j++) {
+        for (let j = 0; j < 4; j++) {
             for (let k = 0; k < gridSize; k++) {
                 // radar return the constraints contextual to the new voxel.
                 // e.g. returns the west constraint based on the east handle of the i-1 voxel
                 let constraints = voxelGrid.radar(i, j, k);
                 let dictionaryKey = voxelGrid.matcher(constraints);
 
+                // match not found - red 0-0
                 let debugColor = dictionaryKey == null ? new THREE.Color('red') : null;
                 if (dictionaryKey == null) dictionaryKey = "0-0";
 
+                // match found (forced/not)
                 let params = dictionaryKey.split("-").map(Number);
-                if (debugColor == null) debugColor = list[params[0]];
 
-                let object = objects[params[0]];
-                let rotationIndex = params[1];
+                if (params[0] == 99) {
+                    voxelGrid.addVoxel(i, j, k, "99", 0);
+                    console.log("block: " + i + "; " + j + "; " + k);
+                    console.log("constraints: " + constraints);
+                    console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
+                    console.log("---------------------");
+                    continue;
+                }
+                else {
+                    // color except for not found
+                    if (debugColor == null) debugColor = colorList[params[0]];
 
-                console.log("block: " + i + "; " + j + "; " + k);
-                console.log("constraints: " + constraints);
-                console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
-                console.log("---------------------");
+                    let object = objects[params[0]];
+                    let rotationIndex = params[1];
 
-                if (voxelGrid.isEmpty(i, j, k)) {
-                    let model = object.model.clone();
-                    let name = object.name;
+                    console.log("block: " + i + "; " + j + "; " + k);
+                    console.log("constraints: " + constraints);
+                    console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
+                    console.log("---------------------");
 
-                    model.traverse((child) => {
-                        if (child.isMesh) {
-                            child.castShadow = true;
-                            child.receiveShadow = true;
-                            model.rotation.y = rotationIndex * Math.PI / 2;
-                            child.material = new THREE.MeshStandardMaterial({ color: debugColor });
+                    if (voxelGrid.isEmpty(i, j, k)) {
+                        let model = object.model.clone();
+                        let name = object.name;
+
+                        model.traverse((child) => {
+                            if (child.isMesh) {
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                                model.rotation.y = rotationIndex * Math.PI / 2;
+                                child.material = new THREE.MeshStandardMaterial({ color: debugColor });
+                            }
+                        });
+
+                        let voxel = voxelGrid.addVoxel(i, j, k, name, rotationIndex);
+                        if (voxel) {
+                            model.position.set(i, j, k);
+                            scene.add(model);
                         }
-                    });
-
-                    let voxel = voxelGrid.addVoxel(i, j, k, name, rotationIndex);
-                    if (voxel) {
-                        model.position.set(i, j, k);
-                        scene.add(model);
                     }
                 }
 

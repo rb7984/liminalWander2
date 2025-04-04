@@ -59,8 +59,8 @@ export class VoxelGrid {
         if (j > 0) down = this.grid[i][j - 1][k].handles[2];
 
         let south = null;
-        if (k > 0) south = this.grid[i][j][k-1].handles[4];
-        
+        if (k > 0) south = this.grid[i][j][k - 1].handles[4];
+
         return [null, west, null, down, null, south]
     }
 
@@ -77,8 +77,7 @@ export class VoxelGrid {
         return matches[Math.floor(Math.random() * matches.length)]
     }
 
-    getDictValues(key)
-    {
+    getDictValues(key) {
         return this.modelDict[key];
     }
 }
