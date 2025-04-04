@@ -90,6 +90,24 @@ async function loadCSV() {
 }
 
 function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
+    let list = [
+        new THREE.Color('skyblue'), // 0
+        new THREE.Color('tomato'), // 1
+        new THREE.Color('gold'), // 2
+        new THREE.Color('mediumseagreen'), // 3
+        new THREE.Color('deepskyblue'), // 4
+        new THREE.Color('orchid'), // 5
+        new THREE.Color('slategray'), // 6
+        new THREE.Color('crimson'), // 7
+        new THREE.Color('limegreen'), // 8
+        new THREE.Color('darkorange'), // 9
+        new THREE.Color('dodgerblue'), // 10
+        new THREE.Color('plum'), // 11
+        new THREE.Color('teal'), // 12
+        new THREE.Color('indianred'), // 13
+        new THREE.Color('lightcoral') // 14
+    ]
+
     // i=x; j=z; k=y
     for (let i = 0; i < gridSize; i++) {
         for (let j = 0; j < gridSize; j++) {
@@ -99,10 +117,12 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                 let constraints = voxelGrid.radar(i, j, k);
                 let dictionaryKey = voxelGrid.matcher(constraints);
 
-                let debugColor = dictionaryKey == null ? new THREE.Color('skyblue') : null;
-                if (dictionaryKey === null) dictionaryKey = "0-0";
+                let debugColor = dictionaryKey == null ? new THREE.Color('red') : null;
+                if (dictionaryKey == null) dictionaryKey = "0-0";
 
-                let params = dictionaryKey.split("-").map(Number);;
+                let params = dictionaryKey.split("-").map(Number);
+                if (debugColor == null) debugColor = list[params[0]];
+
                 let object = objects[params[0]];
                 let rotationIndex = params[1];
 
@@ -172,3 +192,4 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
         }
     }
 }
+
