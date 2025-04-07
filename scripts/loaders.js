@@ -38,7 +38,11 @@ function loadModels() {
             './models/7.gltf',
             './models/8.gltf',
             './models/9.gltf',
-            './models/10.gltf'
+            './models/10.gltf',
+            './models/11.gltf',
+            './models/12.gltf',
+            './models/13.gltf',
+            './models/14.gltf'
         ];
 
         modelPaths.forEach((path, index) => {
@@ -121,6 +125,8 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                 // e.g. returns the west constraint based on the east handle of the i-1 voxel
                 let constraints = voxelGrid.radar(i, j, k);
                 let dictionaryKey = voxelGrid.matcher(constraints);
+                console.log("block: " + i + "; " + j + "; " + k);
+                console.log("dictionaryKey: " + dictionaryKey);
 
                 // match not found - red 0-0
                 let debugColor = dictionaryKey == null ? new THREE.Color('red') : null;
@@ -131,7 +137,6 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
 
                 if (params[0] == 99) {
                     voxelGrid.addVoxel(i, j, k, "99", 0);
-                    console.log("block: " + i + "; " + j + "; " + k);
                     console.log("constraints: " + constraints);
                     console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
                     console.log("---------------------");
@@ -144,7 +149,6 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                     let object = objects[params[0]];
                     let rotationIndex = params[1];
 
-                    console.log("block: " + i + "; " + j + "; " + k);
                     console.log("constraints: " + constraints);
                     console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
                     console.log("---------------------");
