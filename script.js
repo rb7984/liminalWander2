@@ -7,9 +7,9 @@ let scene = sceneCameraRenderer[0];
 let camera = sceneCameraRenderer[1];
 let renderer = sceneCameraRenderer[2];
 
-export const gridSize = 5;
+export const gridSize = 20;
 
-initialize(20, scene, camera);
+initialize(gridSize, scene, camera);
 
 //#endregion
 

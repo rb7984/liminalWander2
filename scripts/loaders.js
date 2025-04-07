@@ -126,6 +126,10 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
     const textureLoader = new THREE.TextureLoader();
     const texture = textureLoader.load('./models/texture.png');
 
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(2, 2);
+
     // i=x; j=z; k=y
     for (let i = 0; i < gridSize; i++) {
         for (let j = 0; j < 6; j++) {
