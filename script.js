@@ -1,7 +1,7 @@
 import { initialize } from './scripts/loaders.js';
 import { primer } from './scripts/primer.js';
 
-//#region Initialise
+//#region Primer
 let sceneCameraRenderer = primer();
 let scene = sceneCameraRenderer[0];
 let camera = sceneCameraRenderer[1];
@@ -9,7 +9,7 @@ let renderer = sceneCameraRenderer[2];
 
 export const gridSize = 5;
 
-initialize(20, scene);
+initialize(20, scene, camera);
 
 //#endregion
 
@@ -28,7 +28,7 @@ document.getElementById("gridSizeInput").addEventListener("change", async (event
 
         document.body.appendChild(renderer.domElement);
 
-        await initialize(newSize, scene);
+        await initialize(newSize, scene, camera);
     }
 });
 

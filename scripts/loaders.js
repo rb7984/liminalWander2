@@ -3,16 +3,20 @@ import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader
 import { VoxelGrid } from './voxels.js';
 // @ts-check
 
-export async function initialize(gridSize, scene) {
+export async function initialize(gridSize, scene, camera) {
     try {
         const modelDict = await loadCSV();
         let voxelGrid = new VoxelGrid(gridSize, modelDict);
         //console.log(voxelGrid)
+        let cameraPosition = [0, 0, 0]
 
         const models = await loadModels();
 
         if (models.length > 0) {
-            fillVoxelSpace(scene, models, voxelGrid, gridSize);
+            cameraPosition = fillVoxelSpace(scene, models, voxelGrid, gridSize);
+
+            camera.position.set(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
+            camera.lookAt(cameraPosition[0] + 1, cameraPosition[1], cameraPosition[2] + 1);
         } else {
             console.error("No models loaded.");
         }
@@ -99,6 +103,8 @@ async function loadCSV() {
 }
 
 function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
+    let emptyVoxel = null;
+
     let colorList = [
         new THREE.Color('skyblue'), // 0
         new THREE.Color('tomato'), // 1
@@ -117,9 +123,12 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
         new THREE.Color('lightcoral') // 14
     ]
 
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load('./models/texture.png');
+
     // i=x; j=z; k=y
     for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < 4; j++) {
+        for (let j = 0; j < 6; j++) {
             for (let k = 0; k < gridSize; k++) {
                 // radar return the constraints contextual to the new voxel.
                 // e.g. returns the west constraint based on the east handle of the i-1 voxel
@@ -130,7 +139,14 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
 
                 // match not found - red 0-0
                 let debugColor = dictionaryKey == null ? new THREE.Color('red') : null;
-                if (dictionaryKey == null) dictionaryKey = "0-0";
+                // TODO here for default non matching
+                if (dictionaryKey == null) dictionaryKey = "99-0";
+
+                if (
+                    i == 0 || i == gridSize - 1 ||
+                    j == 0 || j == 6 - 1 ||
+                    k == 0 || k == gridSize - 1)
+                    dictionaryKey = "0-0";
 
                 // match found (forced/not)
                 let params = dictionaryKey.split("-").map(Number);
@@ -140,6 +156,9 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                     console.log("constraints: " + constraints);
                     console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
                     console.log("---------------------");
+
+                    if (emptyVoxel == null) emptyVoxel = [i, j, k];
+
                     continue;
                 }
                 else {
@@ -162,7 +181,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                                 child.castShadow = true;
                                 child.receiveShadow = true;
                                 model.rotation.y = rotationIndex * Math.PI / 2;
-                                child.material = new THREE.MeshStandardMaterial({ color: debugColor });
+                                child.material = new THREE.MeshStandardMaterial({ map: texture }/*{ color: debugColor }*/);
                             }
                         });
 
@@ -174,44 +193,48 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                     }
                 }
 
-                //debug points
-                {
-                    let pointMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-                    let pointGeometry = new THREE.SphereGeometry(0.05);
-
-                    let pointMesh = new THREE.Mesh(pointGeometry, pointMaterial);
-                    pointMesh.position.set(i + 0.5, j - 0.5, k - 0.5);
-                    scene.add(pointMesh);
-
-                    let pointMesh1 = new THREE.Mesh(pointGeometry, pointMaterial);
-                    pointMesh1.position.set(i - 0.5, j - 0.5, k - 0.5);
-                    scene.add(pointMesh1);
-
-                    let pointMesh2 = new THREE.Mesh(pointGeometry, pointMaterial);
-                    pointMesh2.position.set(i + 0.5, j + 0.5, k - 0.5);
-                    scene.add(pointMesh2);
-
-                    let pointMesh3 = new THREE.Mesh(pointGeometry, pointMaterial);
-                    pointMesh3.position.set(i - 0.5, j + 0.5, k - 0.5);
-                    scene.add(pointMesh3);
-
-                    let pointMesh4 = new THREE.Mesh(pointGeometry, pointMaterial);
-                    pointMesh4.position.set(i + 0.5, j + 0.5, k + 0.5);
-                    scene.add(pointMesh4);
-
-                    let pointMesh5 = new THREE.Mesh(pointGeometry, pointMaterial);
-                    pointMesh5.position.set(i - 0.5, j + 0.5, k + 0.5);
-                    scene.add(pointMesh5);
-
-                    let pointMesh6 = new THREE.Mesh(pointGeometry, pointMaterial);
-                    pointMesh6.position.set(i + 0.5, j - 0.5, k + 0.5);
-                    scene.add(pointMesh6);
-
-                    let pointMesh7 = new THREE.Mesh(pointGeometry, pointMaterial);
-                    pointMesh7.position.set(i - 0.5, j - 0.5, k + 0.5);
-                    scene.add(pointMesh7);
-                }
+                //debugPoints(i, j, k, scene);
             }
         }
     }
+
+    return emptyVoxel;
+}
+
+function debugPoints(i, j, k, scene) {
+    //debug points
+    let pointMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    let pointGeometry = new THREE.SphereGeometry(0.05);
+
+    let pointMesh = new THREE.Mesh(pointGeometry, pointMaterial);
+    pointMesh.position.set(i + 0.5, j - 0.5, k - 0.5);
+    scene.add(pointMesh);
+
+    let pointMesh1 = new THREE.Mesh(pointGeometry, pointMaterial);
+    pointMesh1.position.set(i - 0.5, j - 0.5, k - 0.5);
+    scene.add(pointMesh1);
+
+    let pointMesh2 = new THREE.Mesh(pointGeometry, pointMaterial);
+    pointMesh2.position.set(i + 0.5, j + 0.5, k - 0.5);
+    scene.add(pointMesh2);
+
+    let pointMesh3 = new THREE.Mesh(pointGeometry, pointMaterial);
+    pointMesh3.position.set(i - 0.5, j + 0.5, k - 0.5);
+    scene.add(pointMesh3);
+
+    let pointMesh4 = new THREE.Mesh(pointGeometry, pointMaterial);
+    pointMesh4.position.set(i + 0.5, j + 0.5, k + 0.5);
+    scene.add(pointMesh4);
+
+    let pointMesh5 = new THREE.Mesh(pointGeometry, pointMaterial);
+    pointMesh5.position.set(i - 0.5, j + 0.5, k + 0.5);
+    scene.add(pointMesh5);
+
+    let pointMesh6 = new THREE.Mesh(pointGeometry, pointMaterial);
+    pointMesh6.position.set(i + 0.5, j - 0.5, k + 0.5);
+    scene.add(pointMesh6);
+
+    let pointMesh7 = new THREE.Mesh(pointGeometry, pointMaterial);
+    pointMesh7.position.set(i - 0.5, j - 0.5, k + 0.5);
+    scene.add(pointMesh7);
 }
