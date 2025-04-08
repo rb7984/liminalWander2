@@ -1,22 +1,36 @@
 <!DOCTYPE html>
 <html lang="it">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Liminal Wander</title>
-        <style>
-            body {
-                margin: 0;
-                overflow: hidden;
-            }
-        </style>
-        <link rel="stylesheet" href="style.css" />
-    </head>
-    <body>
-        <div id="sidebar">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liminal Wander</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+        <div class="input-group">
             <label for="gridSizeInput">Grid Size:</label>
             <input type="number" id="gridSizeInput" value="5" min="1" />
         </div>
-        <script type="module" src="script.js"></script>
-    </body>
+    </div>
+
+    <button class="openbtn" onclick="openNav()">☰</button>
+
+    <script type="module" src="script.js"></script>
+
+    <script>
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+        }
+    </script>
+</body>
+
 </html>
