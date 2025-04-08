@@ -1,6 +1,7 @@
 import * as THREE from 'https://esm.sh/three';
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
 import { VoxelGrid } from './voxels.js';
+import { debugMode } from './globals.js';
 // @ts-check
 
 export async function initialize(gridSize, scene, camera) {
@@ -138,8 +139,8 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                 // e.g. returns the west constraint based on the east handle of the i-1 voxel
                 let constraints = voxelGrid.radar(i, j, k);
                 let dictionaryKey = voxelGrid.matcher(constraints);
-                console.log("block: " + i + "; " + j + "; " + k);
-                console.log("dictionaryKey: " + dictionaryKey);
+                // console.log("block: " + i + "; " + j + "; " + k);
+                // console.log("dictionaryKey: " + dictionaryKey);
 
                 // match not found - red 0-0
                 let debugColor = dictionaryKey == null ? new THREE.Color('red') : null;
@@ -157,9 +158,9 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
 
                 if (params[0] == 99) {
                     voxelGrid.addVoxel(i, j, k, "99", 0);
-                    console.log("constraints: " + constraints);
-                    console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
-                    console.log("---------------------");
+                    // console.log("constraints: " + constraints);
+                    // console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
+                    // console.log("---------------------");
 
                     if (emptyVoxel == null) emptyVoxel = [i, j, k];
 
@@ -172,9 +173,9 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                     let object = objects[params[0]];
                     let rotationIndex = params[1];
 
-                    console.log("constraints: " + constraints);
-                    console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
-                    console.log("---------------------");
+                    // console.log("constraints: " + constraints);
+                    // console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
+                    // console.log("---------------------");
 
                     if (voxelGrid.isEmpty(i, j, k)) {
                         let model = object.model.clone();
@@ -185,7 +186,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                                 child.castShadow = true;
                                 child.receiveShadow = true;
                                 model.rotation.y = rotationIndex * Math.PI / 2;
-                                //child.material = new THREE.MeshStandardMaterial({ map: texture }/*{ color: debugColor }*/);
+                                if(debugMode) child.material = new THREE.MeshStandardMaterial({ color: debugColor });
                             }
                         });
 

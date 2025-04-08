@@ -2,6 +2,15 @@ body {
   font-family: Arial, sans-serif;
 }
 
+#loader{
+    position: relative;
+    top: 20px;
+    scale: 0.2;
+    transform-origin: top;
+    border: none;
+    z-index: 3;
+}
+
 canvas {
     position: absolute;
     top: 0;
