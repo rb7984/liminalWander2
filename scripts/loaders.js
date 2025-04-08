@@ -185,7 +185,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                                 child.castShadow = true;
                                 child.receiveShadow = true;
                                 model.rotation.y = rotationIndex * Math.PI / 2;
-                                child.material = new THREE.MeshStandardMaterial({ map: texture }/*{ color: debugColor }*/);
+                                //child.material = new THREE.MeshStandardMaterial({ map: texture }/*{ color: debugColor }*/);
                             }
                         });
 
