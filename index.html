@@ -15,39 +15,62 @@
         <!--#endregion -->
 
         <!--#region Right Panel  -->
-        <button id="rightOpenButton" class="openButton" onclick="openRightSidePanel()">
-            >>
+        <button
+            id="rightOpenButton"
+            class="openButton"
+            onclick="openRightSidePanel()"
+        >
+            »
         </button>
 
         <div id="rightSidePanel" class="sidePanel">
+            <!-- Close Button -->
             <a
                 href="javascript:void(0)"
                 class="closeButton"
                 onclick="closeRightSidePanel()"
                 >×</a
             >
-            <div>Here there is a description of the project.</div>
-        </div>
-        <!--#endregion -->
 
-        <!--#region Left Panel  -->
-        <button id="leftOpenButton" class="openButton" onclick="openLeftSidePanel()">☰</button>
+            <!-- Header -->
+            <div class="subSidePanel" id="subsidePanel-header">Controls</div>
 
-        <div id="leftSidePanel" class="sidePanel">
-            <a href="javascript:void(0)" class="closeButton" onclick="closeLeftSidePanel()"
-                >×</a
-            >
+            <!-- Grid Size Change -->
             <div class="inputGroup">
                 <label for="gridSizeInput">Grid Size:</label>
                 <input type="number" id="gridSizeInput" value="5" min="1" />
             </div>
+
+            <!-- Debug View -->
             <div class="inputGroup">
                 <label>Debug Mode:</label>
                 <input type="checkbox" id="debugModeInput" />
             </div>
         </div>
         <!--#endregion -->
-        
+
+        <!--#region Left Panel  -->
+        <button
+            id="leftOpenButton"
+            class="openButton"
+            onclick="openLeftSidePanel()"
+        >
+            ☰
+        </button>
+
+        <div id="leftSidePanel" class="sidePanel">
+            <a
+                href="javascript:void(0)"
+                class="closeButton"
+                onclick="closeLeftSidePanel()"
+                >×</a
+            >
+
+            <a>About</a>
+            <a>Contacts</a>
+        </div>
+        <!--#endregion -->
+
         <!--#region Scripts  -->
         <script type="module" src="script.js"></script>
 
