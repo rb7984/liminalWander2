@@ -1,96 +1,106 @@
 <!DOCTYPE html>
 <html lang="it">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Liminal Wander</title>
-        <link rel="stylesheet" href="style.css" />
-    </head>
 
-    <body>
-        <!--#region Loader  -->
-        <div id="loader">
-            <img src="models/lw.png" />
-        </div>
-        <!--#endregion -->
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liminal Wander</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
 
-        <!--#region Right Panel  -->
-        <button
-            id="rightOpenButton"
-            class="openButton"
-            onclick="openRightSidePanel()"
-        >
-            »
-        </button>
+<body>
+    <!--#region Loader  -->
+    <div id="loader">
+        <img src="models/lw.png" />
+    </div>
+    <!--#endregion -->
 
-        <div id="rightSidePanel" class="sidePanel">
+    <!--#region Right Panel  -->
+    <button id="rightOpenButton" class="openButton" onclick="openRightSidePanel()">
+        »
+    </button>
+
+    <div id="rightSidePanel" class="sidePanel">
+        <div class="panelContent">
             <!-- Close Button -->
-            <a
-                href="javascript:void(0)"
-                class="closeButton"
-                onclick="closeRightSidePanel()"
-                >×</a
-            >
+            <a href="javascript:void(0)" class="closeButton" onclick="closeRightSidePanel()">×</a>
 
-            <!-- Header -->
-            <div class="subSidePanel" id="subsidePanel-header">Controls</div>
+            <!-- Collapsible -->
+            <div class="general-SubSidePanel">
+                <button type="button" class="collapsible">Advanced Settings</button>
+                <div class="content">
+                    <!-- Grid Size Change -->
+                    <div class="inputGroup">
+                        <label for="gridSizeInput">Grid Size:</label>
+                        <input type="number" id="gridSizeInput" value="5" min="1" />
+                    </div>
 
-            <!-- Grid Size Change -->
-            <div class="inputGroup">
-                <label for="gridSizeInput">Grid Size:</label>
-                <input type="number" id="gridSizeInput" value="5" min="1" />
-            </div>
-
-            <!-- Debug View -->
-            <div class="inputGroup">
-                <label>Debug Mode:</label>
-                <input type="checkbox" id="debugModeInput" />
+                    <!-- Debug View -->
+                    <div class="inputGroup">
+                        <label>Debug Mode:</label>
+                        <input type="checkbox" id="debugModeInput" />
+                    </div>
+                </div>
             </div>
         </div>
-        <!--#endregion -->
+    </div>
+    <!--#endregion -->
 
-        <!--#region Left Panel  -->
-        <button
-            id="leftOpenButton"
-            class="openButton"
-            onclick="openLeftSidePanel()"
-        >
-            ☰
-        </button>
+    <!--#region Left Panel  -->
+    <button id="leftOpenButton" class="openButton" onclick="openLeftSidePanel()">
+        ☰
+    </button>
 
-        <div id="leftSidePanel" class="sidePanel">
-            <a
-                href="javascript:void(0)"
-                class="closeButton"
-                onclick="closeLeftSidePanel()"
-                >×</a
-            >
+    <div id="leftSidePanel" class="sidePanel">
+        <div class="panelContent">
+            <a href="javascript:void(0)" class="closeButton" onclick="closeLeftSidePanel()">×</a>
 
             <a>About</a>
             <a>Contacts</a>
         </div>
-        <!--#endregion -->
+    </div>
+    <!--#endregion -->
 
-        <!--#region Scripts  -->
-        <script type="module" src="script.js"></script>
+    <!--#region Scripts  -->
+    <script type="module" src="script.js"></script>
 
-        <script>
-            function openLeftSidePanel() {
-                document.getElementById("leftSidePanel").style.width = "250px";
-            }
+    <!-- Open/Close SidePanels -->
+    <script>
+        function openLeftSidePanel() {
+            document.getElementById("leftSidePanel").style.width = "250px";
+        }
 
-            function closeLeftSidePanel() {
-                document.getElementById("leftSidePanel").style.width = "0";
-            }
+        function closeLeftSidePanel() {
+            document.getElementById("leftSidePanel").style.width = "0";
+        }
 
-            function openRightSidePanel() {
-                document.getElementById("rightSidePanel").style.width = "300px";
-            }
+        function openRightSidePanel() {
+            document.getElementById("rightSidePanel").style.width = "300px";
+        }
 
-            function closeRightSidePanel() {
-                document.getElementById("rightSidePanel").style.width = "0";
-            }
-        </script>
-        <!--#endregion -->
-    </body>
+        function closeRightSidePanel() {
+            document.getElementById("rightSidePanel").style.width = "0";
+        }
+    </script>
+
+    <!-- Collapsibles -->
+    <script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            });
+        }
+    </script>
+    <!--#endregion -->
+</body>
+
 </html>
