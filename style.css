@@ -3,15 +3,6 @@ body {
   font-family: Arial, sans-serif;
 }
 
-#loader{
-    position: relative;
-    top: 20px;
-    scale: 0.2;
-    transform-origin: top;
-    border: none;
-    z-index: 3;
-}
-
 canvas {
     position: absolute;
     top: 0;
@@ -21,6 +12,18 @@ canvas {
     z-index: 0;
 }
 /*#endregion Main*/
+
+/*#region Loader*/
+#loader{
+    position: relative;
+    top: 20px;
+    scale: 0.2;
+    transform-origin: top;
+    border: none;
+    z-index: 3;
+    transition: opacity 5s;
+}
+/*#endregion Loader*/
 
 /*#region Open Button*/
 .openButton {
@@ -95,7 +98,7 @@ canvas {
 }
 
 /*#region Input Groups*/
-.input-group {
+.inputGroup {
     display: flex;
     align-items: center;
     font-size: 12;
