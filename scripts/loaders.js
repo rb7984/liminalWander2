@@ -2,16 +2,17 @@ import * as THREE from 'https://esm.sh/three';
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
 import { VoxelGrid } from './voxels.js';
 import { debugMode } from './globals.js';
+import { vertexShader, fragmentShader } from './shader.js';
 // @ts-check
 
-export async function initialize(gridSize, scene, camera) {
+export async function initialize(gridSize, scene, camera, renderer) {
     try {
         const modelDict = await loadCSV();
         let voxelGrid = new VoxelGrid(gridSize, modelDict);
         //console.log(voxelGrid)
         let cameraPosition = [0, 0, 0]
 
-        const models = await loadModels();
+        const models = await loadModels(renderer);
 
         if (models.length > 0) {
             cameraPosition = fillVoxelSpace(scene, models, voxelGrid, gridSize);
@@ -26,7 +27,7 @@ export async function initialize(gridSize, scene, camera) {
     }
 }
 
-function loadModels() {
+function loadModels(renderer) {
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
         let models = [];
@@ -61,6 +62,29 @@ function loadModels() {
                         model: gltf.scene,
                         name: letter
                     }
+
+                    // // Create the shader material
+                    // const shaderMaterial = new THREE.ShaderMaterial({
+                    //     uniforms: {
+                    //         texture: { type: 't', value: null }, // Placeholder for texture
+                    //         fadeDistance: { type: 'f', value: 500 } // Distance for fade effect
+                    //     },
+                    //     vertexShader,
+                    //     fragmentShader,
+                    //     transparent: true
+                    // });
+
+                    // // Apply the shader to all meshes in the model
+                    // models[index].model.traverse((child) => {
+                    //     if (child.isMesh) {
+                    //         // Ensure the model texture is set to the shader material
+                    //         child.material.map = child.material.map; // Get the original texture from the model
+                    //         shaderMaterial.uniforms.texture.value = child.material.map; // Apply texture to shader
+
+                    //         // Replace material with the shader material
+                    //         child.material = shaderMaterial;
+                    //     }
+                    // });
 
                     models[index].model.scale.set(1, 1, 1);
                     loadedCount++;
@@ -149,7 +173,8 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
 
                 if (
                     i == 0 || i == gridSize - 1 ||
-                    j == 0 || j == 6 - 1 ||
+                    j == 0 ||
+                    // j == 6 - 1 ||  //This line is the top
                     k == 0 || k == gridSize - 1)
                     dictionaryKey = "0-0";
 
@@ -186,7 +211,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                                 child.castShadow = true;
                                 child.receiveShadow = true;
                                 model.rotation.y = rotationIndex * Math.PI / 2;
-                                if(debugMode) child.material = new THREE.MeshStandardMaterial({ color: debugColor });
+                                if (debugMode) child.material = new THREE.MeshStandardMaterial({ color: debugColor });
                             }
                         });
 

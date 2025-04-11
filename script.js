@@ -8,7 +8,7 @@ let scene = sceneCameraRenderer[0];
 let camera = sceneCameraRenderer[1];
 let renderer = sceneCameraRenderer[2];
 
-initialize(gridSize, scene, camera);
+initialize(gridSize, scene, camera, renderer);
 
 //#endregion
 
