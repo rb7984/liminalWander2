@@ -2,7 +2,7 @@ import * as THREE from 'https://esm.sh/three';
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
 import { VoxelGrid } from './voxels.js';
 import { debugMode } from './globals.js';
-import { vertexShader, fragmentShader } from './shader.js';
+import { vertexShader, fragmentShader, vertexShader2, fragmentShader2 } from './shader.js';
 // @ts-check
 
 export async function initialize(gridSize, scene, camera, renderer) {
@@ -22,7 +22,7 @@ export async function initialize(gridSize, scene, camera, renderer) {
         } else {
             console.error("No models loaded.");
         }
-        
+
         return models;
     } catch (error) {
         console.error("Error during initialization:", error);
@@ -60,69 +60,43 @@ function loadModels(renderer, camera) {
                     let filename = path.split('/').pop();
                     let letter = filename.split('.').shift();
 
-                    //#region Shader approach
-
                     let texture = null;
+                    let fadeMaterial = null;
 
-                    // Traverse the scene to find a mesh and get its texture
-                    gltf.scene.traverse((child) => {
-                        if (child.isMesh && child.material.map) {
-                            texture = child.material.map;
-                        }
-                    });
-
-                    if (!texture) {
-                        console.warn(`No texture found for model: ${path}`);
-                        loadedCount++;
-                        return;
-                    }
-
-                    // Create the shader material using the extracted texture
-                    const fadeMaterial = new THREE.ShaderMaterial({
-                        uniforms: {
-                            uTexture: { value: texture },
-                            uCameraPosition: { value: camera.position.clone() },
-                            uFadeStart: { value: 30.0 },
-                            uFadeEnd: { value: 100.0 },
-                            uColor: { value: new THREE.Color(0xcccccc) }
-                        },
-                        vertexShader: `
-                           varying vec3 vWorldPosition;
-                           varying vec2 vUv;
-                                        
-                           void main() {
-                               vUv = uv;
-                               vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-                               vWorldPosition = worldPosition.xyz;
-                               gl_Position = projectionMatrix * viewMatrix * worldPosition;
-                           }
-                       `,
-                        fragmentShader: `
-                           uniform sampler2D uTexture;
-                           uniform vec3 uCameraPosition;
-                           uniform vec3 uColor;
-                           uniform float uFadeStart;
-                           uniform float uFadeEnd;
-                                        
-                           varying vec3 vWorldPosition;
-                           varying vec2 vUv;
-                                        
-                           void main() {
-                               float dist = distance(vWorldPosition, uCameraPosition);
-                               float fadeFactor = clamp((dist - uFadeStart) / (uFadeEnd - uFadeStart), 0.0, 1.0);
-                                        
-                               vec4 texColor = texture2D(uTexture, vUv);
-                               vec4 baseColor = vec4(uColor, 1.0);
-                                        
-                               gl_FragColor = mix(texColor, baseColor, fadeFactor);
-                           }
-                       `,
-                        transparent: false
-                    });
-
-                    // Apply the shader material to all meshes in the model
                     gltf.scene.traverse((child) => {
                         if (child.isMesh) {
+                            // console.log("Name:", child.name);
+                            console.log("Has UVs?", !!child.geometry.attributes.uv);
+                            // console.log("Material map?", !!child.material.map);
+                            // console.log("UVs:", child.geometry.attributes.uv?.array.slice(0, 8));
+                            // console.log("Groups:", child.geometry.groups);
+                            console.log('-----------------------------------------------')
+                        }
+                        if (child.isMesh && child.material.map && !fadeMaterial) {
+                            texture = child.material.map;
+
+                            // // ✅ Ensure texture wrapping is correct
+                            // texture.wrapS = THREE.RepeatWrapping;
+                            // texture.wrapT = THREE.RepeatWrapping;
+                            // texture.needsUpdate = true;
+
+                            fadeMaterial = new THREE.ShaderMaterial({
+                                uniforms: {
+                                    uTexture: { value: texture },
+                                    uCameraPosition: { value: camera.position },
+                                    uFadeStart: { value: 30.0 },
+                                    uFadeEnd: { value: 100.0 },
+                                    uColor: { value: new THREE.Color(0xcccccc) },
+                                    uOffset: { value: texture.offset.clone() },
+                                    uRepeat: { value: texture.repeat.clone() },
+                                    uRotation: { value: texture.rotation }
+                                },
+                                vertexShader: vertexShader2,
+                                fragmentShader: fragmentShader2,
+                                transparent: true,
+                                side: child.material.side
+                            });
+
                             child.material = fadeMaterial;
                         }
                     });
@@ -132,13 +106,6 @@ function loadModels(renderer, camera) {
                         name: letter,
                         fadeMaterial
                     };
-                    //#endregion
-
-                    models[index] = {
-                        model: gltf.scene,
-                        name: letter,
-                        fadeMaterial
-                    }
 
                     models[index].model.scale.set(1, 1, 1);
                     loadedCount++;
@@ -153,6 +120,7 @@ function loadModels(renderer, camera) {
         });
     });
 }
+
 
 async function loadCSV() {
     try {
