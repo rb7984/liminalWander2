@@ -46,11 +46,7 @@ function loadModels(renderer, camera) {
             './models/7.gltf',
             './models/8.gltf',
             './models/9.gltf',
-            './models/10.gltf',
-            './models/11.gltf',
-            './models/12.gltf',
-            './models/13.gltf',
-            './models/14.gltf'
+            './models/10.gltf'
         ];
 
         modelPaths.forEach((path, index) => {
@@ -60,25 +56,26 @@ function loadModels(renderer, camera) {
                     let filename = path.split('/').pop();
                     let letter = filename.split('.').shift();
 
-                    let texture = null;
-                    let fadeMaterial = null;
+                    let texture;
+                    let fadeMaterial;
 
                     gltf.scene.traverse((child) => {
                         if (child.isMesh) {
                             // console.log("Name:", child.name);
-                            console.log("Has UVs?", !!child.geometry.attributes.uv);
-                            // console.log("Material map?", !!child.material.map);
+                            // console.log("Has UVs?", !!child.geometry.attributes.uv);
+                            // console.log("Material map?", child.material.map);
                             // console.log("UVs:", child.geometry.attributes.uv?.array.slice(0, 8));
                             // console.log("Groups:", child.geometry.groups);
-                            console.log('-----------------------------------------------')
+                            // console.log('-----------------------------------------------')
                         }
-                        if (child.isMesh && child.material.map && !fadeMaterial) {
+
+                        if (child.isMesh && child.material.map && fadeMaterial == null) {
                             texture = child.material.map;
 
                             // // ✅ Ensure texture wrapping is correct
-                            // texture.wrapS = THREE.RepeatWrapping;
-                            // texture.wrapT = THREE.RepeatWrapping;
-                            // texture.needsUpdate = true;
+                            texture.wrapS = THREE.RepeatWrapping;
+                            texture.wrapT = THREE.RepeatWrapping;
+                            texture.needsUpdate = true;
 
                             fadeMaterial = new THREE.ShaderMaterial({
                                 uniforms: {
