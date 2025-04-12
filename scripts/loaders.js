@@ -12,7 +12,7 @@ export async function initialize(gridSize, scene, camera, renderer) {
         //console.log(voxelGrid)
         let cameraPosition = [0, 0, 0]
 
-        const models = await loadModels(renderer);
+        const models = await loadModels(renderer, camera);
 
         if (models.length > 0) {
             cameraPosition = fillVoxelSpace(scene, models, voxelGrid, gridSize);
@@ -22,12 +22,14 @@ export async function initialize(gridSize, scene, camera, renderer) {
         } else {
             console.error("No models loaded.");
         }
+        
+        return models;
     } catch (error) {
         console.error("Error during initialization:", error);
     }
 }
 
-function loadModels(renderer) {
+function loadModels(renderer, camera) {
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
         let models = [];
@@ -58,33 +60,85 @@ function loadModels(renderer) {
                     let filename = path.split('/').pop();
                     let letter = filename.split('.').shift();
 
-                    models[index] = {
-                        model: gltf.scene,
-                        name: letter
+                    //#region Shader approach
+
+                    let texture = null;
+
+                    // Traverse the scene to find a mesh and get its texture
+                    gltf.scene.traverse((child) => {
+                        if (child.isMesh && child.material.map) {
+                            texture = child.material.map;
+                        }
+                    });
+
+                    if (!texture) {
+                        console.warn(`No texture found for model: ${path}`);
+                        loadedCount++;
+                        return;
                     }
 
-                    // // Create the shader material
-                    // const shaderMaterial = new THREE.ShaderMaterial({
-                    //     uniforms: {
-                    //         texture: { type: 't', value: null }, // Placeholder for texture
-                    //         fadeDistance: { type: 'f', value: 500 } // Distance for fade effect
-                    //     },
-                    //     vertexShader,
-                    //     fragmentShader,
-                    //     transparent: true
-                    // });
+                    // Create the shader material using the extracted texture
+                    const fadeMaterial = new THREE.ShaderMaterial({
+                        uniforms: {
+                            uTexture: { value: texture },
+                            uCameraPosition: { value: camera.position.clone() },
+                            uFadeStart: { value: 30.0 },
+                            uFadeEnd: { value: 100.0 },
+                            uColor: { value: new THREE.Color(0xcccccc) }
+                        },
+                        vertexShader: `
+                           varying vec3 vWorldPosition;
+                           varying vec2 vUv;
+                                        
+                           void main() {
+                               vUv = uv;
+                               vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+                               vWorldPosition = worldPosition.xyz;
+                               gl_Position = projectionMatrix * viewMatrix * worldPosition;
+                           }
+                       `,
+                        fragmentShader: `
+                           uniform sampler2D uTexture;
+                           uniform vec3 uCameraPosition;
+                           uniform vec3 uColor;
+                           uniform float uFadeStart;
+                           uniform float uFadeEnd;
+                                        
+                           varying vec3 vWorldPosition;
+                           varying vec2 vUv;
+                                        
+                           void main() {
+                               float dist = distance(vWorldPosition, uCameraPosition);
+                               float fadeFactor = clamp((dist - uFadeStart) / (uFadeEnd - uFadeStart), 0.0, 1.0);
+                                        
+                               vec4 texColor = texture2D(uTexture, vUv);
+                               vec4 baseColor = vec4(uColor, 1.0);
+                                        
+                               gl_FragColor = mix(texColor, baseColor, fadeFactor);
+                           }
+                       `,
+                        transparent: false
+                    });
 
-                    // // Apply the shader to all meshes in the model
-                    // models[index].model.traverse((child) => {
-                    //     if (child.isMesh) {
-                    //         // Ensure the model texture is set to the shader material
-                    //         child.material.map = child.material.map; // Get the original texture from the model
-                    //         shaderMaterial.uniforms.texture.value = child.material.map; // Apply texture to shader
+                    // Apply the shader material to all meshes in the model
+                    gltf.scene.traverse((child) => {
+                        if (child.isMesh) {
+                            child.material = fadeMaterial;
+                        }
+                    });
 
-                    //         // Replace material with the shader material
-                    //         child.material = shaderMaterial;
-                    //     }
-                    // });
+                    models[index] = {
+                        model: gltf.scene,
+                        name: letter,
+                        fadeMaterial
+                    };
+                    //#endregion
+
+                    models[index] = {
+                        model: gltf.scene,
+                        name: letter,
+                        fadeMaterial
+                    }
 
                     models[index].model.scale.set(1, 1, 1);
                     loadedCount++;

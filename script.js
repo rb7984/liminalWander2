@@ -8,7 +8,9 @@ let scene = sceneCameraRenderer[0];
 let camera = sceneCameraRenderer[1];
 let renderer = sceneCameraRenderer[2];
 
-initialize(gridSize, scene, camera, renderer);
+initialize(gridSize, scene, camera, renderer).then(models => {
+    animate(models);
+});
 
 //#endregion
 
@@ -56,12 +58,19 @@ document.getElementById('debugModeInput').addEventListener('change', async(event
 //#endregion
 
 //#region Animation loop
-function animate() {
-    requestAnimationFrame(animate);
+function animate(models) {
+    requestAnimationFrame(() => animate(models));
+
+    models.forEach(({ fadeMaterial }) => {
+        if (fadeMaterial && fadeMaterial.uniforms.uCameraPosition) {
+            fadeMaterial.uniforms.uCameraPosition.value.copy(camera.position);
+        }
+    });
+
     renderer.render(scene, camera);
 }
 
-animate();
+// animate();
 
 //#endregion
 
