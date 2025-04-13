@@ -62,22 +62,10 @@ export const fragmentShader =  `
 `;
 
 export const fragmentShader2 = `
-   uniform sampler2D uTexture;
-   uniform vec3 uCameraPosition;
-   uniform vec3 uColor;
-   uniform float uFadeStart;
-   uniform float uFadeEnd;
-                
-   varying vec3 vWorldPosition;
-   varying vec2 vUv;
-                
-   void main() {
-       float dist = distance(vWorldPosition, uCameraPosition);
-       float fadeFactor = clamp((dist - uFadeStart) / (uFadeEnd - uFadeStart), 0.0, 1.0);
-                
-       vec4 texColor = texture2D(uTexture, vUv);
-       vec4 baseColor = vec4(uColor, 1.0);
-                
-       gl_FragColor = mix(texColor, baseColor, fadeFactor);
-   }
+    uniform sampler2D uTexture;
+    varying vec2 vUv;
+    
+    void main() {
+        gl_FragColor = texture2D(uTexture, vUv);
+    }
 `;

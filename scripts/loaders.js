@@ -56,52 +56,38 @@ function loadModels(renderer, camera) {
                     let filename = path.split('/').pop();
                     let letter = filename.split('.').shift();
 
-                    let texture;
-                    let fadeMaterial;
+                    const fadeMaterials = [];
 
                     gltf.scene.traverse((child) => {
                         if (child.isMesh) {
-                            // console.log("Name:", child.name);
-                            // console.log("Has UVs?", !!child.geometry.attributes.uv);
-                            // console.log("Material map?", child.material.map);
-                            // console.log("UVs:", child.geometry.attributes.uv?.array.slice(0, 8));
-                            // console.log("Groups:", child.geometry.groups);
-                            // console.log('-----------------------------------------------')
-                        }
+                            const texture = child.material.map || defaultWhiteTexture;
 
-                        if (child.isMesh && child.material.map && fadeMaterial == null) {
-                            texture = child.material.map;
-
-                            // // ✅ Ensure texture wrapping is correct
-                            texture.wrapS = THREE.RepeatWrapping;
-                            texture.wrapT = THREE.RepeatWrapping;
-                            texture.needsUpdate = true;
-
-                            fadeMaterial = new THREE.ShaderMaterial({
+                            const fadeMaterial = new THREE.ShaderMaterial({
                                 uniforms: {
                                     uTexture: { value: texture },
                                     uCameraPosition: { value: camera.position },
                                     uFadeStart: { value: 30.0 },
                                     uFadeEnd: { value: 100.0 },
-                                    uColor: { value: new THREE.Color(0xcccccc) },
-                                    uOffset: { value: texture.offset.clone() },
-                                    uRepeat: { value: texture.repeat.clone() },
-                                    uRotation: { value: texture.rotation }
+                                    uColor: { value: new THREE.Color(0xcccccc) }
                                 },
                                 vertexShader: vertexShader2,
                                 fragmentShader: fragmentShader2,
                                 transparent: true,
-                                side: child.material.side
+                                depthWrite: false,
+                                side: child.material.side ?? THREE.FrontSide
                             });
 
                             child.material = fadeMaterial;
+                            // child.material = new THREE.MeshBasicMaterial({ map: texture });
+
+                            fadeMaterials.push(fadeMaterial);
                         }
                     });
 
                     models[index] = {
                         model: gltf.scene,
                         name: letter,
-                        fadeMaterial
+                        fadeMaterials
                     };
 
                     models[index].model.scale.set(1, 1, 1);

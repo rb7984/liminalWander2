@@ -61,14 +61,19 @@ document.getElementById('debugModeInput').addEventListener('change', async(event
 function animate(models) {
     requestAnimationFrame(() => animate(models));
 
-    models.forEach(({ fadeMaterial }) => {
-        if (fadeMaterial && fadeMaterial.uniforms.uCameraPosition) {
-            fadeMaterial.uniforms.uCameraPosition.value.copy(camera.position);
+    models.forEach(({ fadeMaterials }) => {
+        if (Array.isArray(fadeMaterials)) {
+            fadeMaterials.forEach((material) => {
+                if (material.uniforms.uCameraPosition) {
+                    material.uniforms.uCameraPosition.value.copy(camera.position);
+                }
+            });
         }
     });
 
     renderer.render(scene, camera);
 }
+
 
 // animate();
 
