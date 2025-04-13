@@ -2,7 +2,7 @@ import * as THREE from 'https://esm.sh/three';
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
 import { VoxelGrid } from './voxels.js';
 import { debugMode } from './globals.js';
-import { vertexShader, fragmentShader, vertexShader2, fragmentShader2 } from './shader.js';
+import { vertexShader, fragmentShader } from './shader.js';
 // @ts-check
 
 export async function initialize(gridSize, scene, camera, renderer) {
@@ -60,25 +60,31 @@ function loadModels(renderer, camera) {
 
                     gltf.scene.traverse((child) => {
                         if (child.isMesh) {
-                            const texture = child.material.map || defaultWhiteTexture;
+                            // Clone the material to preserve the original properties
+                            const originalMaterial = child.material.clone();
+
+                            const texture = originalMaterial.map;
+                            texture.matrixAutoUpdate = true;
+                            texture.updateMatrix();
 
                             const fadeMaterial = new THREE.ShaderMaterial({
                                 uniforms: {
                                     uTexture: { value: texture },
+                                    uUVTransform: { value: texture.matrix },
+
                                     uCameraPosition: { value: camera.position },
-                                    uFadeStart: { value: 30.0 },
-                                    uFadeEnd: { value: 100.0 },
-                                    uColor: { value: new THREE.Color(0xcccccc) }
+                                    uFadeStart: { value: 2 },
+                                    uFadeEnd: { value: 3 },
+                                    uColor: { value: new THREE.Color(0x4287f5) }
                                 },
-                                vertexShader: vertexShader2,
-                                fragmentShader: fragmentShader2,
+                                vertexShader: vertexShader,
+                                fragmentShader: fragmentShader,
+                                side: originalMaterial.side,
                                 transparent: true,
-                                depthWrite: false,
-                                side: child.material.side ?? THREE.FrontSide
+                                depthWrite: true
                             });
 
                             child.material = fadeMaterial;
-                            // child.material = new THREE.MeshBasicMaterial({ map: texture });
 
                             fadeMaterials.push(fadeMaterial);
                         }
@@ -103,7 +109,6 @@ function loadModels(renderer, camera) {
         });
     });
 }
-
 
 async function loadCSV() {
     try {

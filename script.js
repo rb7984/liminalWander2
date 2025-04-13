@@ -9,7 +9,11 @@ let camera = sceneCameraRenderer[1];
 let renderer = sceneCameraRenderer[2];
 
 initialize(gridSize, scene, camera, renderer).then(models => {
-    animate(models);
+    if (Array.isArray(models)) {
+        animate(models);
+    } else {
+        console.error("Models not loaded correctly", models);
+    }
 });
 
 //#endregion
