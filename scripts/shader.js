@@ -12,6 +12,8 @@ export const vertexShader = `
 
 export const fragmentShader = `
     uniform sampler2D uTexture;
+    varying vec2 vUv;
+
     uniform mat3 uUVTransform;
     
     uniform vec3 uCameraPosition;
@@ -19,17 +21,24 @@ export const fragmentShader = `
     uniform float uFadeStart;
     uniform float uFadeEnd;
     
-    varying vec2 vUv;
     varying vec3 vWorldPosition;
-    
+
     void main() {
         float dist = distance(vWorldPosition, uCameraPosition);
         float fadeFactor = clamp((dist - uFadeStart) / (uFadeEnd - uFadeStart), 0.0, 1.0);
     
         vec2 transformedUV = (uUVTransform * vec3(vUv, 1.0)).xy;
+                
         vec4 texColor = texture2D(uTexture, transformedUV);
         vec4 baseColor = vec4(uColor, 1.0);
-    
+        
+        // Functioning only texture;
+        //gl_FragColor = texture2D(uTexture, vUv);
+        
+        // Not functioning, fade + texture
         gl_FragColor = mix(texColor, baseColor, fadeFactor);
+        
+        // Current try
+        //gl_FragColor = mix(texture2D(uTexture, vUv), baseColor, fadeFactor);
     }
 `;

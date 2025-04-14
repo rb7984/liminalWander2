@@ -1,7 +1,7 @@
 import * as THREE from 'https://esm.sh/three';
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
 import { VoxelGrid } from './voxels.js';
-import { debugMode } from './globals.js';
+import { debugMode, gridSize } from './globals.js';
 import { vertexShader, fragmentShader } from './shader.js';
 // @ts-check
 
@@ -60,22 +60,28 @@ function loadModels(renderer, camera) {
 
                     gltf.scene.traverse((child) => {
                         if (child.isMesh) {
-                            // Clone the material to preserve the original properties
                             const originalMaterial = child.material.clone();
 
                             const texture = originalMaterial.map;
                             texture.matrixAutoUpdate = true;
                             texture.updateMatrix();
 
+                            const matrixx = new THREE.Matrix3();
+                            matrixx.set(
+                                1, 0, 0,
+                                0, -1, 1,
+                                0, 0, 1
+                            );
+
                             const fadeMaterial = new THREE.ShaderMaterial({
                                 uniforms: {
                                     uTexture: { value: texture },
-                                    uUVTransform: { value: texture.matrix },
 
+                                    uUVTransform: { value: matrixx },
                                     uCameraPosition: { value: camera.position },
-                                    uFadeStart: { value: 2 },
-                                    uFadeEnd: { value: 3 },
-                                    uColor: { value: new THREE.Color(0x4287f5) }
+                                    uFadeStart: { value: gridSize * .5 },
+                                    uFadeEnd: { value: gridSize },
+                                    uColor: { value: new THREE.Color(0xede6e6) }
                                 },
                                 vertexShader: vertexShader,
                                 fragmentShader: fragmentShader,
