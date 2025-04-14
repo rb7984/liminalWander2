@@ -63,6 +63,11 @@ function loadModels(renderer, camera) {
                             const originalMaterial = child.material.clone();
 
                             const texture = originalMaterial.map;
+
+                            const matrixxx = computeUVTransform(texture);
+
+                            console.log(matrixxx);
+
                             texture.matrixAutoUpdate = true;
                             texture.updateMatrix();
 
@@ -283,4 +288,19 @@ function debugPoints(i, j, k, scene) {
     let pointMesh7 = new THREE.Mesh(pointGeometry, pointMaterial);
     pointMesh7.position.set(i - 0.5, j - 0.5, k + 0.5);
     scene.add(pointMesh7);
+}
+
+function computeUVTransform(texture) {
+    const { offset, repeat, rotation, center } = texture;
+    const cos = Math.cos(rotation);
+    const sin = Math.sin(rotation);
+
+    const mat = new THREE.Matrix3();
+    mat.set(
+        repeat.x * cos, repeat.x * sin, -repeat.x * (cos * center.x + sin * center.y) + center.x + offset.x,
+        -repeat.y * sin, repeat.y * cos, -repeat.y * (-sin * center.x + cos * center.y) + center.y + offset.y,
+        0, 0, 1
+    );
+
+    return mat;
 }
