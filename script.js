@@ -42,7 +42,6 @@ document.getElementById("gridSizeInput").addEventListener("change", async (event
 //#endregion
 
 //#region Debug Mode
-
 document.getElementById('debugModeInput').addEventListener('change', async(event)=> {
     const isChecked = event.target.checked;
     SetDebugMode(isChecked);
@@ -77,7 +76,6 @@ function animate(models) {
 
     renderer.render(scene, camera);
 }
-
 
 // animate();
 

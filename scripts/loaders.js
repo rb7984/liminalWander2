@@ -63,26 +63,27 @@ function loadModels(renderer, camera) {
                             const originalMaterial = child.material.clone();
 
                             const texture = originalMaterial.map;
-
+                            // console.log(path + ": " + child.name + ": " + texture.matrix.elements);
+                            // console.log(texture.matrix);
                             const matrixxx = computeUVTransform(texture);
+                            // console.log(matrixxx);
+                            // console.log("-----------");
 
-                            console.log(matrixxx);
+                            // texture.matrixAutoUpdate = true;
+                            // texture.updateMatrix();
 
-                            texture.matrixAutoUpdate = true;
-                            texture.updateMatrix();
-
-                            const matrixx = new THREE.Matrix3();
-                            matrixx.set(
-                                1, 0, 0,
-                                0, -1, 1,
-                                0, 0, 1
-                            );
+                            // const matrixx = new THREE.Matrix3();
+                            // matrixx.set(
+                            //     1, 0, 0,
+                            //     0, -1, 1,
+                            //     0, 0, 1
+                            // );
 
                             const fadeMaterial = new THREE.ShaderMaterial({
                                 uniforms: {
                                     uTexture: { value: texture },
 
-                                    uUVTransform: { value: matrixx },
+                                    uUVTransform: { value: texture.matrix },
                                     uCameraPosition: { value: camera.position },
                                     uFadeStart: { value: gridSize * .5 },
                                     uFadeEnd: { value: gridSize },
