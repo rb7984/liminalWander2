@@ -56,49 +56,57 @@ function loadModels(renderer, camera) {
                     let filename = path.split('/').pop();
                     let letter = filename.split('.').shift();
 
-                    const fadeMaterials = [];
-
                     gltf.scene.traverse((child) => {
-                        if (child.isMesh) {
-                            const originalMaterial = child.material.clone();
-
-                            const texture = originalMaterial.map;
-                            const recomputedMatrix = computeUVTransform(texture);
-                            console.log(path + ": ");
-                            console.log(texture.matrix);
-                            console.log(recomputedMatrix);
-                            console.log("-----------");
-
-                            // texture.matrixAutoUpdate = true;
-                            // texture.updateMatrix();
-
-                            const fadeMaterial = new THREE.ShaderMaterial({
-                                uniforms: {
-                                    uTexture: { value: texture },
-                                    uUVTransform: { value: recomputedMatrix },
-
-                                    uCameraPosition: { value: camera.position },
-                                    uFadeStart: { value: gridSize * .5 },
-                                    uFadeEnd: { value: gridSize },
-                                    uColor: { value: new THREE.Color(0xede6e6) }
-                                },
-                                vertexShader: vertexShader,
-                                fragmentShader: fragmentShader,
-                                side: originalMaterial.side,
-                                transparent: true,
-                                depthWrite: true
-                            });
-
-                            child.material = fadeMaterial;
-
-                            fadeMaterials.push(fadeMaterial);
-                        }
+                        if (child.isMesh)
+                            exploreMaterial(child);
                     });
+
+                    //#region FadeMaterial Approach
+                    // const fadeMaterials = [];
+
+                    // gltf.scene.traverse((child) => {
+                    //     if (child.isMesh) {
+                    //         const originalMaterial = child.material.clone();
+
+                    //         const texture = originalMaterial.map;
+                    //         const recomputedMatrix = computeUVTransform(texture);
+                    //         console.log(path + ": ");
+                    //         console.log(texture.matrix);
+                    //         console.log(recomputedMatrix);
+                    //         console.log("-----------");
+
+                    //         // texture.matrixAutoUpdate = true;
+                    //         // texture.updateMatrix();
+
+                    //         const fadeMaterial = new THREE.ShaderMaterial({
+                    //             uniforms: {
+                    //                 uTexture: { value: texture },
+                    //                 uUVTransform: { value: recomputedMatrix },
+
+                    //                 uCameraPosition: { value: camera.position },
+                    //                 uFadeStart: { value: gridSize * .5 },
+                    //                 uFadeEnd: { value: gridSize },
+                    //                 uColor: { value: new THREE.Color(0xede6e6) }
+                    //             },
+                    //             vertexShader: vertexShader,
+                    //             fragmentShader: fragmentShader,
+                    //             side: originalMaterial.side,
+                    //             transparent: true,
+                    //             depthWrite: true
+                    //         });
+
+                    //         child.material = fadeMaterial;
+
+                    //         fadeMaterials.push(fadeMaterial);
+                    //     }
+                    // });
+                    //#endregion
 
                     models[index] = {
                         model: gltf.scene,
-                        name: letter,
-                        fadeMaterials
+                        name: letter
+                        // ,
+                        // fadeMaterials
                     };
 
                     models[index].model.scale.set(1, 1, 1);
@@ -297,4 +305,8 @@ function computeUVTransform(texture) {
     );
 
     return mat;
+}
+
+function exploreMaterial(child) {
+    console.log("Name: " + child.name + " - " + child.material.map.matrix.elements);
 }

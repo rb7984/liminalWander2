@@ -10,7 +10,8 @@ let renderer = sceneCameraRenderer[2];
 
 initialize(gridSize, scene, camera, renderer).then(models => {
     if (Array.isArray(models)) {
-        animate(models);
+        // animate(models);
+        animateWithoutShader();
     } else {
         console.error("Models not loaded correctly", models);
     }
@@ -61,23 +62,26 @@ document.getElementById('debugModeInput').addEventListener('change', async(event
 //#endregion
 
 //#region Animation loop
-function animate(models) {
-    requestAnimationFrame(() => animate(models));
+// function animate(models) {
+//     requestAnimationFrame(() => animate(models));
 
-    models.forEach(({ fadeMaterials }) => {
-        if (Array.isArray(fadeMaterials)) {
-            fadeMaterials.forEach((material) => {
-                if (material.uniforms.uCameraPosition) {
-                    material.uniforms.uCameraPosition.value.copy(camera.position);
-                }
-            });
-        }
-    });
+//     models.forEach(({ fadeMaterials }) => {
+//         if (Array.isArray(fadeMaterials)) {
+//             fadeMaterials.forEach((material) => {
+//                 if (material.uniforms.uCameraPosition) {
+//                     material.uniforms.uCameraPosition.value.copy(camera.position);
+//                 }
+//             });
+//         }
+//     });
 
+//     renderer.render(scene, camera);
+// }
+
+function animateWithoutShader() {
+    requestAnimationFrame(animateWithoutShader);
     renderer.render(scene, camera);
 }
-
-// animate();
 
 //#endregion
 
