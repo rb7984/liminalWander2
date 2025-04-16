@@ -8,7 +8,7 @@ export function primer() {
     //#region Scene
     const scene = new THREE.Scene();
     //scene.fog = new THREE.FogExp2( 0x814085, 0.002 );
-    scene.fog = new THREE.Fog(0x403e37, 6, 10);
+    //scene.fog = new THREE.Fog(0x403e37, 6, 10);
     //#endregion
 
 
@@ -18,6 +18,7 @@ export function primer() {
     document.body.appendChild(renderer.domElement);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.bias = -0.001;
 
     //#region Plane
     var g2 = new THREE.PlaneGeometry(2000, 2000, 8, 8);
