@@ -14,6 +14,9 @@ export async function initialize(gridSize, scene, camera, renderer) {
 
         const models = await loadModels(renderer, camera);
 
+        // Fill the UI Part Catalog
+        fillCatalogUI(models);
+
         if (models.length > 0) {
             cameraPosition = fillVoxelSpace(scene, models, voxelGrid, gridSize);
 
@@ -309,4 +312,16 @@ function computeUVTransform(texture) {
 
 function exploreMaterial(child) {
     console.log("Name: " + child.name + " - " + child.material.map.matrix.elements);
+}
+
+function fillCatalogUI(models) {
+    var partCatalogDiv = document.getElementById("partCatalog");
+    
+    for (var i = 0; i < models.length; i++) {
+        var card = document.createElement('div');
+        card.id = "card" + i;
+        card.innerHTML = models[i].name;
+        
+        partCatalogDiv.appendChild(card);
+    }
 }
