@@ -1,5 +1,7 @@
 import * as THREE from 'https://esm.sh/three';
 import { OrbitControls } from 'https://esm.sh/three/examples/jsm/controls/OrbitControls.js';
+import { Sky } from 'https://esm.sh/three/addons/objects/Sky.js';
+import { MathUtils } from 'https://esm.sh/three';
 import { movement } from './movements.js';
 
 export function primer() {
@@ -7,10 +9,9 @@ export function primer() {
 
     //#region Scene
     const scene = new THREE.Scene();
-    //scene.fog = new THREE.FogExp2( 0x814085, 0.002 );
-    //scene.fog = new THREE.Fog(0x403e37, 6, 10);
+    // scene.fog = new THREE.FogExp2( 0x814085, 0.002 );
+    scene.fog = new THREE.Fog(0x403e37, 6, 10);
     //#endregion
-
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -73,6 +74,20 @@ export function primer() {
     }
 
     movement(camera, direction, speed, checkCollision);
+    //#endregion
+
+    //#region Sky
+    const sky = new Sky();
+
+    sky.scale.setScalar(100);
+
+    const phi = MathUtils.degToRad(90);
+    const theta = MathUtils.degToRad(180);
+    const sunPosition = new THREE.Vector3().setFromSphericalCoords(1, phi, theta);
+
+    sky.material.uniforms.sunPosition.value = sunPosition;
+
+    scene.add(sky);
     //#endregion
 
     camera.position.set(-5, 1, -5);
