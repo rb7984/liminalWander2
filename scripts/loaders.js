@@ -317,6 +317,8 @@ function exploreMaterial(child) {
 function fillCatalogUI(models) {
     var partCatalogDiv = document.getElementById("partCatalog");
     
+    partCatalogDiv.innerHTML = "";
+
     for (var i = 0; i < models.length; i++) {
         var card = document.createElement('div');
         card.id = "card" + i;
