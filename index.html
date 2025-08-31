@@ -14,68 +14,6 @@
         </div>
         <!--#endregion -->
 
-        <!--#region Right Panel  -->
-        <button
-            id="rightOpenButton"
-            class="openButton"
-            onclick="openRightSidePanel()"
-        >
-            »
-        </button>
-
-        <div id="rightSidePanel" class="sidePanel">
-            <div class="panelContent">
-                <!-- Close Button -->
-                <a
-                    href="javascript:void(0)"
-                    class="closeButton"
-                    onclick="closeRightSidePanel()"
-                    >×</a
-                >
-
-                <!-- Collapsible - Advanced Settings -->
-                <div class="general-SubSidePanel">
-                    <button type="button" class="collapsible">
-                        Advanced Settings
-                    </button>
-                    <div class="content">
-                        <!-- Grid Size Change -->
-                        <div class="inputGroup">
-                            <label for="gridSizeInput">Grid Size:</label>
-                            <input
-                                type="number"
-                                id="gridSizeInput"
-                                value="5"
-                                min="1"
-                            />
-                        </div>
-
-                        <!-- Debug View -->
-                        <div class="inputGroup">
-                            <label>Debug Mode:</label>
-                            <input type="checkbox" id="debugModeInput" />
-                        </div>
-
-                        <!-- Fog Enabler -->
-                        <div class="inputGroup">
-                            <label>Fog:</label>
-                            <input
-                                type="checkbox"
-                                id="fogInput"
-                                checked="true"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Non Collapsible - Part Catalog -->
-                <div id="partCatalog" class="general-SubSidePanel">
-                    Part Catalog
-                </div>
-            </div>
-        </div>
-        <!--#endregion -->
-
         <!--#region Left Panel  -->
         <button
             id="leftOpenButton"
@@ -86,39 +24,113 @@
         </button>
 
         <div id="leftSidePanel" class="sidePanel">
-            <div class="panelContent">
-                <a
-                    href="javascript:void(0)"
-                    class="closeButton"
-                    onclick="closeLeftSidePanel()"
-                    >×</a
-                >
+            <a
+                href="javascript:void(0)"
+                class="closeButton"
+                id="leftCloseButton"
+                onclick="closeLeftSidePanel()"
+                >×</a
+            >
 
-                <a>About</a>
-                <a href="contacts.html">Contacts</a>
+            <a>About</a>
+            <a href="contacts.html">Contacts</a>
+        </div>
+        <!--#endregion -->
+
+        <!--#region Right Panel  -->
+        <button
+            id="rightOpenButton"
+            class="openButton"
+            onclick="openRightSidePanel()"
+        >
+            »
+        </button>
+
+        <div id="rightSidePanel" class="sidePanel">
+            <!-- Close Button -->
+            <a
+                href="javascript:void(0)"
+                class="closeButton"
+                id="rightCloseButton"
+                onclick="closeRightSidePanel()"
+                >×</a
+            >
+
+            <!-- Collapsible - Advanced Settings -->
+            <div class="general-SubSidePanel">
+                <button type="button" class="collapsible">
+                    Advanced Settings
+                </button>
+                <div class="content">
+                    <!-- Grid Size Change -->
+                    <div class="inputGroup">
+                        <label for="gridSizeInput">Grid Size:</label>
+                        <input
+                            type="number"
+                            id="gridSizeInput"
+                            value="5"
+                            min="1"
+                        />
+                    </div>
+
+                    <!-- Debug View -->
+                    <div class="inputGroup">
+                        <label>Debug Mode:</label>
+                        <input type="checkbox" id="debugModeInput" />
+                    </div>
+
+                    <!-- Fog Enabler -->
+                    <div class="inputGroup">
+                        <label>Fog:</label>
+                        <input type="checkbox" id="fogInput" checked="true" />
+                    </div>
+                </div>
             </div>
+
+            <!-- Non Collapsible - Part Catalog -->
+            <p
+                style="
+                    color: rgb(255, 255, 255);
+                    font-size: 20px;
+                    padding: 0;
+                    margin: 0;
+                "
+            >
+                Part Catalog
+            </p>
+            <div id="partCatalog" class="general-SubSidePanel"></div>
+
+            <!-- Non Collapsible - Regenerate Model -->
+            <button type="button" id="regenerateButton">
+                Regenerate Model
+            </button>
         </div>
         <!--#endregion -->
 
         <!--#region Scripts  -->
         <script type="module" src="script.js"></script>
 
+        <!-- TODO move this script in its own file -->
         <!-- Open/Close SidePanels -->
         <script>
             function openLeftSidePanel() {
-                document.getElementById("leftSidePanel").style.width = "250px";
+                document.getElementById("leftSidePanel").classList.add("open");
             }
 
             function closeLeftSidePanel() {
-                document.getElementById("leftSidePanel").style.width = "0";
+                document
+                    .getElementById("leftSidePanel")
+                    .classList.remove("open");
             }
 
             function openRightSidePanel() {
-                document.getElementById("rightSidePanel").style.width = "300px";
+                document.getElementById("rightSidePanel").classList.add("open");
             }
 
             function closeRightSidePanel() {
-                document.getElementById("rightSidePanel").style.width = "0";
+                document
+                    .getElementById("rightSidePanel")
+                    .classList.remove("open");
             }
         </script>
 
