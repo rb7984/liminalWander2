@@ -1,6 +1,6 @@
 import { initialize } from './scripts/loaders.js';
 import { primer } from './scripts/primer.js';
-import { gridSize, SetGridSize, debugMode, ToggleDebugMode, fogMode, ToggleFogMode } from './scripts/globals.js';
+import { gridSize, SetGridSize, height, debugMode, ToggleDebugMode, fogMode, ToggleFogMode } from './scripts/globals.js';
 
 //#region Primer
 let sceneCameraRenderer = primer();
@@ -8,7 +8,7 @@ let scene = sceneCameraRenderer[0];
 let camera = sceneCameraRenderer[1];
 let renderer = sceneCameraRenderer[2];
 
-initialize(gridSize, scene, camera, renderer).then(models => {
+initialize(scene, camera, renderer, gridSize, height).then(models => {
     if (Array.isArray(models)) {
         // animate(models);
         animateWithoutShader();
@@ -43,54 +43,54 @@ document.getElementById("gridSizeInput").addEventListener("change", async (event
 //#endregion
 
 //#region Debug Mode
-document.getElementById('debugModeInput').addEventListener('change', async(event)=> {
+document.getElementById('debugModeInput').addEventListener('change', async (event) => {
     const isChecked = event.target.checked;
     ToggleDebugMode(isChecked);
     console.log("Debug mode set to:", debugMode);
-    
+
     document.body.removeChild(renderer.domElement);
-    
+
     sceneCameraRenderer = primer();
     scene = sceneCameraRenderer[0];
     camera = sceneCameraRenderer[1];
     renderer = sceneCameraRenderer[2];
-    
+
     document.body.appendChild(renderer.domElement);
-    
+
     await initialize(gridSize, scene, camera);
 })
 //#endregion
 
 //#region Fog Mode
-document.getElementById('fogInput').addEventListener('change', async(event)=>{
+document.getElementById('fogInput').addEventListener('change', async (event) => {
     const isChecked = event.target.checked;
     ToggleFogMode(isChecked);
     console.log("Fog Mode set to:", fogMode);
 
     document.body.removeChild(renderer.domElement);
-    
+
     sceneCameraRenderer = primer();
     scene = sceneCameraRenderer[0];
     camera = sceneCameraRenderer[1];
     renderer = sceneCameraRenderer[2];
-    
+
     document.body.appendChild(renderer.domElement);
-    
+
     await initialize(gridSize, scene, camera);
 })
 //#endregion
 
 //#region Regenerate Model
-document.getElementById("regenerateButton").addEventListener("click", async(event) => {
+document.getElementById("regenerateButton").addEventListener("click", async (event) => {
     document.body.removeChild(renderer.domElement);
-    
+
     sceneCameraRenderer = primer();
     scene = sceneCameraRenderer[0];
     camera = sceneCameraRenderer[1];
     renderer = sceneCameraRenderer[2];
-    
+
     document.body.appendChild(renderer.domElement);
-    
+
     await initialize(gridSize, scene, camera);
 })
 //#endregion

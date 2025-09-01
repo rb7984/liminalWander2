@@ -4,6 +4,8 @@ export function SetGridSize(value) {
     gridSize = value;
 }
 
+export var height = 6;
+
 export var debugMode = false;
 
 export function ToggleDebugMode(value) {

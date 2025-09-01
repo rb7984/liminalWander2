@@ -5,7 +5,7 @@ import { debugMode, gridSize } from './globals.js';
 import { vertexShader, fragmentShader } from './shader.js';
 // @ts-check
 
-export async function initialize(gridSize, scene, camera, renderer) {
+export async function initialize(scene, camera, renderer, gridSize, height) {
     try {
         const modelDict = await loadCSV();
         let voxelGrid = new VoxelGrid(gridSize, modelDict);
@@ -18,7 +18,7 @@ export async function initialize(gridSize, scene, camera, renderer) {
         fillCatalogUI(models);
 
         if (models.length > 0) {
-            cameraPosition = fillVoxelSpace(scene, models, voxelGrid, gridSize);
+            cameraPosition = fillVoxelSpace(scene, models, voxelGrid, gridSize, height);
 
             camera.position.set(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
             camera.lookAt(cameraPosition[0] + 1, cameraPosition[1], cameraPosition[2] + 1);
@@ -153,7 +153,7 @@ async function loadCSV() {
     }
 }
 
-function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
+function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
     let emptyVoxel = null;
 
     let colorList = [
@@ -183,7 +183,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
 
     // i=x; j=z; k=y
     for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < 6; j++) {
+        for (let j = 0; j < height; j++) {
             for (let k = 0; k < gridSize; k++) {
                 // radar return the constraints contextual to the new voxel.
                 // e.g. returns the west constraint based on the east handle of the i-1 voxel
@@ -200,7 +200,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize) {
                 if (
                     i == 0 || i == gridSize - 1 ||
                     j == 0 ||
-                    // j == 6 - 1 ||  //This line is the top
+                    j == height - 1 ||  //This line is the top
                     k == 0 || k == gridSize - 1)
                     dictionaryKey = "0-0";
 
