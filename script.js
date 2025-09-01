@@ -80,6 +80,21 @@ document.getElementById('fogInput').addEventListener('change', async(event)=>{
 })
 //#endregion
 
+//#region Regenerate Model
+document.getElementById("regenerateButton").addEventListener("click", async(event) => {
+    document.body.removeChild(renderer.domElement);
+    
+    sceneCameraRenderer = primer();
+    scene = sceneCameraRenderer[0];
+    camera = sceneCameraRenderer[1];
+    renderer = sceneCameraRenderer[2];
+    
+    document.body.appendChild(renderer.domElement);
+    
+    await initialize(gridSize, scene, camera);
+})
+//#endregion
+
 //#region Animation loop
 // function animate(models) {
 //     requestAnimationFrame(() => animate(models));
