@@ -112,6 +112,32 @@ canvas {
     transform: translateX(0);
 }
 
+/*#region Sub Side Panels */
+.general-SubSidePanel {
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 20px;
+
+    font-size: 15px;
+    color: white
+}
+
+.content {
+    display: none;
+}
+
+#regenerateButton {
+    background-color: #239cff;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    height: 50px;
+}
+
+/*#endregion Sub Side Panel */
+
 /*#region Close Button*/
 .closeButton {
     position: absolute;
@@ -131,32 +157,6 @@ canvas {
 }
 
 /*#endregion Close Button*/
-
-/*#region Sub Side Panels */
-.general-SubSidePanel {
-    border: 1px solid rgb(255, 255, 255);
-    border-radius: 5px;
-    padding: 5px;
-    margin-bottom: 20px;
-
-    font-size: 20px;
-    color: white
-}
-
-.content {
-    display: none;
-}
-
-#regenerateButton {
-    background-color: #239cff;
-    color: rgb(0, 0, 0);
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    height: 50px;
-}
-
-/*#endregion Sub Side Panel */
 
 /*#region Input Groups*/
 .inputGroup {
