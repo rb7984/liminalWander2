@@ -9,7 +9,6 @@ export async function initialize(scene, camera, renderer, gridSize, height) {
     try {
         const modelDict = await loadCSV();
         let voxelGrid = new VoxelGrid(gridSize, modelDict);
-        //console.log(voxelGrid)
         let cameraPosition = [0, 0, 0]
 
         const models = await loadModels(renderer, camera);
