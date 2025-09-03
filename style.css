@@ -22,73 +22,80 @@ canvas {
 /*#region Links*/
 /* unvisited link */
 a:link {
-  color: rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
 }
 
 /* visited link */
 a:visited {
-  color: rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
 }
 
 /* mouse over link */
 a:hover {
-  color: hotpink;
+    color: hotpink;
 }
 
 /* selected link */
 a:active {
-  color: hotpink;
+    color: hotpink;
 }
+
 /*#endregion Links*/
 /*#endregion Main*/
 
 /*#region Loader*/
 #loader {
-    position: relative;
+    position: absolute;
+    left: 50%;
     top: 20px;
-    scale: 0.2;
-    transform-origin: top;
+    transform: translateX(-50%) scale(0.2);
+    transform-origin: top center;
     border: none;
-    z-index: 3;
-    transition: opacity 5s;
 
-    animation-name: fadeOut;
+    transition: opacity 5s;
     animation-duration: 10000ms;
     animation-fill-mode: forwards;
+
+    z-index: 3;
+    animation-name: fadeOut;
 }
 
-@keyframes fadeOut{
-  0%{
-    opacity: 1;
-  }
-  100%{
-    display: none;
-    opacity: 0;
-  }
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        display: none;
+        opacity: 0;
+    }
 }
 
 #logo {
-    position: relative;
+    position: absolute;
+    left: 50%;
     top: 20px;
-    scale: 0.2;
-    transform-origin: top;
+    transform: translateX(-50%) scale(0.2);
+    transform-origin: top center;
     border: none;
-    z-index: 4;
-    transition: opacity 5s;
 
-    animation-name: fadeIn;
-    animation-duration: 30000ms;
+    transition: opacity 5s;
+    animation-duration: 10000ms;
     animation-fill-mode: forwards;
+    
+    z-index: 4;
+    animation-name: fadeIn;
 }
 
-@keyframes fadeIn{
-  0%{
-    display: none;
-    opacity: 0;
-  }
-  100%{    
-    opacity: 1;
-  }
+@keyframes fadeIn {
+    0% {
+        display: none;
+        opacity: 0;
+    }
+
+    100% {
+        opacity: .8;
+    }
 }
 
 /*#endregion Loader*/
