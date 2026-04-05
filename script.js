@@ -36,7 +36,7 @@ document.getElementById("gridSizeInput").addEventListener("change", async (event
 
         document.body.appendChild(renderer.domElement);
 
-        await initialize(gridSize, scene, camera);
+        await initialize(scene, camera, renderer, gridSize, height);
     }
 });
 
@@ -57,7 +57,7 @@ document.getElementById('debugModeInput').addEventListener('change', async (even
 
     document.body.appendChild(renderer.domElement);
 
-    await initialize(gridSize, scene, camera);
+    await initialize(scene, camera, renderer, gridSize, height);
 })
 //#endregion
 
@@ -76,7 +76,7 @@ document.getElementById('fogInput').addEventListener('change', async (event) => 
 
     document.body.appendChild(renderer.domElement);
 
-    await initialize(gridSize, scene, camera);
+    await initialize(scene, camera, renderer, gridSize, height);
 })
 //#endregion
 
@@ -91,7 +91,7 @@ document.getElementById("regenerateButton").addEventListener("click", async (eve
 
     document.body.appendChild(renderer.domElement);
 
-    await initialize(gridSize, scene, camera);
+    await initialize(scene, camera, renderer, gridSize, height);
 })
 //#endregion
 

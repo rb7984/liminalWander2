@@ -194,7 +194,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
                 // match not found - red 0-0
                 let debugColor = dictionaryKey == null ? new THREE.Color('red') : null;
                 // TODO here for default non matching
-                if (dictionaryKey == null) dictionaryKey = "99-0";
+                if (dictionaryKey == null) dictionaryKey = "4-0";
 
                 if (
                     i == 0 || i == gridSize - 1 ||
