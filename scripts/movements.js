@@ -19,6 +19,7 @@ export function movement(camera, direction, speed, checkCollision) {
         }
         if (event.key === 'e') {
             camera.getWorldDirection(lookAtDir);
+
             let sideAxis = new THREE.Vector3().crossVectors(lookAtDir, yAxis).normalize();
             camera.rotateOnWorldAxis(sideAxis, +0.08);
         }
@@ -29,7 +30,14 @@ export function movement(camera, direction, speed, checkCollision) {
             camera.position.set(camera.position.x, camera.position.y - 1, camera.position.z);
         }
         if (event.key === 'r') {
-            camera.lookAt(camera.position.x, camera.position.y, camera.position.z + 1);
+            camera.getWorldDirection(lookAtDir);
+
+            lookAtDir.y = 0;
+            lookAtDir.normalize();
+
+            let target = new THREE.Vector3().addVectors(camera.position, lookAtDir);
+
+            camera.lookAt(target);
         }
     });
 }

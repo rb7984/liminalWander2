@@ -1,7 +1,12 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "typeRoots": ["./node_modules/@types", "./"]
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "typeRoots": ["./node_modules/@types"],
+    "paths": {
+      "https://esm.sh/three": ["./node_modules/@types/three"]
+    }
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "assets", "models", "scripts"]
 }
