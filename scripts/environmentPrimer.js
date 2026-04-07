@@ -5,7 +5,7 @@ import { MathUtils } from 'https://esm.sh/three';
 import { movement } from './movements.js';
 import { fogMode } from './globals.js';
 
-export function primer() {
+export function environmentPrimer() {
     /** @typedef {import('three')} THREE */
 
     //#region Scene

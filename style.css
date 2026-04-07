@@ -193,6 +193,13 @@ a:active {
     display: none;
 }
 
+/*HERE*/
+.labl {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 #regenerateButton {
     background-color: #239cff;
     color: rgb(0, 0, 0);

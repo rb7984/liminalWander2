@@ -1,9 +1,9 @@
 import { initialize } from './scripts/loaders.js';
-import { primer } from './scripts/primer.js';
-import { gridSize, SetGridSize, height, debugMode, ToggleDebugMode, fogMode, ToggleFogMode } from './scripts/globals.js';
+import { environmentPrimer } from './scripts/environmentPrimer.js';
+import { gridSize, SetGridSize, height, debugMode, ToggleDebugMode, fogMode, ToggleFogMode, setDefaultBlock } from './scripts/globals.js';
 
 //#region Primer
-let sceneCameraRenderer = primer();
+let sceneCameraRenderer = environmentPrimer();
 let scene = sceneCameraRenderer[0];
 let camera = sceneCameraRenderer[1];
 let renderer = sceneCameraRenderer[2];
@@ -25,11 +25,12 @@ document.getElementById("gridSizeInput").addEventListener("change", async (event
     SetGridSize(newSize);
 
     if (newSize > 0) {
-        console.log("Updating grid size to:", newSize);
+        // console.log("Updating grid size to:", newSize);
 
+        // TODO all of these function restart everything, they can be refactored
         document.body.removeChild(renderer.domElement);
 
-        sceneCameraRenderer = primer();
+        sceneCameraRenderer = environmentPrimer();
         scene = sceneCameraRenderer[0];
         camera = sceneCameraRenderer[1];
         renderer = sceneCameraRenderer[2];
@@ -50,7 +51,7 @@ document.getElementById('debugModeInput').addEventListener('change', async (even
 
     document.body.removeChild(renderer.domElement);
 
-    sceneCameraRenderer = primer();
+    sceneCameraRenderer = environmentPrimer();
     scene = sceneCameraRenderer[0];
     camera = sceneCameraRenderer[1];
     renderer = sceneCameraRenderer[2];
@@ -69,7 +70,7 @@ document.getElementById('fogInput').addEventListener('change', async (event) => 
 
     document.body.removeChild(renderer.domElement);
 
-    sceneCameraRenderer = primer();
+    sceneCameraRenderer = environmentPrimer();
     scene = sceneCameraRenderer[0];
     camera = sceneCameraRenderer[1];
     renderer = sceneCameraRenderer[2];
@@ -80,11 +81,34 @@ document.getElementById('fogInput').addEventListener('change', async (event) => 
 })
 //#endregion
 
+//#region Default Block
+document.getElementById("partCatalog").addEventListener('change', async (event) => {
+    if (event.target && event.target.type === 'radio') {
+        const selectedValue = event.target.value;
+        
+        console.log("Cambio blocco predefinito a:", selectedValue);
+        
+        setDefaultBlock(selectedValue);
+
+        document.body.removeChild(renderer.domElement);
+
+        sceneCameraRenderer = environmentPrimer();
+        scene = sceneCameraRenderer[0];
+        camera = sceneCameraRenderer[1];
+        renderer = sceneCameraRenderer[2];
+
+        document.body.appendChild(renderer.domElement);
+
+        await initialize(scene, camera, renderer, gridSize, height);
+    }
+});
+//#endregion
+
 //#region Regenerate Model
 document.getElementById("regenerateButton").addEventListener("click", async (event) => {
     document.body.removeChild(renderer.domElement);
 
-    sceneCameraRenderer = primer();
+    sceneCameraRenderer = environmentPrimer();
     scene = sceneCameraRenderer[0];
     camera = sceneCameraRenderer[1];
     renderer = sceneCameraRenderer[2];

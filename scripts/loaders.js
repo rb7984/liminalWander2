@@ -1,7 +1,7 @@
 import * as THREE from 'https://esm.sh/three';
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
 import { VoxelGrid } from './voxels.js';
-import { debugMode, gridSize } from './globals.js';
+import { debugMode, gridSize, defaultBlock} from './globals.js';
 import { vertexShader, fragmentShader } from './shader.js';
 // @ts-check
 
@@ -14,6 +14,7 @@ export async function initialize(scene, camera, renderer, gridSize, height) {
         const models = await loadModels(renderer, camera);
 
         // Fill the UI Part Catalog
+        //TODO maybe the UI function should be in script.js instead of nested here
         fillCatalogUI(models);
 
         if (models.length > 0) {
@@ -193,8 +194,10 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
 
                 // match not found - red 0-0
                 let debugColor = dictionaryKey == null ? new THREE.Color('red') : null;
+                
                 // TODO here for default non matching
-                if (dictionaryKey == null) dictionaryKey = "4-0";
+                
+                if (dictionaryKey == null) dictionaryKey = defaultBlock.toString() + "-0";
 
                 if (
                     i == 0 || i == gridSize - 1 ||
@@ -315,14 +318,50 @@ function exploreMaterial(child) {
 
 function fillCatalogUI(models) {
     var partCatalogDiv = document.getElementById("partCatalog");
-    
+
     partCatalogDiv.innerHTML = "";
 
+    /*TODO HERE*/
     for (var i = 0; i < models.length; i++) {
-        var card = document.createElement('div');
+        var label = document.createElement('label');
+        label.className = "labl";
+
+        var input = document.createElement('input');
+        input.type = "radio";
+        input.name = "catalogPart";
+        input.value = models[i].name;
+
+        var card = document.createElement('span');
         card.id = "card" + i;
         card.innerHTML = models[i].name;
-        
-        partCatalogDiv.appendChild(card);
+
+        label.appendChild(input);
+        label.appendChild(card);
+
+        partCatalogDiv.appendChild(label);
+
+        // var card = document.createElement('div');
+        // card.id = "card" + i;
+        // card.innerHTML = models[i].name;
+
+        // partCatalogDiv.appendChild(card);
     }
+
+    var label = document.createElement('label');
+    label.className = "labl";
+
+    var input = document.createElement('input');
+    input.type = "radio";
+    input.name = "catalogPart";
+    input.value = "None";
+
+    var card = document.createElement('span');
+    card.id = "card" + i;
+    card.innerHTML = "None";
+
+    label.appendChild(input);
+    label.appendChild(card);
+
+    partCatalogDiv.appendChild(label);
+
 }
