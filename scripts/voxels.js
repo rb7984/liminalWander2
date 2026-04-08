@@ -1,6 +1,7 @@
+// TODO Somewhere here to implement a voxelSize.
 // @ts-check
 
-export class Voxel {
+class Voxel {
     constructor(x, y, z, name, rotation, handles) {
         this.x = x;
         this.y = y;
@@ -79,5 +80,25 @@ export class VoxelGrid {
 
     getDictValues(key) {
         return this.modelDict[key];
+    }
+}
+
+class VoxelCluster {
+    constructor(voxel){
+        this.voxels = [voxel];
+    }
+
+    AddVoxel(voxel){
+        this.voxels.push(voxel);
+    }
+}
+
+export class VoxelClusterArchive{
+    constructor(){
+        this.clusters = [];
+    }
+
+    AddCluster(cluster){
+        this.clusters.push(cluster);
     }
 }

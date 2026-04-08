@@ -1,6 +1,6 @@
 import * as THREE from 'https://esm.sh/three';
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
-import { VoxelGrid } from './voxels.js';
+import { VoxelGrid, VoxelClusterArchive } from './voxels.js';
 import { debugMode, gridSize, defaultBlock} from './globals.js';
 import { vertexShader, fragmentShader } from './shader.js';
 // @ts-check
@@ -156,6 +156,7 @@ async function loadCSV() {
 function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
     let emptyVoxel = null;
 
+    //#region Texture and colors Setup
     let colorList = [
         new THREE.Color('skyblue'), // 0
         new THREE.Color('tomato'), // 1
@@ -172,14 +173,15 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
         new THREE.Color('teal'), // 12
         new THREE.Color('indianred'), // 13
         new THREE.Color('lightcoral') // 14
-    ]
-
+    ];
+    
     const textureLoader = new THREE.TextureLoader();
     const texture = textureLoader.load('./models/texture.png');
 
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(2, 2);
+    //#endregion
 
     // i=x; j=z; k=y
     for (let i = 0; i < gridSize; i++) {
@@ -240,6 +242,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
                                 child.receiveShadow = true;
                                 model.rotation.y = rotationIndex * Math.PI / 2;
                                 if (debugMode) child.material = new THREE.MeshStandardMaterial({ color: debugColor });
+                                // else child.material.map = texture;
                             }
                         });
 
