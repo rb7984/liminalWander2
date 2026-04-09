@@ -198,7 +198,6 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
                 let debugColor = dictionaryKey == null ? new THREE.Color('red') : null;
 
                 // TODO here for default non matching
-
                 if (dictionaryKey == null) dictionaryKey = defaultBlock.toString() + "-0";
 
                 if (
@@ -252,7 +251,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
                         if (voxel) {
                             model.position.set(i, j, k);
                             scene.add(model);
-                            
+
                             voxelGrid.updateClusters(voxel);
                         }
                     }
@@ -264,6 +263,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
     }
 
     window.DebugWrite("Voxels", voxelGrid.grid.length + ", " + voxelGrid.grid[0].length + ", " + voxelGrid.grid[0][0].length);
+    window["DebugWrite"]("Empty Voxels", voxelGrid.emptyVoxels);
 
     return emptyVoxel;
 }

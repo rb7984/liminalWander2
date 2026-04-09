@@ -1,5 +1,4 @@
 // TODO Somewhere here to implement a voxelSize.
-// @ts-check
 
 class Voxel {
     constructor(x, y, z, name, rotation, handles) {
@@ -23,6 +22,7 @@ export class VoxelGrid {
         );
         this.modelDict = dictionary;
         this.clusterArchive = new VoxelClusterArchive();
+        this.emptyVoxels = 0;
     }
 
     isWithinBounds(x, y, z) {
@@ -47,6 +47,7 @@ export class VoxelGrid {
             );
 
             this.grid[x][y][z] = voxel;
+            if (name == "99") this.emptyVoxels++
             return voxel;
         }
         return null;
@@ -87,7 +88,6 @@ export class VoxelGrid {
     updateClusters(voxel){
         if (voxel.name == "99")
         {
-            window["DebugWrite"]("Empty Voxels", +1);   
             console.log("true");
         }   
 
