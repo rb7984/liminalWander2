@@ -85,9 +85,9 @@ document.getElementById('fogInput').addEventListener('change', async (event) => 
 document.getElementById("partCatalog").addEventListener('change', async (event) => {
     if (event.target && event.target.type === 'radio') {
         const selectedValue = event.target.value;
-        
+
         console.log("Cambio blocco predefinito a:", selectedValue);
-        
+
         setDefaultBlock(selectedValue);
 
         document.body.removeChild(renderer.domElement);
@@ -149,4 +149,60 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+//#endregion
+
+//#region Debug Window
+(function () {
+    // Creazione del contenitore CSS
+    const style = document.createElement('style');
+    style.innerHTML = `
+        #debug-panel {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            width: 250px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff00;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 9999;
+            pointer-events: none; /* Non intralcia i click sulla pagina */
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            display: none;
+        }
+        .debug-entry { margin-bottom: 4px; border-bottom: 1px solid #333; }
+        .debug-label { font-weight: bold; color: #ffcc00; }
+    `;
+    document.head.appendChild(style);
+
+    const panel = document.createElement('div');
+    panel.id = 'debug-panel';
+    document.body.appendChild(panel);
+
+    const debugData = {};
+
+    window.DebugWrite = function (field, data) {
+        debugData[field] = data; // Aggiorna il valore
+
+        // Renderizza tutti i campi nel pannello
+        panel.innerHTML = Object.keys(debugData).map(key => `
+            <div class="debug-entry">
+                <span class="debug-label">${key}:</span> ${debugData[key]}
+            </div>
+        `).join('');
+    };
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'm') {
+            const panel = document.getElementById('debug-panel');
+            if (panel.style.display === 'none' || panel.style.display === '') {
+                panel.style.display = 'block';
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+    });
+})();
 //#endregion

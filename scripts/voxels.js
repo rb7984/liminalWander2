@@ -22,6 +22,7 @@ export class VoxelGrid {
             )
         );
         this.modelDict = dictionary;
+        this.clusterArchive = new VoxelClusterArchive();
     }
 
     isWithinBounds(x, y, z) {
@@ -51,6 +52,7 @@ export class VoxelGrid {
         return null;
     }
 
+    // TODO: Radar only looks back now, but there could be a different assemblage order and in that case radar should be looking in all directions
     radar(i, j, k) {
         // Voxel.handles = [East, West, Up, Down, North, South]
         let west = null;
@@ -80,6 +82,16 @@ export class VoxelGrid {
 
     getDictValues(key) {
         return this.modelDict[key];
+    }
+
+    updateClusters(voxel){
+        if (voxel.name == "99")
+        {
+            window["DebugWrite"]("Empty Voxels", +1);   
+            console.log("true");
+        }   
+
+        if (!voxel) return;
     }
 }
 

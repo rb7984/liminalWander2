@@ -1,7 +1,7 @@
 import * as THREE from 'https://esm.sh/three';
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
 import { VoxelGrid, VoxelClusterArchive } from './voxels.js';
-import { debugMode, gridSize, defaultBlock} from './globals.js';
+import { debugMode, gridSize, defaultBlock } from './globals.js';
 import { vertexShader, fragmentShader } from './shader.js';
 // @ts-check
 
@@ -174,7 +174,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
         new THREE.Color('indianred'), // 13
         new THREE.Color('lightcoral') // 14
     ];
-    
+
     const textureLoader = new THREE.TextureLoader();
     const texture = textureLoader.load('./models/texture.png');
 
@@ -196,9 +196,9 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
 
                 // match not found - red 0-0
                 let debugColor = dictionaryKey == null ? new THREE.Color('red') : null;
-                
+
                 // TODO here for default non matching
-                
+
                 if (dictionaryKey == null) dictionaryKey = defaultBlock.toString() + "-0";
 
                 if (
@@ -212,12 +212,14 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
                 let params = dictionaryKey.split("-").map(Number);
 
                 if (params[0] == 99) {
-                    voxelGrid.addVoxel(i, j, k, "99", 0);
+                    let voxel = voxelGrid.addVoxel(i, j, k, "99", 0);
                     // console.log("constraints: " + constraints);
                     // console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
                     // console.log("---------------------");
 
                     if (emptyVoxel == null) emptyVoxel = [i, j, k];
+
+                    voxelGrid.updateClusters(voxel);
 
                     continue;
                 }
@@ -250,6 +252,8 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
                         if (voxel) {
                             model.position.set(i, j, k);
                             scene.add(model);
+                            
+                            voxelGrid.updateClusters(voxel);
                         }
                     }
                 }
@@ -258,6 +262,8 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
             }
         }
     }
+
+    window.DebugWrite("Voxels", voxelGrid.grid.length + ", " + voxelGrid.grid[0].length + ", " + voxelGrid.grid[0][0].length);
 
     return emptyVoxel;
 }
@@ -316,7 +322,7 @@ function computeUVTransform(texture) {
 }
 
 function exploreMaterial(child) {
-    console.log("Name: " + child.name + " - " + child.material.map.matrix.elements);
+    // console.log("Name: " + child.name + " - " + child.material.map.matrix.elements);
 }
 
 function fillCatalogUI(models) {
