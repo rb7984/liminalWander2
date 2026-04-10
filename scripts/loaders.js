@@ -1,12 +1,18 @@
 import * as THREE from 'https://esm.sh/three';
 import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
-import { VoxelGrid, VoxelClusterArchive } from './voxels.js';
-import { debugMode, gridSize, defaultBlock } from './globals.js';
-import { vertexShader, fragmentShader } from './shader.js';
+import { VoxelGrid } from './voxels.js';
+import { loadSharedFont, getFont, debugMode, gridSize, defaultBlock } from './globals.js';
+// import { vertexShader, fragmentShader } from './shader.js';
+import { TextGeometry } from 'https://esm.sh/three/addons/geometries/TextGeometry.js';
 // @ts-check
 
+let font = null;
+
+//TODO separate Loaders from Builders
 export async function initialize(scene, camera, renderer, gridSize, height) {
     try {
+        await loadSharedFont();
+        font = getFont();
         const modelDict = await loadCSV();
         let voxelGrid = new VoxelGrid(gridSize, modelDict);
         let cameraPosition = [0, 0, 0]
@@ -181,6 +187,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(2, 2);
+
     //#endregion
 
     // i=x; j=z; k=y
@@ -209,7 +216,8 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
 
                 // match found (forced/not)
                 let params = dictionaryKey.split("-").map(Number);
-
+                //TODO define voxel outside if-else and .addVoxel() outside as well
+                // or get rid of if else
                 if (params[0] == 99) {
                     let voxel = voxelGrid.addVoxel(i, j, k, "99", 0);
                     // console.log("constraints: " + constraints);
@@ -258,12 +266,14 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
                 }
 
                 //debugPoints(i, j, k, scene);
+                debugText(i, j, k, dictionaryKey, scene);
             }
         }
     }
 
     window.DebugWrite("Voxels", voxelGrid.grid.length + ", " + voxelGrid.grid[0].length + ", " + voxelGrid.grid[0][0].length);
     window["DebugWrite"]("Empty Voxels", voxelGrid.emptyVoxels);
+    window["DebugWrite"]("Walkable Voxels", voxelGrid.walkableVoxels);
 
     return emptyVoxel;
 }
@@ -304,6 +314,26 @@ function debugPoints(i, j, k, scene) {
     let pointMesh7 = new THREE.Mesh(pointGeometry, pointMaterial);
     pointMesh7.position.set(i - 0.5, j - 0.5, k + 0.5);
     scene.add(pointMesh7);
+}
+
+function debugText(i, j, k, name, scene) {
+    if (!font) {
+        console.warn("DebugText: font non ancora caricato!");
+        return;
+    }
+    
+    const geometry = new TextGeometry(name, {
+        font: font,
+        size: 0.1,
+        depth: 0.01,
+        curveSegments: 12
+    });
+
+    var textMaterial = new THREE.MeshPhongMaterial({ color: 0xdddddd });
+    var mesh = new THREE.Mesh(geometry, textMaterial);
+
+    mesh.position.set(i, j, k);
+    scene.add(mesh);
 }
 
 function computeUVTransform(texture) {

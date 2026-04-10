@@ -23,6 +23,7 @@ export class VoxelGrid {
         this.modelDict = dictionary;
         this.clusterArchive = new VoxelClusterArchive();
         this.emptyVoxels = 0;
+        this.walkableVoxels = 0;
     }
 
     isWithinBounds(x, y, z) {
@@ -47,7 +48,7 @@ export class VoxelGrid {
             );
 
             this.grid[x][y][z] = voxel;
-            if (name == "99") this.emptyVoxels++
+
             return voxel;
         }
         return null;
@@ -85,32 +86,30 @@ export class VoxelGrid {
         return this.modelDict[key];
     }
 
-    updateClusters(voxel){
-        if (voxel.name == "99")
-        {
-            console.log("true");
-        }   
+    updateClusters(voxel) {
+        if (voxel.name == "99") this.emptyVoxels++
+        if (voxel.name == "99" && this.grid[voxel.x][voxel.y - 1][voxel.z].name == "0") this.walkableVoxels++
 
         if (!voxel) return;
     }
 }
 
 class VoxelCluster {
-    constructor(voxel){
+    constructor(voxel) {
         this.voxels = [voxel];
     }
 
-    AddVoxel(voxel){
+    AddVoxel(voxel) {
         this.voxels.push(voxel);
     }
 }
 
-export class VoxelClusterArchive{
-    constructor(){
+export class VoxelClusterArchive {
+    constructor() {
         this.clusters = [];
     }
 
-    AddCluster(cluster){
+    AddCluster(cluster) {
         this.clusters.push(cluster);
     }
 }

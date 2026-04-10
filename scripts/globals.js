@@ -1,3 +1,26 @@
+import { FontLoader } from 'https://esm.sh/three@0.160.0/examples/jsm/loaders/FontLoader.js';
+
+//#region Font
+let sharedFont = null;
+
+export async function loadSharedFont() {
+    if (sharedFont) return sharedFont;
+
+    const loader = new FontLoader();
+    const FONT_URL = 'https://unpkg.com/three@0.160.0/examples/fonts/helvetiker_regular.typeface.json';
+
+    try {
+        sharedFont = await loader.loadAsync(FONT_URL);
+        console.log("Font caricato correttamente dal web!");
+        return sharedFont;
+    } catch (error) {
+        console.error("Errore nel caricamento del font:", error);
+        throw error; // Rilanciamo l'errore per fermare l'esecuzione se manca il font
+    }
+}
+export const getFont = () => sharedFont;
+//#endregion
+
 export var gridSize = 20;
 
 export function SetGridSize(value) {
