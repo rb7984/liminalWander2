@@ -5,13 +5,13 @@ import { MathUtils } from 'https://esm.sh/three';
 import { movement } from './movements.js';
 import { fogMode } from './globals.js';
 
-export function environmentPrimer() {
+export function environmentPrimer(debugMode = false) {
     /** @typedef {import('three')} THREE */
 
     //#region Scene
     const scene = new THREE.Scene();
     // scene.fog = new THREE.FogExp2( 0x814085, 0.002 );
-    if (fogMode == true) scene.fog = new THREE.Fog(0x403e37, 6, 10);
+    if (fogMode == true && !debugMode) scene.fog = new THREE.Fog(0x403e37, 6, 10);
     //#endregion
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -97,8 +97,10 @@ export function environmentPrimer() {
     camera.position.set(-5, 1, -5);
     camera.lookAt(0, 1, 0);
 
-    // const axesHelper = new THREE.AxesHelper(10);
-    // scene.add(axesHelper);
+    if (debugMode) {
+        const axesHelper = new THREE.AxesHelper(10);
+        scene.add(axesHelper);
+    }
 
     return [scene, camera, renderer];
 }

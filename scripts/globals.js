@@ -11,11 +11,10 @@ export async function loadSharedFont() {
 
     try {
         sharedFont = await loader.loadAsync(FONT_URL);
-        console.log("Font caricato correttamente dal web!");
         return sharedFont;
     } catch (error) {
-        console.error("Errore nel caricamento del font:", error);
-        throw error; // Rilanciamo l'errore per fermare l'esecuzione se manca il font
+        console.error("Error loadingl font:", error);
+        throw error;
     }
 }
 export const getFont = () => sharedFont;

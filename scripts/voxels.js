@@ -56,17 +56,17 @@ export class VoxelGrid {
 
     // TODO: Radar only looks back now, but there could be a different assemblage order and in that case radar should be looking in all directions
     radar(i, j, k) {
-        // Voxel.handles = [East, West, Up, Down, North, South]
+        // Voxel.handles = [East, West, Up, Down, South, North]
         let west = null;
         if (i > 0) west = this.grid[i - 1][j][k].handles[0];
 
         let down = null;
         if (j > 0) down = this.grid[i][j - 1][k].handles[2];
 
-        let south = null;
-        if (k > 0) south = this.grid[i][j][k - 1].handles[4];
+        let north = null;
+        if (k > 0) north = this.grid[i][j][k - 1].handles[4];
 
-        return [null, west, null, down, null, south]
+        return [null, west, null, down, null, north]
     }
 
     matcher(constraints) {
@@ -88,7 +88,7 @@ export class VoxelGrid {
 
     updateClusters(voxel) {
         if (voxel.name == "99") this.emptyVoxels++
-        if (voxel.name == "99" && this.grid[voxel.x][voxel.y - 1][voxel.z].name == "0") this.walkableVoxels++
+        if (voxel.name == "99" && this.grid[voxel.x][voxel.y - 1][voxel.z].handles[2] == "0") this.walkableVoxels++
 
         if (!voxel) return;
     }

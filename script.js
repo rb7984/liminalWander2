@@ -3,7 +3,7 @@ import { environmentPrimer } from './scripts/environmentPrimer.js';
 import { gridSize, SetGridSize, height, debugMode, ToggleDebugMode, fogMode, ToggleFogMode, setDefaultBlock } from './scripts/globals.js';
 
 //#region Primer
-let sceneCameraRenderer = environmentPrimer();
+let sceneCameraRenderer = environmentPrimer(debugMode);
 let scene = sceneCameraRenderer[0];
 let camera = sceneCameraRenderer[1];
 let renderer = sceneCameraRenderer[2];
@@ -30,7 +30,7 @@ document.getElementById("gridSizeInput").addEventListener("change", async (event
         // TODO all of these function restart everything, they can be refactored
         document.body.removeChild(renderer.domElement);
 
-        sceneCameraRenderer = environmentPrimer();
+        sceneCameraRenderer = environmentPrimer(debugMode);
         scene = sceneCameraRenderer[0];
         camera = sceneCameraRenderer[1];
         renderer = sceneCameraRenderer[2];
@@ -51,7 +51,7 @@ document.getElementById('debugModeInput').addEventListener('change', async (even
 
     document.body.removeChild(renderer.domElement);
 
-    sceneCameraRenderer = environmentPrimer();
+    sceneCameraRenderer = environmentPrimer(debugMode);
     scene = sceneCameraRenderer[0];
     camera = sceneCameraRenderer[1];
     renderer = sceneCameraRenderer[2];
@@ -70,7 +70,7 @@ document.getElementById('fogInput').addEventListener('change', async (event) => 
 
     document.body.removeChild(renderer.domElement);
 
-    sceneCameraRenderer = environmentPrimer();
+    sceneCameraRenderer = environmentPrimer(debugMode);
     scene = sceneCameraRenderer[0];
     camera = sceneCameraRenderer[1];
     renderer = sceneCameraRenderer[2];
@@ -92,7 +92,7 @@ document.getElementById("partCatalog").addEventListener('change', async (event) 
 
         document.body.removeChild(renderer.domElement);
 
-        sceneCameraRenderer = environmentPrimer();
+        sceneCameraRenderer = environmentPrimer(debugMode);
         scene = sceneCameraRenderer[0];
         camera = sceneCameraRenderer[1];
         renderer = sceneCameraRenderer[2];
@@ -108,7 +108,7 @@ document.getElementById("partCatalog").addEventListener('change', async (event) 
 document.getElementById("regenerateButton").addEventListener("click", async (event) => {
     document.body.removeChild(renderer.domElement);
 
-    sceneCameraRenderer = environmentPrimer();
+    sceneCameraRenderer = environmentPrimer(debugMode);
     scene = sceneCameraRenderer[0];
     camera = sceneCameraRenderer[1];
     renderer = sceneCameraRenderer[2];

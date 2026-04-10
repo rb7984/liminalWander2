@@ -187,19 +187,15 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(2, 2);
-
     //#endregion
 
     // i=x; j=z; k=y
     for (let i = 0; i < gridSize; i++) {
         for (let j = 0; j < height; j++) {
             for (let k = 0; k < gridSize; k++) {
-                // radar return the constraints contextual to the new voxel.
-                // e.g. returns the west constraint based on the east handle of the i-1 voxel
+                // radar return the constraints contextual to the new voxel. e.g. returns the west constraint based on the east handle of the i-1 voxel
                 let constraints = voxelGrid.radar(i, j, k);
                 let dictionaryKey = voxelGrid.matcher(constraints);
-                // console.log("block: " + i + "; " + j + "; " + k);
-                // console.log("dictionaryKey: " + dictionaryKey);
 
                 // match not found - red 0-0
                 let debugColor = dictionaryKey == null ? new THREE.Color('red') : null;
@@ -208,16 +204,18 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
                 if (dictionaryKey == null) dictionaryKey = defaultBlock.toString() + "-0";
 
                 if (
-                    i == 0 || i == gridSize - 1 ||
+                    i == 0 ||
+                    i == gridSize - 1 ||
                     j == 0 ||
                     j == height - 1 ||  //This line is the top
-                    k == 0 || k == gridSize - 1)
+                    k == 0 ||
+                    k == gridSize - 1)
                     dictionaryKey = "0-0";
 
                 // match found (forced/not)
                 let params = dictionaryKey.split("-").map(Number);
-                //TODO define voxel outside if-else and .addVoxel() outside as well
-                // or get rid of if else
+
+                //TODO define voxel outside if-else and .addVoxel() outside as well // or get rid of if else
                 if (params[0] == 99) {
                     let voxel = voxelGrid.addVoxel(i, j, k, "99", 0);
                     // console.log("constraints: " + constraints);
@@ -228,7 +226,8 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
 
                     voxelGrid.updateClusters(voxel);
 
-                    continue;
+                    // TODO Why was there a continue; here?
+                    // continue;
                 }
                 else {
                     // color except for not found
@@ -321,11 +320,10 @@ function debugText(i, j, k, name, scene) {
         console.warn("DebugText: font non ancora caricato!");
         return;
     }
-    
     const geometry = new TextGeometry(name, {
         font: font,
         size: 0.1,
-        depth: 0.01,
+        depth: 0.05,
         curveSegments: 12
     });
 
