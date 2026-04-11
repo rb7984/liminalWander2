@@ -23,21 +23,47 @@ export function movement(camera, direction, speed, checkCollision) {
             let sideAxis = new THREE.Vector3().crossVectors(lookAtDir, yAxis).normalize();
             camera.rotateOnWorldAxis(sideAxis, +0.08);
         }
+        if (event.key === 'r') {
+            camera.getWorldDirection(lookAtDir);
+            
+            lookAtDir.y = 0;
+            lookAtDir.normalize();
+            
+            let target = new THREE.Vector3().addVectors(camera.position, lookAtDir);
+            
+            camera.lookAt(target);
+        }
+        
+        // #region Debug
+        // X +
+        if (event.key === 'ArrowRight') {
+            camera.position.set(camera.position.x + 1, camera.position.y, camera.position.z);
+        }
+        // X -
+        if (event.key === 'ArrowLeft') {
+            camera.position.set(camera.position.x -1, camera.position.y, camera.position.z);
+        }
+        // Y +
         if (event.key === 'ArrowUp') {
             camera.position.set(camera.position.x, camera.position.y + 1, camera.position.z);
         }
+        // Y +
         if (event.key === 'ArrowDown') {
             camera.position.set(camera.position.x, camera.position.y - 1, camera.position.z);
         }
-        if (event.key === 'r') {
-            camera.getWorldDirection(lookAtDir);
-
-            lookAtDir.y = 0;
-            lookAtDir.normalize();
-
-            let target = new THREE.Vector3().addVectors(camera.position, lookAtDir);
-
-            camera.lookAt(target);
+        // Z +
+        if (event.key === 'x') {
+            camera.position.set(camera.position.x, camera.position.y, camera.position.z +1);
         }
+        // Z +
+        if (event.key === 'z') {
+            camera.position.set(camera.position.x, camera.position.y, camera.position.z -1);
+        }
+        // Reset
+        if (event.key === 'c') {
+            camera.position.set(2, 2.5, 2.5);
+            camera.lookAt(2, 2, 2);
+        }
+        //#endregion
     });
 }

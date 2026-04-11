@@ -263,9 +263,10 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
                         }
                     }
                 }
-
-                //debugPoints(i, j, k, scene);
-                debugText(i, j, k, dictionaryKey, scene);
+                if (debugMode) {
+                    debugPoints(i, j, k, scene);
+                    debugText(i, j, k, dictionaryKey, constraints, scene);
+                }
             }
         }
     }
@@ -280,7 +281,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
 function debugPoints(i, j, k, scene) {
     //debug points
     let pointMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    let pointGeometry = new THREE.SphereGeometry(0.05);
+    let pointGeometry = new THREE.SphereGeometry(0.01);
 
     let pointMesh = new THREE.Mesh(pointGeometry, pointMaterial);
     pointMesh.position.set(i + 0.5, j - 0.5, k - 0.5);
@@ -315,15 +316,18 @@ function debugPoints(i, j, k, scene) {
     scene.add(pointMesh7);
 }
 
-function debugText(i, j, k, name, scene) {
+function debugText(i, j, k, name, constraints, scene) {
     if (!font) {
         console.warn("DebugText: font non ancora caricato!");
         return;
     }
-    const geometry = new TextGeometry(name, {
+    const textToDisplay = name + "\n" +
+        i + "," + j + "," + k + "\n" +
+        "E:" + constraints[0] + " W:" + constraints[1] + " U:" + constraints[2] + " D:" + constraints[3] + " S:" + constraints[4] + " N:" + constraints[5];
+    const geometry = new TextGeometry(textToDisplay, {
         font: font,
-        size: 0.1,
-        depth: 0.05,
+        size: 0.04,
+        depth: 0.01,
         curveSegments: 12
     });
 
