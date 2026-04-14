@@ -52,11 +52,11 @@ export function movement(camera, direction, speed, checkCollision) {
             camera.position.set(camera.position.x, camera.position.y - 1, camera.position.z);
         }
         // Z +
-        if (event.key === 'x') {
+        if (event.key === '5') {
             camera.position.set(camera.position.x, camera.position.y, camera.position.z +1);
         }
-        // Z +
-        if (event.key === 'z') {
+        // Z -
+        if (event.key === '8') {
             camera.position.set(camera.position.x, camera.position.y, camera.position.z -1);
         }
         // Reset

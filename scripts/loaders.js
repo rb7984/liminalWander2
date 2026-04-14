@@ -52,10 +52,7 @@ function loadModels(renderer, camera) {
             './models/4.gltf',
             './models/5.gltf',
             './models/6.gltf',
-            './models/7.gltf',
-            './models/8.gltf',
-            './models/9.gltf',
-            './models/10.gltf'
+            './models/7.gltf'
         ];
 
         modelPaths.forEach((path, index) => {
@@ -134,25 +131,32 @@ function loadModels(renderer, camera) {
 
 async function loadCSV() {
     try {
-        // model, rotation, East, West, North, South, Up, Down
         const response = await fetch('./models/handles.csv');
         const text = await response.text();
         const rows = text.split("\n").slice(1);
 
-        let modelDict = {};
+        // Struttura: { "0,0,0,0,0,0": ["0-0", "0-1"], "1,2,3,4,5,6": ["1-0"] }
+        let invertedDict = {};
 
         rows.forEach(row => {
             if (!row.trim()) return;
 
             let [name, rotation, ...values] = row.split(";");
+            if (!name || !rotation || values.length < 6) return;
 
-            if (!name || !rotation || values.length === 0) return;
+            const numericValues = values.map(v => Number(v.trim()));
 
-            modelDict[name.concat("-" + rotation)] = values.map(Number);
+            const charKey = numericValues.join(",");
+
+            if (!invertedDict[charKey]) {
+                invertedDict[charKey] = [];
+            }
+
+            const modelRot = `${name.trim()}-${rotation.trim()}`;
+            invertedDict[charKey].push(modelRot);
         });
 
-        //console.log(modelDict);
-        return modelDict;
+        return invertedDict;
 
     } catch (error) {
         console.error("Error loading CSV:", error);
@@ -195,13 +199,20 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
             for (let k = 0; k < gridSize; k++) {
                 // radar return the constraints contextual to the new voxel. e.g. returns the west constraint based on the east handle of the i-1 voxel
                 let constraints = voxelGrid.radar(i, j, k);
-                let dictionaryKey = voxelGrid.matcher(constraints);
+                let match = voxelGrid.matcher(constraints);
+                let dictionaryKey = match ? match[0] : null;
+                let handles = match ? match[1] : null;
 
                 // match not found - red 0-0
                 let debugColor = dictionaryKey == null ? new THREE.Color('red') : null;
 
                 // TODO here for default non matching
-                if (dictionaryKey == null) dictionaryKey = defaultBlock.toString() + "-0";
+                if (dictionaryKey == null)
+                    {
+                        dictionaryKey = defaultBlock.toString() + "-0";
+                        
+                        handles = [0,0,0,0,0,0];
+                    }
 
                 if (
                     i == 0 ||
@@ -210,14 +221,19 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
                     j == height - 1 ||  //This line is the top
                     k == 0 ||
                     k == gridSize - 1)
-                    dictionaryKey = "0-0";
+                    {
+                        dictionaryKey = "0-0";
+                        handles = [1,1,1,1,1,1];
+                    }
 
+                console.log(dictionaryKey);
+                console.log(handles);
                 // match found (forced/not)
                 let params = dictionaryKey.split("-").map(Number);
 
                 //TODO define voxel outside if-else and .addVoxel() outside as well // or get rid of if else
                 if (params[0] == 99) {
-                    let voxel = voxelGrid.addVoxel(i, j, k, "99", 0);
+                    let voxel = voxelGrid.addVoxel(i, j, k, "99", "0", [0,0,0,0,0,0]);
                     // console.log("constraints: " + constraints);
                     // console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
                     // console.log("---------------------");
@@ -225,9 +241,6 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
                     if (emptyVoxel == null) emptyVoxel = [i, j, k];
 
                     voxelGrid.updateClusters(voxel);
-
-                    // TODO Why was there a continue; here?
-                    // continue;
                 }
                 else {
                     // color except for not found
@@ -254,7 +267,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
                             }
                         });
 
-                        let voxel = voxelGrid.addVoxel(i, j, k, name, rotationIndex);
+                        let voxel = voxelGrid.addVoxel(i, j, k, name, rotationIndex, handles);
                         if (voxel) {
                             model.position.set(i, j, k);
                             scene.add(model);

@@ -1,5 +1,4 @@
 // TODO Somewhere here to implement a voxelSize.
-
 class Voxel {
     constructor(x, y, z, name, rotation, handles) {
         this.x = x;
@@ -36,7 +35,7 @@ export class VoxelGrid {
         return this.grid[x] && this.grid[x][y] && this.grid[x][y][z] === null;
     }
 
-    addVoxel(x, y, z, name, rotation) {
+    addVoxel(x, y, z, name, rotation, handles) {
         if (this.isWithinBounds(x, y, z) && this.isEmpty(x, y, z)) {
             const voxel = new Voxel(
                 x,
@@ -44,7 +43,7 @@ export class VoxelGrid {
                 z,
                 name,
                 rotation,
-                this.modelDict[name.concat("-" + rotation)]
+                handles
             );
 
             this.grid[x][y][z] = voxel;
@@ -70,16 +69,34 @@ export class VoxelGrid {
     }
 
     matcher(constraints) {
-        let matches = []
-        for (let key in this.modelDict) {
-            let values = this.modelDict[key];
-            let match = constraints.every((val, index) => val === null || val === values[index]);
+        let possibleMatches = [];
 
-            if (match) matches.push(key);
+        for (let charKey in this.modelDict) {
+            const values = charKey.split(",").map(Number);
+
+            let isMatch = true;
+            for (let i = 0; i < 6; i++) {
+                if (constraints[i] !== null && constraints[i] !== values[i]) {
+                    isMatch = false;
+                    break;
+                }
+            }
+
+            if (isMatch) {
+                this.modelDict[charKey].forEach(modelName => {
+                    possibleMatches.push({
+                        config: modelName,
+                        handles: values
+                    });
+                });
+            }
         }
 
-        if (matches.length == 0) return null;
-        return matches[Math.floor(Math.random() * matches.length)]
+        if (possibleMatches.length === 0) return null;
+
+        const selected = possibleMatches[Math.floor(Math.random() * possibleMatches.length)];
+
+        return [selected.config, selected.handles];
     }
 
     getDictValues(key) {
