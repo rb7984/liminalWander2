@@ -23,6 +23,7 @@ export class VoxelGrid {
         this.clusterArchive = new VoxelClusterArchive();
         this.emptyVoxels = 0;
         this.walkableVoxels = 0;
+        this.failedVoxel = 0;
     }
 
     isWithinBounds(x, y, z) {
@@ -35,7 +36,7 @@ export class VoxelGrid {
         return this.grid[x] && this.grid[x][y] && this.grid[x][y][z] === null;
     }
 
-    addVoxel(x, y, z, name, rotation, handles) {
+    addVoxel(x, y, z, name, rotation, handles, matchFailed) {
         if (this.isWithinBounds(x, y, z) && this.isEmpty(x, y, z)) {
             const voxel = new Voxel(
                 x,
@@ -47,6 +48,8 @@ export class VoxelGrid {
             );
 
             this.grid[x][y][z] = voxel;
+
+            if (matchFailed) this.failedVoxel++;
 
             return voxel;
         }

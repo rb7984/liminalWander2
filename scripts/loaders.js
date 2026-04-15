@@ -52,8 +52,7 @@ function loadModels(renderer, camera) {
             './models/4.gltf',
             './models/5.gltf',
             './models/6.gltf',
-            './models/7.gltf',
-            './models/8.gltf'
+            './models/7.gltf'
         ];
 
         modelPaths.forEach((path, index) => {
@@ -195,25 +194,25 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
     //#endregion
 
     // i=x; j=z; k=y
-    for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < height; j++) {
+    for (let j = 0; j < height; j++) {
+        for (let i = 0; i < gridSize; i++) {
             for (let k = 0; k < gridSize; k++) {
                 // radar return the constraints contextual to the new voxel. e.g. returns the west constraint based on the east handle of the i-1 voxel
                 let constraints = voxelGrid.radar(i, j, k);
                 let match = voxelGrid.matcher(constraints);
                 let dictionaryKey = match ? match[0] : null;
                 let handles = match ? match[1] : null;
+                let matchFailed = !match;
 
                 // match not found - red 0-0
                 let debugColor = dictionaryKey == null ? new THREE.Color('red') : null;
 
                 // TODO here for default non matching
-                if (dictionaryKey == null)
-                    {
-                        dictionaryKey = defaultBlock.toString() + "-0";
-                        
-                        handles = [0,0,0,0,0,0];
-                    }
+                if (dictionaryKey == null) {
+                    dictionaryKey = defaultBlock.toString() + "-0";
+
+                    handles = [0, 0, 0, 0, 0, 0];
+                }
 
                 if (
                     i == 0 ||
@@ -221,12 +220,12 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
                     j == 0 ||
                     j == height - 1 ||  //This line is the top
                     k == 0 ||
-                    k == gridSize - 1)
-                    {
-                        dictionaryKey = "0-0";
-                        handles = [1,1,1,1,1,1];
-                    }
+                    k == gridSize - 1) {
+                    dictionaryKey = "0-0";
+                    handles = [1, 1, 1, 1, 1, 1];
+                }
 
+                console.log("Voxel (" + i + "," + j + "," + k + ")");
                 console.log(dictionaryKey);
                 console.log(handles);
                 // match found (forced/not)
@@ -234,7 +233,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
 
                 //TODO define voxel outside if-else and .addVoxel() outside as well // or get rid of if else
                 if (params[0] == 99) {
-                    let voxel = voxelGrid.addVoxel(i, j, k, "99", "0", [0,0,0,0,0,0]);
+                    let voxel = voxelGrid.addVoxel(i, j, k, "99", "0", [0, 0, 0, 0, 0, 0], matchFailed);
                     // console.log("constraints: " + constraints);
                     // console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
                     // console.log("---------------------");
@@ -268,7 +267,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
                             }
                         });
 
-                        let voxel = voxelGrid.addVoxel(i, j, k, name, rotationIndex, handles);
+                        let voxel = voxelGrid.addVoxel(i, j, k, name, rotationIndex, handles, matchFailed);
                         if (voxel) {
                             model.position.set(i, j, k);
                             scene.add(model);
@@ -288,6 +287,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
     window.DebugWrite("Voxels", voxelGrid.grid.length + ", " + voxelGrid.grid[0].length + ", " + voxelGrid.grid[0][0].length);
     window["DebugWrite"]("Empty Voxels", voxelGrid.emptyVoxels);
     window["DebugWrite"]("Walkable Voxels", voxelGrid.walkableVoxels);
+    window["DebugWrite"]("Failed Voxels", voxelGrid.failedVoxel);
 
     return emptyVoxel;
 }
