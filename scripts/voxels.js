@@ -46,19 +46,19 @@ export class VoxelGrid {
         this.totalVoxels = this.grid[0][0].length * this.grid[0].length * this.grid.length;
         this.filledVoxels = 0;
 
-        this.initialize()
+        // this.initialize()
     }
 
-    initialize() {
-        for (let i = 0; i < this.size; i++) {
-            for (let j = 0; j < this.height; j++) {
-                for (let k = 0; k < this.size; k++) {
-                    this.addVoxel(i, j, k, null, null, null, false);
-                }
-            }
-        }
-    }
-
+    // initialize() {
+    //     for (let i = 0; i < this.size; i++) {
+    //         for (let j = 0; j < this.height; j++) {
+    //             for (let k = 0; k < this.size; k++) {
+    //                 this.addVoxel(i, j, k, null, null, null, false);
+    //             }
+    //         }
+    //     }
+    // }
+    //constructor(x, y, z, name = null, rotation = null, handles = null, states = null) {
     addVoxel(x, y, z, name, rotation, handles, states, matchFailed) {
         if (this.isWithinBounds(x, y, z) && this.isEmpty(x, y, z)) {
             const voxel = new Voxel(
@@ -67,7 +67,8 @@ export class VoxelGrid {
                 z,
                 name,
                 rotation,
-                handles
+                handles,
+                states
             );
 
             this.grid[x][y][z] = voxel;
