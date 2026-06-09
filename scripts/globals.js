@@ -20,7 +20,7 @@ export async function loadSharedFont() {
 export const getFont = () => sharedFont;
 //#endregion
 
-export var gridSize = 20;
+export var gridSize = 10;
 
 export function SetGridSize(value) {
     gridSize = value;
