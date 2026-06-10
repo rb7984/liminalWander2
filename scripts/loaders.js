@@ -175,8 +175,8 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
     );
 
     // Fill Shell
-    for (let j = 0; j < height; j++)
-        for (let i = 0; i < gridSize; i++)
+    for (let i = 0; i < gridSize; i++)
+        for (let j = 0; j < height; j++)
             for (let k = 0; k < gridSize; k++)
                 if (
                     i == 0 ||
@@ -326,17 +326,17 @@ function fillModelsSpace(scene, objects, voxelGrid) {
     //#endregion
 
     // i=x; j=z; k=y
-    for (let j = 0; j < voxelGrid.grid.length; j++) {
-        for (let i = 0; i < voxelGrid.grid[0].length; i++) {
+    for (let i = 0; i < voxelGrid.grid.length; i++) {
+        for (let j = 0; j < voxelGrid.grid[0].length; j++) {
             for (let k = 0; k < voxelGrid.grid[0][0].length; k++) {
 
-                if (voxelGrid.grid[j][i][k] != null) {
+                if (voxelGrid.grid[i][j][k] != null) {
                     // color except for not found
                     if (debugColor == null) debugColor = colorList[params[0]];
-                    let name = voxelGrid.grid[j][i][k].name;
+                    let name = voxelGrid.grid[i][j][k].name;
                     console.log(name);
                     let object = objects[0];
-                    let rotationIndex = voxelGrid.grid[j][i][k].rotation;
+                    let rotationIndex = voxelGrid.grid[i][j][k].rotation;
 
                     let model = object.model.clone();
 
