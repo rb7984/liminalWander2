@@ -46,19 +46,23 @@ export class VoxelGrid {
         this.totalVoxels = this.grid[0][0].length * this.grid[0].length * this.grid.length;
         this.filledVoxels = 0;
 
-        // this.initialize()
+        this.initializeShell();
     }
 
-    // initialize() {
-    //     for (let i = 0; i < this.size; i++) {
-    //         for (let j = 0; j < this.height; j++) {
-    //             for (let k = 0; k < this.size; k++) {
-    //                 this.addVoxel(i, j, k, null, null, null, false);
-    //             }
-    //         }
-    //     }
-    // }
-    //constructor(x, y, z, name = null, rotation = null, handles = null, states = null) {
+    initializeShell() {
+        for (let i = 0; i < this.size; i++)
+            for (let j = 0; j < this.height; j++)
+                for (let k = 0; k < this.size; k++)
+                    if (
+                        i == 0 ||
+                        i == this.size - 1 ||
+                        j == 0 ||
+                        j == this.height - 1 ||  //This line is the top
+                        k == 0 ||
+                        k == this.size - 1)
+                        this.addVoxel(i, j, k, 99, 0, [[1, 1, 1, 1, 1, 1]], [[1, 1, 1, 1, 1, 1]], false);
+    }
+
     addVoxel(x, y, z, name, rotation, handles, states, matchFailed) {
         if (this.isWithinBounds(x, y, z) && this.isEmpty(x, y, z)) {
             const voxel = new Voxel(
@@ -117,7 +121,7 @@ export class VoxelGrid {
 
         if (voxel.y < this.height - 1) neighbours.push([this.grid[voxel.x][voxel.y + 1][voxel.z], 2, null]); // Up
         if (voxel.y > 0) neighbours.push([this.grid[voxel.x][voxel.y - 1][voxel.z], 3, null]); // Down
-        
+
         if (voxel.z < this.size - 1) neighbours.push([this.grid[voxel.x][voxel.y][voxel.z + 1], 4, null]); // South
         if (voxel.z > 0) neighbours.push([this.grid[voxel.x][voxel.y][voxel.z - 1], 5, null]); // North
 

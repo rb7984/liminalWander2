@@ -166,6 +166,7 @@ async function loadCSV() {
     }
 }
 
+//TODO move this in VoxelGrid exclusive function
 function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
     let voxelGrid2 = voxelGrid;
     let emptyVoxel = null;
@@ -175,17 +176,6 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
     );
 
     // Fill Shell
-    for (let i = 0; i < gridSize; i++)
-        for (let j = 0; j < height; j++)
-            for (let k = 0; k < gridSize; k++)
-                if (
-                    i == 0 ||
-                    i == gridSize - 1 ||
-                    j == 0 ||
-                    j == height - 1 ||  //This line is the top
-                    k == 0 ||
-                    k == gridSize - 1)
-                    voxelGrid.addVoxel(i, j, k, 99, 0, [[1, 1, 1, 1, 1, 1]], [[1, 1, 1, 1, 1, 1]], false);
 
     fillModelsSpace(scene, objects, voxelGrid2);
 
@@ -293,6 +283,7 @@ function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
     return emptyVoxel;
 }
 
+//TODO move this in VoxelGrid exclusive function
 function fillModelsSpace(scene, objects, voxelGrid) {
     let emptyVoxel = null;
 
@@ -334,8 +325,9 @@ function fillModelsSpace(scene, objects, voxelGrid) {
                     // color except for not found
                     if (debugColor == null) debugColor = colorList[params[0]];
                     let name = voxelGrid.grid[i][j][k].name;
-                    console.log(name);
-                    let object = objects[0];
+                    
+                    let objectIndex = name == "99" ? 0 : name;
+                    let object = objects[objectIndex];
                     let rotationIndex = voxelGrid.grid[i][j][k].rotation;
 
                     let model = object.model.clone();
