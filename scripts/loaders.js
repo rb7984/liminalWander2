@@ -168,16 +168,13 @@ async function loadCSV() {
 
 //TODO move this in VoxelGrid exclusive function
 function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
-    let voxelGrid2 = voxelGrid;
     let emptyVoxel = null;
     let currentVoxel = null;
     const allHandles = Object.keys(voxelGrid.modelDict).map(key =>
         key.split(',').map(Number)
     );
 
-    // Fill Shell
-
-    fillModelsSpace(scene, objects, voxelGrid2);
+    fillModelsSpace(scene, objects, voxelGrid);
 
     // while (voxelGrid.getRemainingVoxels() > 0) {
 
@@ -321,7 +318,7 @@ function fillModelsSpace(scene, objects, voxelGrid) {
         for (let j = 0; j < voxelGrid.grid[0].length; j++) {
             for (let k = 0; k < voxelGrid.grid[0][0].length; k++) {
 
-                if (voxelGrid.grid[i][j][k] != null) {
+                if (voxelGrid.grid[i][j][k].collapsed) {
                     // color except for not found
                     if (debugColor == null) debugColor = colorList[params[0]];
                     let name = voxelGrid.grid[i][j][k].name;

@@ -38,7 +38,7 @@ export class VoxelGrid {
         );
         this.modelDict = dictionary;
         this.unstableVoxels = [];
-
+        
         this.clusterArchive = new VoxelClusterArchive();
         this.emptyVoxels = 0;
         this.walkableVoxels = 0;
@@ -46,10 +46,19 @@ export class VoxelGrid {
         this.totalVoxels = this.grid[0][0].length * this.grid[0].length * this.grid.length;
         this.filledVoxels = 0;
 
-        this.initializeShell();
+        this.initializeEmptyGrid();
+        this.generateShell();
     }
 
-    initializeShell() {
+    initializeEmptyGrid() {
+        for (let i = 0; i < this.size; i++)
+            for (let j = 0; j < this.height; j++)
+                for (let k = 0; k < this.size; k++)
+                    // x, y, z, name = null, rotation = null, handles = null, states = null
+                    this.addVoxel(i, j, k, null, null, null, Object.keys(this.modelDict));
+    }
+
+    generateShell() {
         for (let i = 0; i < this.size; i++)
             for (let j = 0; j < this.height; j++)
                 for (let k = 0; k < this.size; k++)
@@ -60,10 +69,16 @@ export class VoxelGrid {
                         j == this.height - 1 ||  //This line is the top
                         k == 0 ||
                         k == this.size - 1)
-                        this.addVoxel(i, j, k, 99, 0, [[1, 1, 1, 1, 1, 1]], [[1, 1, 1, 1, 1, 1]], false);
+                        {
+                            this.grid[i][j][k].name = "99";
+                            this.grid[i][j][k].rotation = 0;
+                            this.grid[i][j][k].handles = [[1, 1, 1, 1, 1, 1]];
+                            this.grid[i][j][k].states =  [[1, 1, 1, 1, 1, 1]];
+                            this.grid[i][j][k].collapsed = true;
+                        }
     }
 
-    addVoxel(x, y, z, name, rotation, handles, states, matchFailed) {
+    addVoxel(x, y, z, name = null, rotation, handles = null, states, matchFailed) {
         if (this.isWithinBounds(x, y, z) && this.isEmpty(x, y, z)) {
             const voxel = new Voxel(
                 x,
