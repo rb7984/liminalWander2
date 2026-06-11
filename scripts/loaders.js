@@ -160,7 +160,6 @@ async function loadCSV() {
         });
 
         return invertedDict;
-
     } catch (error) {
         console.error("Error loading CSV:", error);
     }

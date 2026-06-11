@@ -7,8 +7,8 @@ class Voxel {
         this.name = name;
         this.rotation = rotation;
         this.collapsed = false;
-        //East, West, North, South, Up, Down
-        // this.handles = handles;
+        //East, West, Up, Down, South, North
+        this.handles = null;
         if (states.length == 1) {
             this.handles = states[0];
             this.collapsed = true;
@@ -37,13 +37,14 @@ export class VoxelGrid {
             )
         );
         this.modelDict = dictionary;
-        this.unstableVoxels = [];
+        this.allStates = Object.keys(this.modelDict).map(a => a.split(','));
         
+        this.totalVoxels = this.grid[0][0].length * this.grid[0].length * this.grid.length;
         this.clusterArchive = new VoxelClusterArchive();
         this.emptyVoxels = 0;
         this.walkableVoxels = 0;
         this.failedVoxel = 0;
-        this.totalVoxels = this.grid[0][0].length * this.grid[0].length * this.grid.length;
+        this.unstableVoxels = [];
         this.filledVoxels = 0;
 
         this.initializeEmptyGrid();
@@ -55,7 +56,7 @@ export class VoxelGrid {
             for (let j = 0; j < this.height; j++)
                 for (let k = 0; k < this.size; k++)
                     // x, y, z, name = null, rotation = null, handles = null, states = null
-                    this.addVoxel(i, j, k, null, null, null, Object.keys(this.modelDict));
+                    this.addVoxel(i, j, k, null, null, null, this.allStates);
     }
 
     generateShell() {
@@ -70,11 +71,9 @@ export class VoxelGrid {
                         k == 0 ||
                         k == this.size - 1)
                         {
-                            this.grid[i][j][k].name = "99";
-                            this.grid[i][j][k].rotation = 0;
-                            this.grid[i][j][k].handles = [[1, 1, 1, 1, 1, 1]];
                             this.grid[i][j][k].states =  [[1, 1, 1, 1, 1, 1]];
-                            this.grid[i][j][k].collapsed = true;
+
+                            this.collapse(this.grid[i][j][k]);
                         }
     }
 
@@ -128,19 +127,55 @@ export class VoxelGrid {
         }
     }
 
-    getNeighbours(voxel) {
-        let neighbours = [];
+    // getNeighbours(voxel) {
+    //     let neighbours = [];
 
-        if (voxel.x < this.size - 1) neighbours.push([this.grid[voxel.x + 1][voxel.y][voxel.z], 0, null]); // East
-        if (voxel.x > 0) neighbours.push([this.grid[voxel.x - 1][voxel.y][voxel.z], 1, null]); // West
+    //     if (voxel.x < this.size - 1) neighbours.push([this.grid[voxel.x + 1][voxel.y][voxel.z], 0, null]); // East
+    //     if (voxel.x > 0) neighbours.push([this.grid[voxel.x - 1][voxel.y][voxel.z], 1, null]); // West
 
-        if (voxel.y < this.height - 1) neighbours.push([this.grid[voxel.x][voxel.y + 1][voxel.z], 2, null]); // Up
-        if (voxel.y > 0) neighbours.push([this.grid[voxel.x][voxel.y - 1][voxel.z], 3, null]); // Down
+    //     if (voxel.y < this.height - 1) neighbours.push([this.grid[voxel.x][voxel.y + 1][voxel.z], 2, null]); // Up
+    //     if (voxel.y > 0) neighbours.push([this.grid[voxel.x][voxel.y - 1][voxel.z], 3, null]); // Down
 
-        if (voxel.z < this.size - 1) neighbours.push([this.grid[voxel.x][voxel.y][voxel.z + 1], 4, null]); // South
-        if (voxel.z > 0) neighbours.push([this.grid[voxel.x][voxel.y][voxel.z - 1], 5, null]); // North
+    //     if (voxel.z < this.size - 1) neighbours.push([this.grid[voxel.x][voxel.y][voxel.z + 1], 4, null]); // South
+    //     if (voxel.z > 0) neighbours.push([this.grid[voxel.x][voxel.y][voxel.z - 1], 5, null]); // North
 
-        return neighbours;
+    //     return neighbours;
+    // }
+
+    removeNeighbourhHandles(voxel)
+    {
+        if (voxel.x < this.size - 1)
+            {
+                let neighbourEast = this.grid[voxel.x + 1][voxel.y][voxel.z]; // East
+                neighbourEast.states = neighbourEast.states.filter(l => Number(l[1]) !== Number(voxel.handles[0]));
+            }
+        if (voxel.x > 0)
+            {
+                let neighbourWest = this.grid[voxel.x - 1][voxel.y][voxel.z]; // West
+                neighbourWest.states = neighbourWest.states.filter(l => Number(l[0]) !== Number(voxel.handles[1]));
+            }
+
+        if (voxel.y < this.height - 1)
+            {
+                let neighbourUp = this.grid[voxel.x][voxel.y + 1][voxel.z]; // Up
+                neighbourUp.states = neighbourUp.states.filter(l => Number(l[3]) !== Number(voxel.handles[2]));
+            }
+        if (voxel.y > 0)
+            {
+                let neighbourDown = this.grid[voxel.x][voxel.y - 1][voxel.z]; // Down
+                neighbourDown.states = neighbourDown.states.filter(l => Number(l[2]) !== Number(voxel.handles[3]));
+            }
+
+        if (voxel.z < this.size - 1)
+            {
+                let neighbourSouth = this.grid[voxel.x][voxel.y][voxel.z + 1]; // South
+                neighbourSouth.states = neighbourSouth.states.filter(l => Number(l[5]) !== Number(voxel.handles[4]));
+            }
+        if (voxel.z > 0)
+            {
+                let neighbourNorth = this.grid[voxel.x][voxel.y][voxel.z - 1]; // North
+                neighbourNorth.states = neighbourNorth.states.filter(l => Number(l[4]) !== Number(voxel.handles[5]));
+            }
     }
 
     getRemainingVoxels() {
@@ -160,6 +195,18 @@ export class VoxelGrid {
     collapse(voxel) {
         if (voxel.states.length == 1) {
             voxel.handles = voxel.states[0];
+            this.removeNeighbourhHandles(voxel);
+
+            voxel.collapsed = true;
+
+            let matches = this.modelDict[voxel.handles];
+
+            let match = matches[Math.floor(Math.random() * matches.length)];
+
+            let params = match.split('-');
+
+            voxel.name = params[0];
+            voxel.rotation = params[1];
         }
     }
 
