@@ -25,6 +25,24 @@ class Voxel {
 
         return this.possibleStates.length !== previousCount;
     }
+
+    collapse(voxelGrid) {
+        if (this.states.length == 1) {
+            this.handles = this.states[0];
+            voxelGrid.removeNeighbourhHandles(this);
+
+            this.collapsed = true;
+
+            let matches = voxelGrid.modelDict[this.handles];
+
+            let match = matches[Math.floor(Math.random() * matches.length)];
+
+            let params = match.split('-');
+
+            this.name = params[0];
+            this.rotation = params[1];
+        }
+    }
 }
 
 export class VoxelGrid {
@@ -41,16 +59,42 @@ export class VoxelGrid {
 
         this.totalVoxels = this.grid[0][0].length * this.grid[0].length * this.grid.length;
         this.clusterArchive = new VoxelClusterArchive();
-        this.emptyVoxels = 0;
-        this.walkableVoxels = 0;
+        // this.walkableVoxels = 0;
         this.failedVoxel = 0;
-        this.unstableVoxels = [];
+        this.uncollapsedVoxels = [];
         this.filledVoxels = 0;
 
         this.initializeEmptyGrid();
         this.generateShell();
 
+        this.startEngine();
+
         this.getInfo();
+    }
+
+    addVoxel(x, y, z, name = null, rotation, handles = null, states, matchFailed) {
+        if (this.isWithinBounds(x, y, z) && this.isEmpty(x, y, z)) {
+            const voxel = new Voxel(
+                x,
+                y,
+                z,
+                name,
+                rotation,
+                handles,
+                states
+            );
+
+            this.grid[x][y][z] = voxel;
+
+            if (matchFailed) this.failedVoxel++;
+
+            this.filledVoxels++;
+
+            if (!voxel.collapsed) this.uncollapsedVoxels.push(voxel);
+            return voxel;
+        }
+
+        return null;
     }
 
     initializeEmptyGrid() {
@@ -74,33 +118,14 @@ export class VoxelGrid {
                         k == this.size - 1) {
                         this.grid[i][j][k].states = [[1, 1, 1, 1, 1, 1]];
 
-                        this.collapse(this.grid[i][j][k]);
+                        this.grid[i][j][k].collapse(this);
+
+                        this.uncollapsedVoxels.splice(this.uncollapsedVoxels.indexOf(this.grid[i][j][k]), 1);
                     }
     }
 
-    addVoxel(x, y, z, name = null, rotation, handles = null, states, matchFailed) {
-        if (this.isWithinBounds(x, y, z) && this.isEmpty(x, y, z)) {
-            const voxel = new Voxel(
-                x,
-                y,
-                z,
-                name,
-                rotation,
-                handles,
-                states
-            );
+    startEngine() {
 
-            this.grid[x][y][z] = voxel;
-
-            if (matchFailed) this.failedVoxel++;
-
-            this.filledVoxels++;
-
-            if (voxel.collapsed) this.collapsedVoxels++;
-            return voxel;
-        }
-
-        return null;
     }
 
     propagate(voxel) {
@@ -188,24 +213,6 @@ export class VoxelGrid {
 
     isEmpty(x, y, z) {
         return this.grid[x] && this.grid[x][y] && this.grid[x][y][z] === null;
-    }
-
-    collapse(voxel) {
-        if (voxel.states.length == 1) {
-            voxel.handles = voxel.states[0];
-            this.removeNeighbourhHandles(voxel);
-
-            voxel.collapsed = true;
-
-            let matches = this.modelDict[voxel.handles];
-
-            let match = matches[Math.floor(Math.random() * matches.length)];
-
-            let params = match.split('-');
-
-            voxel.name = params[0];
-            voxel.rotation = params[1];
-        }
     }
 
     // TODO: Radar only looks back now, but there could be a different assemblage order and in that case radar should be looking in all directions

@@ -270,11 +270,10 @@ function fillVoxelSpace(scene, objects, voxelGrid) {
     // }
 
     window.DebugWrite("Voxels", voxelGrid.grid.length + ", " + voxelGrid.grid[0].length + ", " + voxelGrid.grid[0][0].length);
-    window["DebugWrite"]("Empty Voxels", voxelGrid.emptyVoxels);
-    window["DebugWrite"]("Walkable Voxels", voxelGrid.walkableVoxels);
-    window["DebugWrite"]("Failed Voxels", voxelGrid.failedVoxel);
+    // window["DebugWrite"]("Walkable Voxels", voxelGrid.walkableVoxels);
+    // window["DebugWrite"]("Failed Voxels", voxelGrid.failedVoxel);
     window["DebugWrite"]("Total Voxels", voxelGrid.totalVoxels);
-    window["DebugWrite"]("Filled Voxels", voxelGrid.filledVoxels);
+    window["DebugWrite"]("Uncollapsed Voxels", voxelGrid.uncollapsedVoxels.length);
 
     return emptyVoxel;
 }
@@ -350,11 +349,6 @@ function fillModelsSpace(scene, objects, voxelGrid) {
             }
         }
     }
-
-    window.DebugWrite("Voxels", voxelGrid.grid.length + ", " + voxelGrid.grid[0].length + ", " + voxelGrid.grid[0][0].length);
-    window["DebugWrite"]("Empty Voxels", voxelGrid.emptyVoxels);
-    window["DebugWrite"]("Walkable Voxels", voxelGrid.walkableVoxels);
-    window["DebugWrite"]("Failed Voxels", voxelGrid.failedVoxel);
 
     return emptyVoxel;
 }
