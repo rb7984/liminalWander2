@@ -38,7 +38,7 @@ export class VoxelGrid {
         );
         this.modelDict = dictionary;
         this.allStates = Object.keys(this.modelDict).map(a => a.split(','));
-        
+
         this.totalVoxels = this.grid[0][0].length * this.grid[0].length * this.grid.length;
         this.clusterArchive = new VoxelClusterArchive();
         this.emptyVoxels = 0;
@@ -49,6 +49,8 @@ export class VoxelGrid {
 
         this.initializeEmptyGrid();
         this.generateShell();
+
+        this.getInfo();
     }
 
     initializeEmptyGrid() {
@@ -69,12 +71,11 @@ export class VoxelGrid {
                         j == 0 ||
                         j == this.height - 1 ||  //This line is the top
                         k == 0 ||
-                        k == this.size - 1)
-                        {
-                            this.grid[i][j][k].states =  [[1, 1, 1, 1, 1, 1]];
+                        k == this.size - 1) {
+                        this.grid[i][j][k].states = [[1, 1, 1, 1, 1, 1]];
 
-                            this.collapse(this.grid[i][j][k]);
-                        }
+                        this.collapse(this.grid[i][j][k]);
+                    }
     }
 
     addVoxel(x, y, z, name = null, rotation, handles = null, states, matchFailed) {
@@ -127,6 +128,10 @@ export class VoxelGrid {
         }
     }
 
+    getInfo() {
+        this.emptyVoxels = this.grid.flat(2).filter(obj => obj && obj.collapsed === false).length;
+    }
+
     // getNeighbours(voxel) {
     //     let neighbours = [];
 
@@ -142,40 +147,33 @@ export class VoxelGrid {
     //     return neighbours;
     // }
 
-    removeNeighbourhHandles(voxel)
-    {
-        if (voxel.x < this.size - 1)
-            {
-                let neighbourEast = this.grid[voxel.x + 1][voxel.y][voxel.z]; // East
-                neighbourEast.states = neighbourEast.states.filter(l => Number(l[1]) !== Number(voxel.handles[0]));
-            }
-        if (voxel.x > 0)
-            {
-                let neighbourWest = this.grid[voxel.x - 1][voxel.y][voxel.z]; // West
-                neighbourWest.states = neighbourWest.states.filter(l => Number(l[0]) !== Number(voxel.handles[1]));
-            }
+    removeNeighbourhHandles(voxel) {
+        if (voxel.x < this.size - 1) {
+            let neighbourEast = this.grid[voxel.x + 1][voxel.y][voxel.z]; // East
+            neighbourEast.states = neighbourEast.states.filter(l => Number(l[1]) !== Number(voxel.handles[0]));
+        }
+        if (voxel.x > 0) {
+            let neighbourWest = this.grid[voxel.x - 1][voxel.y][voxel.z]; // West
+            neighbourWest.states = neighbourWest.states.filter(l => Number(l[0]) !== Number(voxel.handles[1]));
+        }
 
-        if (voxel.y < this.height - 1)
-            {
-                let neighbourUp = this.grid[voxel.x][voxel.y + 1][voxel.z]; // Up
-                neighbourUp.states = neighbourUp.states.filter(l => Number(l[3]) !== Number(voxel.handles[2]));
-            }
-        if (voxel.y > 0)
-            {
-                let neighbourDown = this.grid[voxel.x][voxel.y - 1][voxel.z]; // Down
-                neighbourDown.states = neighbourDown.states.filter(l => Number(l[2]) !== Number(voxel.handles[3]));
-            }
+        if (voxel.y < this.height - 1) {
+            let neighbourUp = this.grid[voxel.x][voxel.y + 1][voxel.z]; // Up
+            neighbourUp.states = neighbourUp.states.filter(l => Number(l[3]) !== Number(voxel.handles[2]));
+        }
+        if (voxel.y > 0) {
+            let neighbourDown = this.grid[voxel.x][voxel.y - 1][voxel.z]; // Down
+            neighbourDown.states = neighbourDown.states.filter(l => Number(l[2]) !== Number(voxel.handles[3]));
+        }
 
-        if (voxel.z < this.size - 1)
-            {
-                let neighbourSouth = this.grid[voxel.x][voxel.y][voxel.z + 1]; // South
-                neighbourSouth.states = neighbourSouth.states.filter(l => Number(l[5]) !== Number(voxel.handles[4]));
-            }
-        if (voxel.z > 0)
-            {
-                let neighbourNorth = this.grid[voxel.x][voxel.y][voxel.z - 1]; // North
-                neighbourNorth.states = neighbourNorth.states.filter(l => Number(l[4]) !== Number(voxel.handles[5]));
-            }
+        if (voxel.z < this.size - 1) {
+            let neighbourSouth = this.grid[voxel.x][voxel.y][voxel.z + 1]; // South
+            neighbourSouth.states = neighbourSouth.states.filter(l => Number(l[5]) !== Number(voxel.handles[4]));
+        }
+        if (voxel.z > 0) {
+            let neighbourNorth = this.grid[voxel.x][voxel.y][voxel.z - 1]; // North
+            neighbourNorth.states = neighbourNorth.states.filter(l => Number(l[4]) !== Number(voxel.handles[5]));
+        }
     }
 
     getRemainingVoxels() {

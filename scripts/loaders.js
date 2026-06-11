@@ -166,7 +166,7 @@ async function loadCSV() {
 }
 
 //TODO move this in VoxelGrid exclusive function
-function fillVoxelSpace(scene, objects, voxelGrid, gridSize, height) {
+function fillVoxelSpace(scene, objects, voxelGrid) {
     let emptyVoxel = null;
     let currentVoxel = null;
     const allHandles = Object.keys(voxelGrid.modelDict).map(key =>

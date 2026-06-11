@@ -152,6 +152,7 @@ window.addEventListener('resize', () => {
 //#endregion
 
 //#region Debug Window
+//TODO move to dedicated section with all keyboard commands
 (function () {
     // Creazione del contenitore CSS
     const style = document.createElement('style');
