@@ -125,7 +125,23 @@ export class VoxelGrid {
     }
 
     startEngine() {
+        while (this.uncollapsedVoxels.length > 0) {
 
+            this.uncollapsedVoxels.sort(l => l.states.length);
+
+            if (this.uncollapsedVoxels[0].states.length > 0) {
+                this.uncollapsedVoxels[0].states = [this.uncollapsedVoxels[0].states[Math.floor(Math.random() * this.uncollapsedVoxels[0].states.length)]];
+
+                this.uncollapsedVoxels[0].collapse(this);
+
+                this.removeNeighbourhHandles(this.uncollapsedVoxels[0]);
+            }
+            else {
+                console.log("Couldn't find match for " + this.uncollapsedVoxels[0]);
+            }
+
+            this.uncollapsedVoxels.splice(0, 1);
+        }
     }
 
     propagate(voxel) {
@@ -157,21 +173,6 @@ export class VoxelGrid {
         this.emptyVoxels = this.grid.flat(2).filter(obj => obj && obj.collapsed === false).length;
     }
 
-    // getNeighbours(voxel) {
-    //     let neighbours = [];
-
-    //     if (voxel.x < this.size - 1) neighbours.push([this.grid[voxel.x + 1][voxel.y][voxel.z], 0, null]); // East
-    //     if (voxel.x > 0) neighbours.push([this.grid[voxel.x - 1][voxel.y][voxel.z], 1, null]); // West
-
-    //     if (voxel.y < this.height - 1) neighbours.push([this.grid[voxel.x][voxel.y + 1][voxel.z], 2, null]); // Up
-    //     if (voxel.y > 0) neighbours.push([this.grid[voxel.x][voxel.y - 1][voxel.z], 3, null]); // Down
-
-    //     if (voxel.z < this.size - 1) neighbours.push([this.grid[voxel.x][voxel.y][voxel.z + 1], 4, null]); // South
-    //     if (voxel.z > 0) neighbours.push([this.grid[voxel.x][voxel.y][voxel.z - 1], 5, null]); // North
-
-    //     return neighbours;
-    // }
-
     removeNeighbourhHandles(voxel) {
         if (voxel.x < this.size - 1) {
             let neighbourEast = this.grid[voxel.x + 1][voxel.y][voxel.z]; // East
@@ -199,10 +200,6 @@ export class VoxelGrid {
             let neighbourNorth = this.grid[voxel.x][voxel.y][voxel.z - 1]; // North
             neighbourNorth.states = neighbourNorth.states.filter(l => Number(l[4]) !== Number(voxel.handles[5]));
         }
-    }
-
-    getRemainingVoxels() {
-        return this.totalVoxels - this.filledVoxels;
     }
 
     isWithinBounds(x, y, z) {

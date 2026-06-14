@@ -173,115 +173,6 @@ function fillVoxelSpace(scene, objects, voxelGrid) {
         key.split(',').map(Number)
     );
 
-    fillModelsSpace(scene, objects, voxelGrid);
-
-    // while (voxelGrid.getRemainingVoxels() > 0) {
-
-    // }
-    // i=x; j=z; k=y
-    // for (let j = 0; j < height; j++) {
-    //     for (let i = 0; i < gridSize; i++) {
-    //         for (let k = 0; k < gridSize; k++) {
-    //             // radar return the constraints contextual to the new voxel. e.g. returns the west constraint based on the east handle of the i-1 voxel
-    //             let constraints = voxelGrid.radar(i, j, k);
-    //             let match = voxelGrid.matcher(constraints);
-    //             let dictionaryKey = match ? match[0] : null;
-    //             let handles = match ? match[1] : null;
-    //             let matchFailed = !match;
-
-    //             // match not found - red 0-0
-    //             let debugColor = dictionaryKey == null ? new THREE.Color('red') : null;
-
-    //             // TODO here for default non matching
-    //             if (dictionaryKey == null) {
-    //                 dictionaryKey = defaultBlock.toString() + "-0";
-
-    //                 handles = [0, 0, 0, 0, 0, 0];
-    //             }
-
-    //             if (
-    //                 i == 0 ||
-    //                 i == gridSize - 1 ||
-    //                 j == 0 ||
-    //                 j == height - 1 ||  //This line is the top
-    //                 k == 0 ||
-    //                 k == gridSize - 1) {
-    //                 dictionaryKey = "0-0";
-    //                 handles = [1, 1, 1, 1, 1, 1];
-    //             }
-
-    //             console.log("Voxel (" + i + "," + j + "," + k + ")");
-    //             console.log(dictionaryKey);
-    //             console.log(handles);
-    //             // match found (forced/not)
-    //             let params = dictionaryKey.split("-").map(Number);
-
-    //             //TODO define voxel outside if-else and .addVoxel() outside as well // or get rid of if else
-    //             if (params[0] == 99) {
-    //                 let voxel = voxelGrid.addVoxel(i, j, k, "99", "0", [0, 0, 0, 0, 0, 0], matchFailed);
-    //                 // console.log("constraints: " + constraints);
-    //                 // console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
-    //                 // console.log("---------------------");
-
-    //                 if (emptyVoxel == null) emptyVoxel = [i, j, k];
-
-    //                 voxelGrid.updateClusters(voxel);
-    //             }
-    //             else {
-    //                 // color except for not found
-    //                 if (debugColor == null) debugColor = colorList[params[0]];
-
-    //                 let object = objects[params[0]];
-    //                 let rotationIndex = params[1];
-
-    //                 // console.log("constraints: " + constraints);
-    //                 // console.log("Choosen block: " + params + "; handles: " + voxelGrid.getDictValues(dictionaryKey));
-    //                 // console.log("---------------------");
-
-    //                 if (voxelGrid.isEmpty(i, j, k)) {
-    //                     let model = object.model.clone();
-    //                     let name = object.name;
-
-    //                     model.traverse((child) => {
-    //                         if (child.isMesh) {
-    //                             child.castShadow = true;
-    //                             child.receiveShadow = true;
-    //                             model.rotation.y = rotationIndex * Math.PI / 2;
-    //                             if (debugMode) child.material = new THREE.MeshStandardMaterial({ color: debugColor });
-    //                             // else child.material.map = texture;
-    //                         }
-    //                     });
-
-    //                     let voxel = voxelGrid.addVoxel(i, j, k, name, rotationIndex, handles, matchFailed);
-    //                     if (voxel) {
-    //                         model.position.set(i, j, k);
-    //                         scene.add(model);
-
-    //                         voxelGrid.updateClusters(voxel);
-    //                     }
-    //                 }
-    //             }
-    //             if (debugMode) {
-    //                 debugPoints(i, j, k, scene);
-    //                 debugText(i, j, k, dictionaryKey, constraints, scene);
-    //             }
-    //         }
-    //     }
-    // }
-
-    window.DebugWrite("Voxels", voxelGrid.grid.length + ", " + voxelGrid.grid[0].length + ", " + voxelGrid.grid[0][0].length);
-    // window["DebugWrite"]("Walkable Voxels", voxelGrid.walkableVoxels);
-    // window["DebugWrite"]("Failed Voxels", voxelGrid.failedVoxel);
-    window["DebugWrite"]("Total Voxels", voxelGrid.totalVoxels);
-    window["DebugWrite"]("Uncollapsed Voxels", voxelGrid.uncollapsedVoxels.length);
-
-    return emptyVoxel;
-}
-
-//TODO move this in VoxelGrid exclusive function
-function fillModelsSpace(scene, objects, voxelGrid) {
-    let emptyVoxel = null;
-
     //#region Texture and colors Setup
     let colorList = [
         new THREE.Color('skyblue'), // 0
@@ -320,7 +211,7 @@ function fillModelsSpace(scene, objects, voxelGrid) {
                     // color except for not found
                     if (debugColor == null) debugColor = colorList[params[0]];
                     let name = voxelGrid.grid[i][j][k].name;
-                    
+
                     let objectIndex = name == "99" ? 0 : name;
                     let object = objects[objectIndex];
                     let rotationIndex = voxelGrid.grid[i][j][k].rotation;
@@ -349,6 +240,12 @@ function fillModelsSpace(scene, objects, voxelGrid) {
             }
         }
     }
+
+    window.DebugWrite("Voxels", voxelGrid.grid.length + ", " + voxelGrid.grid[0].length + ", " + voxelGrid.grid[0][0].length);
+    // window["DebugWrite"]("Walkable Voxels", voxelGrid.walkableVoxels);
+    // window["DebugWrite"]("Failed Voxels", voxelGrid.failedVoxel);
+    window["DebugWrite"]("Total Voxels", voxelGrid.totalVoxels);
+    window["DebugWrite"]("Uncollapsed Voxels", voxelGrid.uncollapsedVoxels.length);
 
     return emptyVoxel;
 }
