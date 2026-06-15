@@ -229,6 +229,14 @@ function fillVoxelSpace(scene, objects, voxelGrid) {
 
                     // voxelGrid.updateClusters(voxel);
                 }
+                else {
+                    let pointMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                    let pointGeometry = new THREE.SphereGeometry(0.01);
+
+                    let pointMesh = new THREE.Mesh(pointGeometry, pointMaterial);
+                    pointMesh.position.set(i, j, k);
+                    scene.add(pointMesh);
+                }
                 if (debugMode) {
                     debugPoints(i, j, k, scene);
                     debugText(i, j, k, voxelGrid.grid[i][j][k], scene);
@@ -293,7 +301,7 @@ function debugText(i, j, k, voxel, scene) {
     const textToDisplay = voxel.name + "\n" +
         i + "," + j + "," + k + "\n" +
         voxel.handles;
-        const geometry = new TextGeometry(textToDisplay, {
+    const geometry = new TextGeometry(textToDisplay, {
         font: font,
         size: 0.04,
         depth: 0.01,

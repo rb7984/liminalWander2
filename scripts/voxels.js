@@ -56,6 +56,7 @@ export class VoxelGrid {
         );
         this.modelDict = dictionary;
         this.allStates = Object.keys(this.modelDict).map(a => a.split(','));
+        console.log(this.allStates);
         this.collapseQueue = [];
 
         this.initializeEmptyGrid();
