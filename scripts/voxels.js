@@ -123,9 +123,18 @@ export class VoxelGrid {
     generateInterior() {
         while (this.collapseQueue.length > 0) {
 
-            this.collapseQueue.sort(function (a, b) { return a - b });
+            this.collapseQueue.sort((a, b) => {
+                const lenA = a.states?.length || 0;
+                const lenB = b.states?.length || 0;
 
-            let candidate = this.collapseQueue[0];
+                // 1. Se le lunghezze sono diverse, ordina normalmente per lunghezza
+                if (lenA !== lenB) {
+                    return lenA - lenB;
+                }
+
+                // 2. Se le lunghezze sono uguali, ordina in modo casuale (50% di probabilità)
+                return Math.random() - 0.5;
+            });
 
             if (this.collapseQueue[0].states.length > 0) {
                 this.chooseState(this.collapseQueue[0]);
@@ -242,11 +251,11 @@ export class VoxelGrid {
         // this.walkableVoxels = 0;
         this.failedVoxel = this.grid.flat(2).filter(obj => obj && obj.collapsed === false).length;
 
-        for (let i = 0; i < this.size; i++)
-            for (let j = 0; j < this.height; j++)
-                for (let k = 0; k < this.size; k++) {
-                    console.log(i + "-" + j + "-" + k + ": " + this.grid[i][j][k].name);
-                }
+        // for (let i = 0; i < this.size; i++)
+        //     for (let j = 0; j < this.height; j++)
+        //         for (let k = 0; k < this.size; k++) {
+        //             console.log(i + "-" + j + "-" + k + ": " + this.grid[i][j][k].name);
+        //         }
     }
 
     isWithinBounds(x, y, z) {
