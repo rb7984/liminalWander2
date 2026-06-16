@@ -29,7 +29,6 @@ class Voxel {
     collapse(voxelGrid) {
         if (this.states.length == 1) {
             this.handles = this.states[0];
-            voxelGrid.removeNeighbourhHandles(this);
 
             this.collapsed = true;
 
@@ -56,7 +55,7 @@ export class VoxelGrid {
         );
         this.modelDict = dictionary;
         this.allStates = Object.keys(this.modelDict).map(a => a.split(','));
-        console.log(this.allStates);
+
         this.collapseQueue = [];
 
         this.initializeEmptyGrid();
@@ -102,7 +101,7 @@ export class VoxelGrid {
 
                         this.grid[i][j][k].collapse(this);
 
-                        this.removeNeighbourhHandles(this.grid[i][j][k]);
+                        this.removeNeighbourhHandles(this.grid[i][j][k], this.grid[i][j][k].handles, true);
 
                         this.collapseQueue.splice(this.collapseQueue.indexOf(this.grid[i][j][k]), 1);
                     }
@@ -114,11 +113,11 @@ export class VoxelGrid {
             this.collapseQueue.sort(l => l.states.length);
 
             if (this.collapseQueue[0].states.length > 0) {
-                this.collapseQueue[0].states = [this.collapseQueue[0].states[Math.floor(Math.random() * this.collapseQueue[0].states.length)]];
-
+                this.chooseState(this.collapseQueue[0]);
+                // this.collapseQueue[0].states = [this.collapseQueue[0].states[Math.floor(Math.random() * this.collapseQueue[0].states.length)]];
                 this.collapseQueue[0].collapse(this);
 
-                this.removeNeighbourhHandles(this.collapseQueue[0]);
+                this.removeNeighbourhHandles(this.collapseQueue[0], this.collapseQueue[0].handles, true);
             }
             else {
                 console.log("Couldn't find match for " + this.collapseQueue[0]);
@@ -128,40 +127,112 @@ export class VoxelGrid {
         }
     }
 
+    chooseState(voxel) {
+        if (voxel.states.length == 1)
+            voxel.states = [voxel.states[0]];
+        else {
+            let chooser = voxel.states.map(state =>
+                this.removeNeighbourhHandles(voxel, state, false).reduce((partialSum, a) => partialSum + a, 0)
+            );
+
+            let minValue = Math.max(...chooser);
+            console.log(minValue);
+
+            voxel.states = [voxel.states[chooser.indexOf(minValue)]];
+        }
+    }
+
+    removeNeighbourhHandles(voxel, handles, removeTrigger = true) {
+        let counter = [0, 0, 0, 0, 0, 0];
+
+        if (voxel.x < this.size - 1) {
+            let neighbourEast = this.grid[voxel.x + 1][voxel.y][voxel.z]; // East
+            if (!neighbourEast.collapsed) {
+                let updatedStates = neighbourEast.states.filter(l => Number(l[1]) === Number(handles[0]));
+
+                counter[0] = neighbourEast.states.length - updatedStates.length;
+
+                if (removeTrigger)
+                    neighbourEast.states = updatedStates;
+            }
+        }
+        if (voxel.x > 0) {
+            let neighbourWest = this.grid[voxel.x - 1][voxel.y][voxel.z]; // West
+            if (!neighbourWest.collapsed) {
+
+                let updatedStates = neighbourWest.states.filter(l => Number(l[0]) === Number(handles[1]));
+
+                counter[1] = neighbourWest.states.length - updatedStates.length;
+
+                if (removeTrigger)
+                    neighbourWest.states = updatedStates;
+            }
+        }
+
+        if (voxel.y < this.height - 1) {
+            let neighbourUp = this.grid[voxel.x][voxel.y + 1][voxel.z]; // Up
+            if (!neighbourUp.collapsed) {
+
+                let updatedStates = neighbourUp.states.filter(l => Number(l[3]) === Number(handles[2]));
+
+                counter[2] = neighbourUp.states.length - updatedStates.length;
+
+                if (removeTrigger)
+                    neighbourUp.states = updatedStates;
+            }
+        }
+        if (voxel.y > 0) {
+            let neighbourDown = this.grid[voxel.x][voxel.y - 1][voxel.z]; // Down
+            if (!neighbourDown.collapsed) {
+
+                let updatedStates = neighbourDown.states.filter(l => Number(l[2]) === Number(handles[3]));
+
+                counter[3] = neighbourDown.states.length - updatedStates.length;
+
+                if (removeTrigger)
+                    neighbourDown.states = updatedStates;
+            }
+        }
+
+        if (voxel.z < this.size - 1) {
+            let neighbourSouth = this.grid[voxel.x][voxel.y][voxel.z + 1]; // South
+            if (!neighbourSouth.collapsed) {
+
+                let updatedStates = neighbourSouth.states.filter(l => Number(l[5]) === Number(handles[4]));
+
+                counter[4] = neighbourSouth.states.length - updatedStates.length;
+
+                if (removeTrigger)
+                    neighbourSouth.states = updatedStates;
+            }
+        }
+        if (voxel.z > 0) {
+            let neighbourNorth = this.grid[voxel.x][voxel.y][voxel.z - 1]; // North
+            if (!neighbourNorth.collapsed) {
+
+                let updatedStates = neighbourNorth.states.filter(l => Number(l[4]) === Number(handles[5]));
+
+                counter[5] = neighbourNorth.states.length - updatedStates.length;
+
+                if (removeTrigger)
+                    neighbourNorth.states = updatedStates;
+            }
+        }
+
+        return counter;
+    }
+
     getInfo() {
         this.totalVoxels = this.grid[0][0].length * this.grid[0].length * this.grid.length;
         // this.clusterArchive = new VoxelClusterArchive();
         // this.walkableVoxels = 0;
         this.failedVoxel = this.grid.flat(2).filter(obj => obj && obj.collapsed === false).length;
-    }
 
-    removeNeighbourhHandles(voxel) {
-        if (voxel.x < this.size - 1) {
-            let neighbourEast = this.grid[voxel.x + 1][voxel.y][voxel.z]; // East
-            neighbourEast.states = neighbourEast.states.filter(l => Number(l[1]) === Number(voxel.handles[0]));
-        }
-        if (voxel.x > 0) {
-            let neighbourWest = this.grid[voxel.x - 1][voxel.y][voxel.z]; // West
-            neighbourWest.states = neighbourWest.states.filter(l => Number(l[0]) === Number(voxel.handles[1]));
-        }
-
-        if (voxel.y < this.height - 1) {
-            let neighbourUp = this.grid[voxel.x][voxel.y + 1][voxel.z]; // Up
-            neighbourUp.states = neighbourUp.states.filter(l => Number(l[3]) === Number(voxel.handles[2]));
-        }
-        if (voxel.y > 0) {
-            let neighbourDown = this.grid[voxel.x][voxel.y - 1][voxel.z]; // Down
-            neighbourDown.states = neighbourDown.states.filter(l => Number(l[2]) === Number(voxel.handles[3]));
-        }
-
-        if (voxel.z < this.size - 1) {
-            let neighbourSouth = this.grid[voxel.x][voxel.y][voxel.z + 1]; // South
-            neighbourSouth.states = neighbourSouth.states.filter(l => Number(l[5]) === Number(voxel.handles[4]));
-        }
-        if (voxel.z > 0) {
-            let neighbourNorth = this.grid[voxel.x][voxel.y][voxel.z - 1]; // North
-            neighbourNorth.states = neighbourNorth.states.filter(l => Number(l[4]) === Number(voxel.handles[5]));
-        }
+        // for (let i = 0; i < this.size; i++)
+        //     for (let j = 0; j < this.height; j++)
+        //         for (let k = 0; k < this.size; k++) {
+        //             console.log(this.grid[i][j][k].name);
+        //         }
     }
 
     isWithinBounds(x, y, z) {
