@@ -53,6 +53,9 @@ export class VoxelGrid {
                 new Array(size).fill(null)
             )
         );
+
+        this.voxelClusterArchive = new VoxelClusterArchive();
+
         this.modelDict = dictionary;
         this.allStates = Object.keys(this.modelDict).map(a => a.split(','));
 
@@ -62,6 +65,8 @@ export class VoxelGrid {
         this.generateShell();
 
         this.generateInterior();
+
+        this.voxelClusterArchive.parseGrid(this.grid);
 
         this.getInfo();
     }
@@ -94,8 +99,6 @@ export class VoxelGrid {
             , 1 + Math.floor(Math.random() * (this.height - 3))
             , sideIndex > 1 ? (sideIndex == 2 ? 0 : this.size - 1) : 1 + Math.floor(Math.random() * (this.size - 2))]
 
-        console.log(doorIndex)
-
         for (let i = 0; i < this.size; i++)
             for (let j = 0; j < this.height; j++)
                 for (let k = 0; k < this.size; k++)
@@ -127,12 +130,12 @@ export class VoxelGrid {
                 const lenA = a.states?.length || 0;
                 const lenB = b.states?.length || 0;
 
-                // 1. Se le lunghezze sono diverse, ordina normalmente per lunghezza
+                // different lengths
                 if (lenA !== lenB) {
                     return lenA - lenB;
                 }
 
-                // 2. Se le lunghezze sono uguali, ordina in modo casuale (50% di probabilità)
+                // same length, random
                 return Math.random() - 0.5;
             });
 
@@ -278,6 +281,11 @@ export class VoxelGrid {
 
         if (!voxel) return;
     }
+
+    cameraPosition()
+    {
+        return [this.voxelClusterArchive.clusters[0].voxels[0].x, this.voxelClusterArchive.clusters[0].voxels[0].y, this.voxelClusterArchive.clusters[0].voxels[0].z]
+    }
 }
 
 class VoxelCluster {
@@ -285,7 +293,7 @@ class VoxelCluster {
         this.voxels = [voxel];
     }
 
-    AddVoxel(voxel) {
+    addVoxel(voxel) {
         this.voxels.push(voxel);
     }
 }
@@ -295,7 +303,18 @@ export class VoxelClusterArchive {
         this.clusters = [];
     }
 
-    AddCluster(cluster) {
+    addCluster(cluster) {
         this.clusters.push(cluster);
+    }
+
+    parseGrid(voxelGrid) {
+        for (let i = 0; i < voxelGrid.length; i++)
+            for (let j = 1; j < voxelGrid[0].length; j++)
+                for (let k = 0; k < voxelGrid[0][0].length; k++) {
+                    if (voxelGrid[i][j - 1][k].name == null || voxelGrid[i][j][k].name == null) continue;
+
+                    if (voxelGrid[i][j - 1][k].handles[2] == 0 && voxelGrid[i][j][k].name == "99")
+                        this.addCluster(new VoxelCluster(voxelGrid[i][j][k]));
+                }
     }
 }

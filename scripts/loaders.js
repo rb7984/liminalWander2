@@ -24,7 +24,8 @@ export async function initialize(scene, camera, renderer, gridSize, height) {
         fillCatalogUI(models);
 
         if (models.length > 0) {
-            cameraPosition = fillVoxelSpace(scene, models, voxelGrid, gridSize, height);
+            cameraPosition = voxelGrid.cameraPosition();
+            fillVoxelSpace(scene, models, voxelGrid, gridSize, height);
 
             if (cameraPosition == null)
                 cameraPosition = [1, 1, 1];
@@ -167,8 +168,6 @@ async function loadCSV() {
 
 //TODO move this in VoxelGrid exclusive function
 function fillVoxelSpace(scene, objects, voxelGrid) {
-    let emptyVoxel = null;
-
     //#region Texture and colors Setup
     let colorList = [
         new THREE.Color('skyblue'), // 0
@@ -251,9 +250,8 @@ function fillVoxelSpace(scene, objects, voxelGrid) {
     window["DebugWrite"]("Total Voxels", voxelGrid.totalVoxels);
     window["DebugWrite"]("InternalVoxels", (voxelGrid.grid[0][0].length - 2) * (voxelGrid.grid[0].length - 2) * (voxelGrid.grid.length - 2))
     window["DebugWrite"]("Failed Voxels", voxelGrid.failedVoxel);
-    window["DebugWrite"]("Failed on Internal", voxelGrid.failedVoxel / ((voxelGrid.grid[0][0].length - 2) * (voxelGrid.grid[0].length - 2) * (voxelGrid.grid.length - 2)) * 100)
-
-    return emptyVoxel;
+    window["DebugWrite"]("Failed on Internal", voxelGrid.failedVoxel / ((voxelGrid.grid[0][0].length - 2) * (voxelGrid.grid[0].length - 2) * (voxelGrid.grid.length - 2)) * 100);
+    window["DebugWrite"]("Clusters", voxelGrid.voxelClusterArchive.clusters.length);
 }
 
 function debugPoints(i, j, k, scene) {
