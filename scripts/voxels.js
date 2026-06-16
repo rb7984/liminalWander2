@@ -87,6 +87,15 @@ export class VoxelGrid {
     }
 
     generateShell() {
+        let sideIndex = Math.floor(Math.random() * 4);
+
+        let doorIndex = [
+            sideIndex < 2 ? (sideIndex == 0 ? 0 : this.size - 1) : 1 + Math.floor(Math.random() * (this.size - 2))
+            , 1 + Math.floor(Math.random() * (this.height - 3))
+            , sideIndex > 1 ? (sideIndex == 2 ? 0 : this.size - 1) : 1 + Math.floor(Math.random() * (this.size - 2))]
+
+        console.log(doorIndex)
+
         for (let i = 0; i < this.size; i++)
             for (let j = 0; j < this.height; j++)
                 for (let k = 0; k < this.size; k++)
@@ -97,7 +106,11 @@ export class VoxelGrid {
                         j == this.height - 1 ||  //This line is the top
                         k == 0 ||
                         k == this.size - 1) {
-                        this.grid[i][j][k].states = [[1, 1, 1, 1, 1, 1]];
+
+                        if (i == doorIndex[0] && j == doorIndex[1] && k == doorIndex[2])
+                            this.grid[i][j][k].states = [[0, 0, 0, 0, 0, 0]];
+                        else
+                            this.grid[i][j][k].states = [[1, 1, 1, 1, 1, 1]];
 
                         this.grid[i][j][k].collapse(this);
 
@@ -110,7 +123,9 @@ export class VoxelGrid {
     generateInterior() {
         while (this.collapseQueue.length > 0) {
 
-            this.collapseQueue.sort(l => l.states.length);
+            this.collapseQueue.sort(function (a, b) { return a - b });
+
+            let candidate = this.collapseQueue[0];
 
             if (this.collapseQueue[0].states.length > 0) {
                 this.chooseState(this.collapseQueue[0]);
@@ -136,7 +151,6 @@ export class VoxelGrid {
             );
 
             let minValue = Math.max(...chooser);
-            console.log(minValue);
 
             voxel.states = [voxel.states[chooser.indexOf(minValue)]];
         }
@@ -228,11 +242,11 @@ export class VoxelGrid {
         // this.walkableVoxels = 0;
         this.failedVoxel = this.grid.flat(2).filter(obj => obj && obj.collapsed === false).length;
 
-        // for (let i = 0; i < this.size; i++)
-        //     for (let j = 0; j < this.height; j++)
-        //         for (let k = 0; k < this.size; k++) {
-        //             console.log(this.grid[i][j][k].name);
-        //         }
+        for (let i = 0; i < this.size; i++)
+            for (let j = 0; j < this.height; j++)
+                for (let k = 0; k < this.size; k++) {
+                    console.log(i + "-" + j + "-" + k + ": " + this.grid[i][j][k].name);
+                }
     }
 
     isWithinBounds(x, y, z) {

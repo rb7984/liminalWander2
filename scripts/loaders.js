@@ -208,7 +208,8 @@ function fillVoxelSpace(scene, objects, voxelGrid) {
                     if (debugColor == null) debugColor = colorList[params[0]];
                     let name = voxelGrid.grid[i][j][k].name;
 
-                    let objectIndex = name == "99" ? 0 : name;
+                    if (name == "99") continue;
+                    let objectIndex = name;
                     let object = objects[objectIndex];
                     let rotationIndex = voxelGrid.grid[i][j][k].rotation;
 
