@@ -1,4 +1,5 @@
 import { initialize } from './scripts/loaders.js';
+import { GLTFExporter } from 'https://esm.sh/three/examples/jsm/exporters/GLTFExporter.js';
 import { environmentPrimer } from './scripts/environmentPrimer.js';
 import { gridSize, SetGridSize, height, debugMode, ToggleDebugMode, fogMode, ToggleFogMode, setDefaultBlock } from './scripts/globals.js';
 
@@ -117,6 +118,57 @@ document.getElementById("regenerateButton").addEventListener("click", async (eve
 
     await initialize(scene, camera, renderer, gridSize, height);
 })
+//#endregion
+
+//#region Download Model
+function exportScene(sceneToExport) {
+    const exporter = new GLTFExporter();
+
+    const options = {
+        binary: false // true .glb, false .gltf (JSON)
+    };
+
+    exporter.parse(
+        sceneToExport,
+        function (result) {
+            if (result instanceof ArrayBuffer) {
+                // glb
+                saveArrayBuffer(result, 'scene.glb');
+            } else {
+                // gltf
+                const output = JSON.stringify(result, null, 2);
+                saveString(output, 'scene.gltf');
+            }
+        },
+        function (error) {
+            console.error('Something went wrong during export', error);
+        },
+        options
+    );
+}
+
+// .glb
+function saveArrayBuffer(buffer, filename) {
+    const blob = new Blob([buffer], { type: 'application/octet-stream' });
+    save(blob, filename);
+}
+
+// .gltf (JSON)
+function saveString(text, filename) {
+    const blob = new Blob([text], { type: 'text/plain' });
+    save(blob, filename);
+}
+
+function save(blob, filename) {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+}
+
+document.getElementById('downloadButton').addEventListener('click', () => {
+    exportScene(scene); 
+});
 //#endregion
 
 //#region Animation loop

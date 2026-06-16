@@ -1,161 +1,141 @@
 <!DOCTYPE html>
 <html lang="it">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Liminal Wander</title>
-        <link rel="stylesheet" href="style.css" />
-    </head>
 
-    <body>
-        <!--#region Loader  -->
-        <!-- Loader - fade out -->
-        <div id="loader" class = "loader">
-            <img src="models/lw.png" />
-        </div>
-        <!-- Loader - fade in -->
-        <div id="logo" class = "loader">
-            <img src="models/lwBw.png" class= "loader"/>
-        </div>
-        <!--#endregion -->
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liminal Wander</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
 
-        <!--#region Left Panel  -->
-        <button
-            id="leftOpenButton"
-            class="openButton"
-            onclick="openLeftSidePanel()"
-        >
-            ☰
-        </button>
+<body>
+    <!--#region Loader  -->
+    <!-- Loader - fade out -->
+    <div id="loader" class="loader">
+        <img src="models/lw.png" />
+    </div>
+    <!-- Loader - fade in -->
+    <div id="logo" class="loader">
+        <img src="models/lwBw.png" class="loader" />
+    </div>
+    <!--#endregion -->
 
-        <div id="leftSidePanel" class="sidePanel">
-            <a
-                href="javascript:void(0)"
-                class="closeButton"
-                id="leftCloseButton"
-                onclick="closeLeftSidePanel()"
-                >×</a
-            >
+    <!--#region Left Panel  -->
+    <button id="leftOpenButton" class="openButton" onclick="openLeftSidePanel()">
+        ☰
+    </button>
 
-            <a href="about.html">About</a>
-            <a href="contacts.html">Contacts</a>
-        </div>
-        <!--#endregion -->
+    <div id="leftSidePanel" class="sidePanel">
+        <a href="javascript:void(0)" class="closeButton" id="leftCloseButton" onclick="closeLeftSidePanel()">×</a>
 
-        <!--#region Right Panel  -->
-        <button
-            id="rightOpenButton"
-            class="openButton"
-            onclick="openRightSidePanel()"
-        >
-            »
-        </button>
+        <a href="about.html">About</a>
+        <a href="contacts.html">Contacts</a>
+    </div>
+    <!--#endregion -->
 
-        <div id="rightSidePanel" class="sidePanel">
-            <!-- Close Button -->
-            <a
-                href="javascript:void(0)"
-                class="closeButton"
-                id="rightCloseButton"
-                onclick="closeRightSidePanel()"
-                >×</a
-            >
+    <!--#region Right Panel  -->
+    <button id="rightOpenButton" class="openButton" onclick="openRightSidePanel()">
+        »
+    </button>
 
-            <!-- Collapsible - Advanced Settings -->
-            <div class="general-SubSidePanel">
-                <button type="button" class="collapsible">
-                    Advanced Settings
-                </button>
-                <div class="content">
-                    <!-- Grid Size Change -->
-                    <div class="inputGroup">
-                        <label for="gridSizeInput">Grid Size:</label>
-                        <input
-                            type="number"
-                            id="gridSizeInput"
-                            value="5"
-                            min="1"
-                        />
-                    </div>
+    <div id="rightSidePanel" class="sidePanel">
+        <!-- Close Button -->
+        <a href="javascript:void(0)" class="closeButton" id="rightCloseButton" onclick="closeRightSidePanel()">×</a>
 
-                    <!-- Debug View -->
-                    <div class="inputGroup">
-                        <label>Debug Mode:</label>
-                        <input type="checkbox" id="debugModeInput" />
-                    </div>
+        <!-- Collapsible - Advanced Settings -->
+        <div class="general-SubSidePanel">
+            <button type="button" class="collapsible">
+                Advanced Settings
+            </button>
+            <div class="content">
+                <!-- Grid Size Change -->
+                <div class="inputGroup">
+                    <label for="gridSizeInput">Grid Size:</label>
+                    <input type="number" id="gridSizeInput" value="5" min="1" />
+                </div>
 
-                    <!-- Fog Enabler -->
-                    <div class="inputGroup">
-                        <label>Fog:</label>
-                        <input type="checkbox" id="fogInput" checked="true" />
-                    </div>
+                <!-- Debug View -->
+                <div class="inputGroup">
+                    <label>Debug Mode:</label>
+                    <input type="checkbox" id="debugModeInput" />
+                </div>
+
+                <!-- Fog Enabler -->
+                <div class="inputGroup">
+                    <label>Fog:</label>
+                    <input type="checkbox" id="fogInput" checked="true" />
                 </div>
             </div>
+        </div>
 
-            <!-- Non Collapsible - Part Catalog -->
-            <p
-                style="
+        <!-- Non Collapsible - Part Catalog -->
+        <p style="
                     color: rgb(255, 255, 255);
                     font-size: 20px;
                     padding: 0;
                     margin: 0;
-                "
-            >
-                Part Catalog
-            </p>
-            <div id="partCatalog" class="general-SubSidePanel"></div>
+                ">
+            Part Catalog
+        </p>
+        <div id="partCatalog" class="general-SubSidePanel"></div>
 
-            <!-- Non Collapsible - Regenerate Model -->
-            <button type="button" id="regenerateButton">
-                Regenerate Model
-            </button>
-        </div>
-        <!--#endregion -->
+        <!-- Non Collapsible - Regenerate Model -->
+        <button type="button" id="regenerateButton">
+            Regenerate Model
+        </button>
 
-        <!--#region Scripts  -->
-        <script type="module" src="script.js"></script>
+        <!-- Non Collapsible - Download Model -->
+        <button type="button" id="downloadButton">
+            Download Model
+        </button>
+    </div>
+    <!--#endregion -->
 
-        <!-- TODO move this script in its own file -->
-        <!-- Open/Close SidePanels -->
-        <script>
-            function openLeftSidePanel() {
-                document.getElementById("leftSidePanel").classList.add("open");
-            }
+    <!--#region Scripts  -->
+    <script type="module" src="script.js"></script>
 
-            function closeLeftSidePanel() {
-                document
-                    .getElementById("leftSidePanel")
-                    .classList.remove("open");
-            }
+    <!-- TODO move this script in its own file -->
+    <!-- Open/Close SidePanels -->
+    <script>
+        function openLeftSidePanel() {
+            document.getElementById("leftSidePanel").classList.add("open");
+        }
 
-            function openRightSidePanel() {
-                document.getElementById("rightSidePanel").classList.add("open");
-            }
+        function closeLeftSidePanel() {
+            document
+                .getElementById("leftSidePanel")
+                .classList.remove("open");
+        }
 
-            function closeRightSidePanel() {
-                document
-                    .getElementById("rightSidePanel")
-                    .classList.remove("open");
-            }
-        </script>
+        function openRightSidePanel() {
+            document.getElementById("rightSidePanel").classList.add("open");
+        }
 
-        <!-- Collapsibles -->
-        <script>
-            var coll = document.getElementsByClassName("collapsible");
-            var i;
+        function closeRightSidePanel() {
+            document
+                .getElementById("rightSidePanel")
+                .classList.remove("open");
+        }
+    </script>
 
-            for (i = 0; i < coll.length; i++) {
-                coll[i].addEventListener("click", function () {
-                    this.classList.toggle("active");
-                    var content = this.nextElementSibling;
-                    if (content.style.display === "block") {
-                        content.style.display = "none";
-                    } else {
-                        content.style.display = "block";
-                    }
-                });
-            }
-        </script>
-        <!--#endregion -->
-    </body>
+    <!-- Collapsibles -->
+    <script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            });
+        }
+    </script>
+    <!--#endregion -->
+</body>
+
 </html>
