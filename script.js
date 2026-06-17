@@ -2,7 +2,7 @@ import * as THREE from 'https://esm.sh/three';
 import { initialize } from './scripts/loaders.js';
 import { GLTFExporter } from 'https://esm.sh/three/examples/jsm/exporters/GLTFExporter.js';
 import { environmentPrimer } from './scripts/environmentPrimer.js';
-import { gridSize, SetGridSize, height, debugMode, ToggleDebugMode, fogMode, ToggleFogMode, setDefaultBlock } from './scripts/globals.js';
+import { gridSize, SetGridSize, height, debugMode, ToggleDebugMode, fogMode, ToggleFogMode, setDefaultBlock, incrementRoom } from './scripts/globals.js';
 import { movement } from './scripts/movements.js';
 
 //#region Primer
@@ -118,6 +118,12 @@ document.getElementById("regenerateButton").addEventListener("click", async (eve
     document.body.appendChild(renderer.domElement);
 
     await initialize(scene, camera, renderer, gridSize, height);
+
+    let roomCounter = incrementRoom();
+
+    const roomCounterElement = document.getElementById('roomCounter');
+
+    roomCounterElement.textContent = roomCounter;
 })
 //#endregion
 

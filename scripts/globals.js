@@ -54,3 +54,10 @@ export var fogMode = true;
 export function ToggleFogMode(value) {
     fogMode = value;
 }
+
+let roomCounter = 0; 
+
+export function incrementRoom() {
+    roomCounter++;
+    return roomCounter;
+}
