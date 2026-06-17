@@ -1,8 +1,9 @@
 import * as THREE from 'https://esm.sh/three';
 import { OrbitControls } from 'https://esm.sh/three/examples/jsm/controls/OrbitControls.js';
+import { clickMovements } from './movements.js';
 import { Sky } from 'https://esm.sh/three/addons/objects/Sky.js';
 import { MathUtils } from 'https://esm.sh/three';
-import { movement } from './movements.js';
+// import { movement } from './movements.js';
 import { fogMode } from './globals.js';
 
 export function environmentPrimer(debugMode = false) {
@@ -61,23 +62,8 @@ export function environmentPrimer(debugMode = false) {
     //#region Controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.update();
-    //#endregion
 
-    //#region Raycaster
-    const raycaster = new THREE.Raycaster();
-    const direction = new THREE.Vector3();
-    const speed = 0.1;
-
-    function checkCollision(offset = new THREE.Vector3(0, 0, 0)) {
-        camera.getWorldDirection(direction);
-        direction.add(offset).normalize();
-
-        raycaster.set(camera.position, direction);
-        const intersects = raycaster.intersectObjects(scene.children, true);
-        return intersects.length > 0 && intersects[0].distance < 0.3;
-    }
-
-    movement(camera, direction, speed, checkCollision);
+    clickMovements(camera);
     //#endregion
 
     //#region Sky

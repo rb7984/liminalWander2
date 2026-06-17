@@ -1,7 +1,9 @@
+import * as THREE from 'https://esm.sh/three';
 import { initialize } from './scripts/loaders.js';
 import { GLTFExporter } from 'https://esm.sh/three/examples/jsm/exporters/GLTFExporter.js';
 import { environmentPrimer } from './scripts/environmentPrimer.js';
 import { gridSize, SetGridSize, height, debugMode, ToggleDebugMode, fogMode, ToggleFogMode, setDefaultBlock } from './scripts/globals.js';
+import { movement } from './scripts/movements.js';
 
 //#region Primer
 let sceneCameraRenderer = environmentPrimer(debugMode);
@@ -11,8 +13,7 @@ let renderer = sceneCameraRenderer[2];
 
 initialize(scene, camera, renderer, gridSize, height).then(models => {
     if (Array.isArray(models)) {
-        // animate(models);
-        animateWithoutShader();
+        animate();
     } else {
         console.error("Models not loaded correctly", models);
     }
@@ -167,29 +168,34 @@ function save(blob, filename) {
 }
 
 document.getElementById('downloadButton').addEventListener('click', () => {
-    exportScene(scene); 
+    exportScene(scene);
 });
 //#endregion
 
 //#region Animation loop
-// function animate(models) {
-//     requestAnimationFrame(() => animate(models));
+//#region Raycaster
+const raycaster = new THREE.Raycaster();
+const moveDirection = new THREE.Vector3(); // Direzione del movimento
+const raycastDirection = new THREE.Vector3(); // Direzione del raggio
+const speed = 0.05;
+const zeroOffset = new THREE.Vector3(0, 0, 0);
 
-//     models.forEach(({ fadeMaterials }) => {
-//         if (Array.isArray(fadeMaterials)) {
-//             fadeMaterials.forEach((material) => {
-//                 if (material.uniforms.uCameraPosition) {
-//                     material.uniforms.uCameraPosition.value.copy(camera.position);
-//                 }
-//             });
-//         }
-//     });
+function checkCollision(offset = zeroOffset) {
+    camera.getWorldDirection(raycastDirection);
+    raycastDirection.add(offset).normalize();
 
-//     renderer.render(scene, camera);
-// }
+    raycaster.set(camera.position, raycastDirection);
+    const intersects = raycaster.intersectObjects(scene.children, true);
+    return intersects.length > 0 && intersects[0].distance < 0.3;
+}
+//#endregion
 
-function animateWithoutShader() {
-    requestAnimationFrame(animateWithoutShader);
+function animate() {
+    requestAnimationFrame(animate);
+
+    camera.getWorldDirection(moveDirection);
+    movement(camera, moveDirection, speed, checkCollision);
+
     renderer.render(scene, camera);
 }
 

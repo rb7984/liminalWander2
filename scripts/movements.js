@@ -3,37 +3,32 @@ import * as THREE from 'https://esm.sh/three';
 const yAxis = new THREE.Vector3(0, 1, 0);
 const lookAtDir = new THREE.Vector3();
 
-export function movement(camera, direction, speed, checkCollision) {
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'w' && !checkCollision()) {
-            camera.position.addScaledVector(direction, speed);
-        }
-        if (event.key === 's') {
-            camera.position.addScaledVector(direction, -speed);
-        }
-        if (event.key === 'd') {
-            camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -0.08);
-        }
-        if (event.key === 'a') {
-            camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), +0.08);
-        }
-        if (event.key === 'e') {
-            camera.getWorldDirection(lookAtDir);
+const keysPressed = {
+    w: false,
+    a: false,
+    s: false,
+    d: false,
+    e: false
+};
 
-            let sideAxis = new THREE.Vector3().crossVectors(lookAtDir, yAxis).normalize();
-            camera.rotateOnWorldAxis(sideAxis, +0.08);
+export function clickMovements(camera) {
+    document.addEventListener('keydown', (event) => {
+        const key = event.key.toLowerCase();
+        if (key in keysPressed) {
+            keysPressed[key] = true;
         }
+
         if (event.key === 'r') {
             camera.getWorldDirection(lookAtDir);
-            
+
             lookAtDir.y = 0;
             lookAtDir.normalize();
-            
+
             let target = new THREE.Vector3().addVectors(camera.position, lookAtDir);
-            
+
             camera.lookAt(target);
         }
-        
+
         // #region Debug
         // X +
         if (event.key === 'ArrowRight') {
@@ -41,7 +36,7 @@ export function movement(camera, direction, speed, checkCollision) {
         }
         // X -
         if (event.key === 'ArrowLeft') {
-            camera.position.set(camera.position.x -1, camera.position.y, camera.position.z);
+            camera.position.set(camera.position.x - 1, camera.position.y, camera.position.z);
         }
         // Y +
         if (event.key === 'ArrowUp') {
@@ -53,11 +48,11 @@ export function movement(camera, direction, speed, checkCollision) {
         }
         // Z +
         if (event.key === '5') {
-            camera.position.set(camera.position.x, camera.position.y, camera.position.z +1);
+            camera.position.set(camera.position.x, camera.position.y, camera.position.z + 1);
         }
         // Z -
         if (event.key === '8') {
-            camera.position.set(camera.position.x, camera.position.y, camera.position.z -1);
+            camera.position.set(camera.position.x, camera.position.y, camera.position.z - 1);
         }
         // Reset
         if (event.key === 'c') {
@@ -66,4 +61,32 @@ export function movement(camera, direction, speed, checkCollision) {
         }
         //#endregion
     });
+
+    document.addEventListener('keyup', (event) => {
+        const key = event.key.toLowerCase();
+        if (key in keysPressed) {
+            keysPressed[key] = false;
+        }
+    });
 }
+
+export function movement(camera, direction, speed, checkCollision) {
+    if (keysPressed.w && !checkCollision()) {
+        camera.position.addScaledVector(direction, speed);
+    }
+    if (keysPressed.s) {
+        camera.position.addScaledVector(direction, -speed);
+    }
+    if (keysPressed.d) {
+        camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -0.03);
+    }
+    if (keysPressed.a) {
+        camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), +0.03);
+    }
+    if (keysPressed.e) {
+        camera.getWorldDirection(lookAtDir);
+
+        let sideAxis = new THREE.Vector3().crossVectors(lookAtDir, yAxis).normalize();
+        camera.rotateOnWorldAxis(sideAxis, +0.03);
+    }
+};

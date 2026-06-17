@@ -146,9 +146,10 @@ export class VoxelGrid {
                 this.removeNeighbourhHandles(this.collapseQueue[0], this.collapseQueue[0].handles, true);
             }
             else {
-                this.collapseQueue[0].states = [[1, 1, 1, 1, 1, 1]];
-                this.collapseQueue[0].collapse(this);
-                this.removeNeighbourhHandles(this.collapseQueue[0], this.collapseQueue[0].handles, true);
+                //TODO finish logic for non match
+                // this.collapseQueue[0].states = [[0,0,0,0,0,0]];
+                // this.collapseQueue[0].collapse(this);
+                // this.removeNeighbourhHandles(this.collapseQueue[0], this.collapseQueue[0].handles, true);w
 
                 console.log("Couldn't find match for " + this.collapseQueue[0]);
             }
