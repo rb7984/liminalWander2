@@ -39,6 +39,7 @@ const blockMap = {
   "10": 10, "None": 99
 };
 
+//TODO Block logic to be refactored
 export const getDefaultBlock = (value) => blockMap[value] ?? 99;
 
 export const setDefaultBlock = (value) => {defaultBlock = blockMap[value] ?? 99};

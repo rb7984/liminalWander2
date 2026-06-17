@@ -143,10 +143,13 @@ export class VoxelGrid {
                 this.chooseState(this.collapseQueue[0]);
                 // this.collapseQueue[0].states = [this.collapseQueue[0].states[Math.floor(Math.random() * this.collapseQueue[0].states.length)]];
                 this.collapseQueue[0].collapse(this);
-
                 this.removeNeighbourhHandles(this.collapseQueue[0], this.collapseQueue[0].handles, true);
             }
             else {
+                this.collapseQueue[0].states = [[1, 1, 1, 1, 1, 1]];
+                this.collapseQueue[0].collapse(this);
+                this.removeNeighbourhHandles(this.collapseQueue[0], this.collapseQueue[0].handles, true);
+
                 console.log("Couldn't find match for " + this.collapseQueue[0]);
             }
 
@@ -282,8 +285,7 @@ export class VoxelGrid {
         if (!voxel) return;
     }
 
-    cameraPosition()
-    {
+    cameraPosition() {
         return [this.voxelClusterArchive.clusters[0].voxels[0].x, this.voxelClusterArchive.clusters[0].voxels[0].y, this.voxelClusterArchive.clusters[0].voxels[0].z]
     }
 }
@@ -313,8 +315,30 @@ export class VoxelClusterArchive {
                 for (let k = 0; k < voxelGrid[0][0].length; k++) {
                     if (voxelGrid[i][j - 1][k].name == null || voxelGrid[i][j][k].name == null) continue;
 
-                    if (voxelGrid[i][j - 1][k].handles[2] == 0 && voxelGrid[i][j][k].name == "99")
-                        this.addCluster(new VoxelCluster(voxelGrid[i][j][k]));
+                    if (voxelGrid[i][j - 1][k].handles[2] == 0 && voxelGrid[i][j - 1][k].name != "99")
+                        if (this.associateCluster(voxelGrid[i][j][k]))
+                            this.addCluster(new VoxelCluster(voxelGrid[i][j][k]));
                 }
+    }
+
+    associateCluster(voxel) {
+        for (let i = 0; i < this.clusters.length; i++) {
+            // let added = false
+            for (let j = 0; j < this.clusters[i].voxels.length; j++) {
+                // if (added) continue;
+
+                let contiguos = this.clusters[i].voxels[j].x == voxel.x - 1
+                    || this.clusters[i].voxels[j].x == voxel.x + 1
+                    || this.clusters[i].voxels[j].z == voxel.z - 1
+                    || this.clusters[i].voxels[j].z == voxel.z + 1;
+
+                if (contiguos) {
+                    this.clusters[i].voxels.push(voxel);
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }
