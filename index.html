@@ -97,6 +97,14 @@
     </div>
     <!--#endregion -->
 
+    <!--#region Audio-->
+    <audio id="mioAudio">
+        <source src=".\assets\easy-breeze-ra-main-version-33378-02-16.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="btnPlay" onclick="handleMusic()">Music ▶</button>
+    <!--#endregion-->
+
     <!--#region Scripts  -->
     <script type="module" src="script.js"></script>
 
@@ -139,6 +147,22 @@
                     content.style.display = "block";
                 }
             });
+        }
+    </script>
+
+    <!-- Music -->
+    <script>
+        const audio = document.getElementById("mioAudio");
+        const bottone = document.getElementById("btnPlay");
+
+        function handleMusic() {
+            if (audio.paused) {
+                audio.play();
+                bottone.textContent = "Pause ❚❚";
+            } else {
+                audio.pause();
+                bottone.textContent = "Music ▶";
+            }
         }
     </script>
     <!--#endregion -->

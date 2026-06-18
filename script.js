@@ -183,7 +183,7 @@ document.getElementById('downloadButton').addEventListener('click', () => {
 const raycaster = new THREE.Raycaster();
 const moveDirection = new THREE.Vector3(); // Direzione del movimento
 const raycastDirection = new THREE.Vector3(); // Direzione del raggio
-const speed = 0.05;
+const speed = 0.03;
 const zeroOffset = new THREE.Vector3(0, 0, 0);
 
 function checkCollision(offset = zeroOffset) {
