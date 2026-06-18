@@ -226,8 +226,6 @@ function fillVoxelSpace(scene, objects, voxelGrid) {
 
                     model.position.set(i, j, k);
                     scene.add(model);
-
-                    // voxelGrid.updateClusters(voxel);
                 }
                 else {
                     let pointMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
@@ -252,6 +250,7 @@ function fillVoxelSpace(scene, objects, voxelGrid) {
     window["DebugWrite"]("Failed Voxels", voxelGrid.failedVoxel);
     window["DebugWrite"]("Failed on Internal", voxelGrid.failedVoxel / ((voxelGrid.grid[0][0].length - 2) * (voxelGrid.grid[0].length - 2) * (voxelGrid.grid.length - 2)) * 100);
     window["DebugWrite"]("Clusters", voxelGrid.voxelClusterArchive.clusters.length);
+    window["DebugWrite"]("Walkable of first cluster", voxelGrid.voxelClusterArchive.clusters[0].voxels.length);
 }
 
 function debugPoints(i, j, k, scene) {

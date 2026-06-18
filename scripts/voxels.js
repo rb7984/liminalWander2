@@ -66,6 +66,10 @@ export class VoxelGrid {
 
         this.generateInterior();
 
+        this.fillGaps();
+
+        this.generateExit();
+
         this.voxelClusterArchive.parseGrid(this.grid);
 
         this.getInfo();
@@ -92,13 +96,6 @@ export class VoxelGrid {
     }
 
     generateShell() {
-        let sideIndex = Math.floor(Math.random() * 4);
-
-        let doorIndex = [
-            sideIndex < 2 ? (sideIndex == 0 ? 0 : this.size - 1) : 1 + Math.floor(Math.random() * (this.size - 2))
-            , 1 + Math.floor(Math.random() * (this.height - 3))
-            , sideIndex > 1 ? (sideIndex == 2 ? 0 : this.size - 1) : 1 + Math.floor(Math.random() * (this.size - 2))]
-
         for (let i = 0; i < this.size; i++)
             for (let j = 0; j < this.height; j++)
                 for (let k = 0; k < this.size; k++)
@@ -110,10 +107,7 @@ export class VoxelGrid {
                         k == 0 ||
                         k == this.size - 1) {
 
-                        if (i == doorIndex[0] && j == doorIndex[1] && k == doorIndex[2])
-                            this.grid[i][j][k].states = [[0, 0, 0, 0, 0, 0]];
-                        else
-                            this.grid[i][j][k].states = [[1, 1, 1, 1, 1, 1]];
+                        this.grid[i][j][k].states = [[1, 1, 1, 1, 1, 1]];
 
                         this.grid[i][j][k].collapse(this);
 
@@ -141,22 +135,43 @@ export class VoxelGrid {
 
             if (this.collapseQueue[0].states.length > 0) {
                 this.chooseState(this.collapseQueue[0]);
-                // this.collapseQueue[0].states = [this.collapseQueue[0].states[Math.floor(Math.random() * this.collapseQueue[0].states.length)]];
+
                 this.collapseQueue[0].collapse(this);
                 this.removeNeighbourhHandles(this.collapseQueue[0], this.collapseQueue[0].handles, true);
             }
-            else {
-                this.fallback(this.collapseQueue[0]);
-                //TODO finish logic for non match
-                // this.collapseQueue[0].states = [[0,0,0,0,0,0]];
-                // this.collapseQueue[0].collapse(this);
-                // this.removeNeighbourhHandles(this.collapseQueue[0], this.collapseQueue[0].handles, true);w
-
+            else
                 console.log("Couldn't find match for " + this.collapseQueue[0]);
-            }
 
             this.collapseQueue.splice(0, 1);
         }
+    }
+
+    fillGaps() {
+        for (let i = 0; i < this.size; i++)
+            for (let j = 0; j < this.height; j++)
+                for (let k = 0; k < this.size; k++)
+                    if (!this.grid[i][j][k].collapsed) {
+                        this.fallback(this.grid[i][j][k]);
+                    }
+    }
+
+    generateExit() {
+        let sideIndex = Math.floor(Math.random() * 4);
+
+        let doorIndex = [
+            sideIndex < 2 ? (sideIndex == 0 ? 0 : this.size - 1) : 1 + Math.floor(Math.random() * (this.size - 2))
+            , 1 + Math.floor(Math.random() * (this.height - 3))
+            , sideIndex > 1 ? (sideIndex == 2 ? 0 : this.size - 1) : 1 + Math.floor(Math.random() * (this.size - 2))];
+
+        this.grid[doorIndex[0]][doorIndex[1]][doorIndex[2]].states = [[0, 0, 0, 0, 0, 0]];
+        this.grid[doorIndex[0]][doorIndex[1]][doorIndex[2]].collapse(this);
+
+        let internalNext = [doorIndex[0] == 0 ? doorIndex[0] + 1 : (doorIndex[0] == this.size - 1 ? doorIndex[0] - 1 : doorIndex[0]),
+        doorIndex[1],
+        doorIndex[2] == 0 ? doorIndex[2] + 1 : (doorIndex[2] == this.size - 1 ? doorIndex[2] - 1 : doorIndex[2])]
+
+        this.grid[internalNext[0]][internalNext[1]][internalNext[2]].states = [[0, 0, 0, 0, 0, 0]];
+        this.grid[internalNext[0]][internalNext[1]][internalNext[2]].collapse(this);
     }
 
     chooseState(voxel) {
@@ -181,6 +196,27 @@ export class VoxelGrid {
 
             const keyFound = Object.keys(this.modelDict).find(key => {
                 return key.split(',')[3] === voxel.handles[3];
+            });
+
+            const result = keyFound ? this.modelDict[keyFound] : null;
+
+            if (result != null) {
+                let match = result[Math.floor(Math.random() * result.length)];
+
+                let params = match.split('-');
+
+                voxel.name = params[0];
+                voxel.rotation = params[1];
+                voxel.collapsed = true;
+            }
+        }
+        else if (this.grid[voxel.x][voxel.y + 1][voxel.z].handles != null && this.grid[voxel.x][voxel.y + 1][voxel.z].handles[3] != null) {
+
+            voxel.handles = [];
+            voxel.handles[2] = this.grid[voxel.x][voxel.y + 1][voxel.z].handles[3];
+
+            const keyFound = Object.keys(this.modelDict).find(key => {
+                return key.split(',')[2] === voxel.handles[2];
             });
 
             const result = keyFound ? this.modelDict[keyFound] : null;
@@ -279,7 +315,6 @@ export class VoxelGrid {
 
     getInfo() {
         this.totalVoxels = this.grid[0][0].length * this.grid[0].length * this.grid.length;
-        // this.clusterArchive = new VoxelClusterArchive();
         // this.walkableVoxels = 0;
         this.failedVoxel = this.grid.flat(2).filter(obj => obj && obj.collapsed === false).length;
 
