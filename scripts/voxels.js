@@ -146,6 +146,7 @@ export class VoxelGrid {
                 this.removeNeighbourhHandles(this.collapseQueue[0], this.collapseQueue[0].handles, true);
             }
             else {
+                this.fallback(this.collapseQueue[0]);
                 //TODO finish logic for non match
                 // this.collapseQueue[0].states = [[0,0,0,0,0,0]];
                 // this.collapseQueue[0].collapse(this);
@@ -169,6 +170,30 @@ export class VoxelGrid {
             let minValue = Math.max(...chooser);
 
             voxel.states = [voxel.states[chooser.indexOf(minValue)]];
+        }
+    }
+
+    fallback(voxel) {
+        if (this.grid[voxel.x][voxel.y - 1][voxel.z].handles != null && this.grid[voxel.x][voxel.y - 1][voxel.z].handles[2] != null) {
+
+            voxel.handles = [];
+            voxel.handles[3] = this.grid[voxel.x][voxel.y - 1][voxel.z].handles[2];
+
+            const keyFound = Object.keys(this.modelDict).find(key => {
+                return key.split(',')[3] === voxel.handles[3];
+            });
+
+            const result = keyFound ? this.modelDict[keyFound] : null;
+
+            if (result != null) {
+                let match = result[Math.floor(Math.random() * result.length)];
+
+                let params = match.split('-');
+
+                voxel.name = params[0];
+                voxel.rotation = params[1];
+                voxel.collapsed = true;
+            }
         }
     }
 
