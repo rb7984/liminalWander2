@@ -23,22 +23,26 @@ export async function initialize(scene, camera, renderer, gridSize, height) {
         //TODO maybe the UI function should be in script.js instead of nested here
         fillCatalogUI(models);
 
+        let pointMesh = null;
         if (models.length > 0) {
             cameraPosition = voxelGrid.cameraPosition();
             fillVoxelSpace(scene, models, voxelGrid, gridSize, height);
+            pointMesh = placeTransitionMesh(scene, voxelGrid);
 
             if (cameraPosition == null)
                 cameraPosition = [1, 1, 1];
 
             camera.position.set(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
             camera.lookAt(cameraPosition[0] + 1, cameraPosition[1], cameraPosition[2] + 1);
+            
         } else {
             console.error("No models loaded.");
         }
-
-        return models;
+        
+        return { models: models, tMesh: pointMesh };
     } catch (error) {
         console.error("Error during initialization:", error);
+        return { models: [], tMesh: null };
     }
 }
 
@@ -251,6 +255,21 @@ function fillVoxelSpace(scene, objects, voxelGrid) {
     window["DebugWrite"]("Failed on Internal", voxelGrid.failedVoxel / ((voxelGrid.grid[0][0].length - 2) * (voxelGrid.grid[0].length - 2) * (voxelGrid.grid.length - 2)) * 100);
     window["DebugWrite"]("Clusters", voxelGrid.voxelClusterArchive.clusters.length);
     window["DebugWrite"]("Walkable of first cluster", voxelGrid.voxelClusterArchive.clusters[0].voxels.length);
+}
+
+// Transition
+function placeTransitionMesh(scene, voxelGrid) {
+    let transitionMeshPosition = voxelGrid.transitionMeshPosition();
+
+    let pointMaterial = new THREE.MeshBasicMaterial({ color: 0xd77fe3 });
+    let pointGeometry = new THREE.SphereGeometry(0.3);
+
+    let pointMesh = new THREE.Mesh(pointGeometry, pointMaterial);
+    
+    pointMesh.position.set(transitionMeshPosition[0],transitionMeshPosition[1],transitionMeshPosition[2]);
+    scene.add(pointMesh);
+
+    return pointMesh;
 }
 
 function debugPoints(i, j, k, scene) {

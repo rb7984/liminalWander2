@@ -349,6 +349,16 @@ export class VoxelGrid {
     cameraPosition() {
         return [this.voxelClusterArchive.clusters[0].voxels[0].x, this.voxelClusterArchive.clusters[0].voxels[0].y, this.voxelClusterArchive.clusters[0].voxels[0].z]
     }
+
+    transitionMeshPosition()
+    {
+        let index = this.voxelClusterArchive.clusters[0].voxels.length - 1;
+
+        return [
+            this.voxelClusterArchive.clusters[0].voxels[index].x,
+            this.voxelClusterArchive.clusters[0].voxels[index].y,
+            this.voxelClusterArchive.clusters[0].voxels[index].z]
+    }
 }
 
 class VoxelCluster {

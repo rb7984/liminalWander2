@@ -11,8 +11,12 @@ let scene = sceneCameraRenderer[0];
 let camera = sceneCameraRenderer[1];
 let renderer = sceneCameraRenderer[2];
 
-initialize(scene, camera, renderer, gridSize, height).then(models => {
+let transitionMesh = null;
+let transitionFlag = false;
+
+initialize(scene, camera, renderer, gridSize, height).then(({ models, tMesh }) => {
     if (Array.isArray(models)) {
+        transitionMesh = tMesh;
         animate();
     } else {
         console.error("Models not loaded correctly", models);
@@ -107,8 +111,12 @@ document.getElementById("partCatalog").addEventListener('change', async (event) 
 //#endregion
 
 //#region Regenerate Model
-document.getElementById("regenerateButton").addEventListener("click", async (event) => {
-    document.body.removeChild(renderer.domElement);
+document.getElementById("regenerateButton").addEventListener("click", regenerateRoom)
+
+async function regenerateRoom() {
+    if (renderer && renderer.domElement) {
+        document.body.removeChild(renderer.domElement);
+    }
 
     sceneCameraRenderer = environmentPrimer(debugMode);
     scene = sceneCameraRenderer[0];
@@ -117,14 +125,18 @@ document.getElementById("regenerateButton").addEventListener("click", async (eve
 
     document.body.appendChild(renderer.domElement);
 
-    await initialize(scene, camera, renderer, gridSize, height);
+    const { models, tmesh } = await initialize(scene, camera, renderer, gridSize, height);
+
+    transitionMesh = tmesh;
 
     let roomCounter = incrementRoom();
-
     const roomCounterElement = document.getElementById('roomCounter');
+    if (roomCounterElement) {
+        roomCounterElement.textContent = roomCounter;
+    }
 
-    roomCounterElement.textContent = roomCounter;
-})
+    transitionFlag = false;
+}
 //#endregion
 
 //#region Download Model
@@ -202,9 +214,18 @@ function animate() {
     camera.getWorldDirection(moveDirection);
     movement(camera, moveDirection, speed, checkCollision);
 
+    if (transitionMesh && !transitionFlag) {
+        const distanza = camera.position.distanceTo(transitionMesh.position);
+
+        if (distanza < 1) {
+            transitionFlag = true;
+
+            regenerateRoom();
+        }
+    }
+
     renderer.render(scene, camera);
 }
-
 //#endregion
 
 //#region Window Handling
