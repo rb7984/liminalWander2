@@ -125,9 +125,9 @@ async function regenerateRoom() {
 
     document.body.appendChild(renderer.domElement);
 
-    const { models, tmesh } = await initialize(scene, camera, renderer, gridSize, height);
+    const { models, tMesh } = await initialize(scene, camera, renderer, gridSize, height);
 
-    transitionMesh = tmesh;
+    transitionMesh = tMesh;
 
     let roomCounter = incrementRoom();
     const roomCounterElement = document.getElementById('roomCounter');
