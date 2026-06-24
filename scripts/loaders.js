@@ -14,6 +14,7 @@ export async function initialize(scene, camera, renderer, gridSize, height) {
         await loadSharedFont();
         font = getFont();
         const modelDict = await loadCSV();
+        console.log(modelDict);
         let voxelGrid = new VoxelGrid(gridSize, height, modelDict);
         let cameraPosition = [0, 0, 0]
 
@@ -60,7 +61,9 @@ function loadModels(renderer, camera) {
             './models/4.gltf',
             './models/5.gltf',
             './models/6.gltf',
-            './models/7.gltf'
+            './models/7.gltf',
+            './models/8.gltf',
+            './models/9.gltf'
         ];
 
         modelPaths.forEach((path, index) => {
